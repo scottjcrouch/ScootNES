@@ -1,0 +1,15 @@
+# binaries
+bin/*
+build/*
+
+# sdl files (windows only)
+include/SDL2-2.0.4
+lib/SDL2-2.0.4
+
+# gnu global tags
+GPATH
+GRTAGS
+GTAGS
+
+# vscode files
+.vscode
