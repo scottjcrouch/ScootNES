@@ -4,9 +4,7 @@
 #+STARTUP: showall indent odd
 
 * NOW
-*** git
-*** backup
-*** fix makefile, stash old
+*** fix makefile
 *** apu
 ***** apu irq
 ***** 0x4010 (dmc) and 0x4017 (frame counter) both issue irq's
