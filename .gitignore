@@ -13,3 +13,8 @@ GTAGS
 
 # vscode files
 .vscode
+
+# emacs temp files
+*~
+\#*\#
+.\#*
