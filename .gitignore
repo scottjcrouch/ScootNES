@@ -6,6 +6,9 @@ build/*
 include/SDL2-2.0.4
 lib/SDL2-2.0.4
 
+# todo file
+TODO.org
+
 # gnu global tags
 GPATH
 GRTAGS
