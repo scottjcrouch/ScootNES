@@ -20,16 +20,17 @@ OBJECTS= \
 # -O2, optimize
 CFLAGS=	-O2
 
+INC+= -Isrc
+
 ifeq ($(OS),Windows_NT)
 	TARGET=	bin/basicnes.exe
-	LFLAGS+= -lmingw32
-	LIB+= -L lib/SDL2-2.0.4
-	INC+= -I include/SDL2-2.0.4
+	LFLAGS+= -lmingw32 -lSDL2 -lSDL2main
+	LIB+= -L lib/SDL2
+	INC+= -I include/SDL2
+else
+	LFLAGS+= $(shell sdl2-config --libs)
+	INC+= $(shell sdl2-config --cflags)
 endif
-
-LFLAGS+= -lSDL2main -lSDL2
-
-INC+= -I src
 
 
 .PHONY: all
