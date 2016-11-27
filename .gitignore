@@ -3,8 +3,8 @@ bin/*
 build/*
 
 # sdl files (windows only)
-include/SDL2-2.0.4
-lib/SDL2-2.0.4
+include/SDL2
+lib/SDL2
 
 # todo file
 TODO.org
