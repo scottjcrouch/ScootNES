@@ -8,6 +8,7 @@ APU::APU(Console *console) {
 
 void APU::boot() {
     inhibitIrq = true;
+    frameInterrupt = false;
     mode = FOUR_STEP;
 
     ctrl(0);
@@ -33,8 +34,10 @@ void APU::ctrl(uint8_t val) {
 void APU::frameCounter(uint8_t val) {
     // set mode and IRQ inhibit flags
     mode = (val & 0x80) ? FIVE_STEP : FOUR_STEP;
-    inhibitIrq = !!(val & 0x40);
-
+    if (inhibitIrq = !!(val & 0x40)) {
+	frameInterrupt = false;
+    }
+    
     if (mode == FIVE_STEP)
     {
         // reset divider

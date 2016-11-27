@@ -53,6 +53,7 @@ private:
   };
 
   bool inhibitIrq;
+  bool frameInterrupt;
   ApuMode mode;
 };
 
