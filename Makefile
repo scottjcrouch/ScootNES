@@ -24,7 +24,7 @@ INC+= -Isrc
 
 ifeq ($(OS),Windows_NT)
 	TARGET=	bin/basicnes.exe
-	LFLAGS+= -lmingw32 -lSDL2 -lSDL2main
+	LFLAGS+= -lmingw32 -lSDL2main -lSDL2
 	LIB+= -L lib/SDL2
 	INC+= -I include/SDL2
 else
