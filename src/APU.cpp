@@ -18,11 +18,23 @@ void APU::clock(int cycles) {
 
 uint8_t APU::status() {
     /* IF-D NT21, DMC interr (I), frame interr (F), DMC active (D), length counter > 0 (N/T/2/1) */
+    
     // for all channels but dmc, if length counter > 0 then return true
-    // dmc returns true if bytes remaining in buffer > 0
-    // for any read, clear frame interrupt flag, but not dmc interrupt flag
-    // if interrupt flag set at same time as read, will return true and not be cleared
-    return 0;
+    uint8_t status = 0;
+    status |= dmcInterrupt << 7;
+    status |= frameInterrupt << 6;
+    // set if dmc bytes remaining in buffer is > 1
+    // ......
+    status |= (noiseLenCount > 0) << 3;
+    status |= (triLenCount > 0) << 2;
+    status |= (pulse2LenCount > 0) << 1;
+    status |= (pulse1LenCount > 0);
+
+    // clear frame interrupt flag (NOTE: if interrupt flag set at same
+    // time as read, would normally return true and not be cleared)
+    frameInterrupt = false;
+    
+    return status;
 }
 
 void APU::ctrl(uint8_t val) {
