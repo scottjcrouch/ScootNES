@@ -56,6 +56,19 @@ private:
   bool inhibitIrq;
   bool frameInterrupt;
   ApuMode mode;
+
+  bool enableDMC;
+  bool enableNoise;
+  bool enableTriangle;
+  bool enablePulse1;
+  bool enablePulse2;
+
+  int noiseLenCount;
+  int triLenCount;
+  int pulse1LenCount;
+  int pulse2LenCount;
+
+  bool dmcInterrupt;
 };
 
 #endif
