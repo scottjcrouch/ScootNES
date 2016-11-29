@@ -14,6 +14,10 @@ void APU::boot() {
     ctrl(0);
 }
 
+void APU::clock(int cycles) {
+    // increment counters
+}
+
 uint8_t APU::status() {
     /* IF-D NT21, DMC interr (I), frame interr (F), DMC active (D), length counter > 0 (N/T/2/1) */
     // for all channels but dmc, if length counter > 0 then return true
