@@ -33,17 +33,20 @@ void APU::ctrl(uint8_t val) {
 }
 
 void APU::frameCounter(uint8_t val) {
-    // set mode and IRQ inhibit flags
+    /* MI-- ----, Mode (M, 0 = 4-step, 1 = 5-step), IRQ inhibit flag (I) */
+
     mode = (val & 0x80) ? FIVE_STEP : FOUR_STEP;
-    if (inhibitIrq = !!(val & 0x40)) {
+    inhibitIrq = !!(val & 0x40);
+    
+    if (inhibitIrq) {
 	frameInterrupt = false;
     }
-    
+
+    // reset divider and sequences
+    // ......
+
     if (mode == FIVE_STEP)
     {
-        // reset divider
+	// clock once
     }
-
-    // reset sequencer
-    
 }
