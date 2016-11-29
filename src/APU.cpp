@@ -7,10 +7,7 @@ APU::APU(Console *console) {
 }
 
 void APU::boot() {
-    inhibitIrq = true;
-    frameInterrupt = false;
-    mode = FOUR_STEP;
-
+    frameCounter(0xFF);
     ctrl(0);
 }
 
