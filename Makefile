@@ -18,7 +18,7 @@ OBJECTS= \
 # -Wl,-subsystem,windows gets rid of the console window
 # -mwindows or -mconsole do similar
 # -O2, optimize
-CFLAGS=	-O2
+CFLAGS=	-O3
 
 INC+= -Isrc
 
