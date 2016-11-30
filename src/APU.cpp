@@ -16,6 +16,32 @@ void APU::tick(int cycles) {
     // increment counters
 }
 
+/* SQUARE WAVE 1 (0x4000 - 0x4003) */
+void pulse1Ctrl(uint8_t) {}
+void pulse1RampCtrl(uint8_t) {}
+void pulse1FineTune(uint8_t) {}
+void pulse1CoarseTune(uint8_t) {}
+/* SQUARE WAVE 2 (0x4004 - 0x4007) */
+void pulse2Ctrl(uint8_t) {}
+void pulse2RampCtrl(uint8_t) {}
+void pulse2FineTune(uint8_t) {}
+void pulse2CoarseTune(uint8_t) {}
+/* TRIANGLE WAVE (0x4008 - 0x400B) */
+void triangleCtrl1(uint8_t) {}
+void triangleCtrl2(uint8_t) {}
+void triangleFreq1(uint8_t) {}
+void triangleFreq2(uint8_t) {}
+/* NOISE GENERATOR (0x400C - 0x400F) */
+void noiseCtrl1(uint8_t) {}
+void noiseCtrl2(uint8_t) {}
+void noiseFreq1(uint8_t) {}
+void noiseFreq2(uint8_t) {}
+/* DELTA MODULATION (0x4010 - 0x4013) */
+void dmcCtrl(uint8_t) {}
+void dmcDA(uint8_t) {}
+void dmcAddr(uint8_t) {}
+void dmcLen(uint8_t) {}
+
 uint8_t APU::status() {
     /* IF-D NT21, DMC interr (I), frame interr (F), DMC active (D), length counter > 0 (N/T/2/1) */
     
