@@ -10,7 +10,7 @@ public:
   APU(Console *console);
 
   void boot();
-  void clock(int);
+  void tick(int);
 
   /** Mapped access registers **/
 

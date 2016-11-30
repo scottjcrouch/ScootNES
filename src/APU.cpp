@@ -12,7 +12,7 @@ void APU::boot() {
     ctrl(0);
 }
 
-void APU::clock(int cycles) {
+void APU::tick(int cycles) {
     // increment counters
 }
 
