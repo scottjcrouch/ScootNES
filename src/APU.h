@@ -53,22 +53,22 @@ private:
     FIVE_STEP,
   };
 
-  bool inhibitIrq;
-  bool frameInterrupt;
   ApuMode mode;
 
-  bool enableDMC;
-  bool enableNoise;
-  bool enableTriangle;
-  bool enablePulse1;
-  bool enablePulse2;
+  bool inhibitIrq;
+  bool frameInterrupt;
+  bool dmcInterrupt;
+
+  bool dmcEnable;
+  bool noiseEnable;
+  bool triangleEnable;
+  bool pulse1Enable;
+  bool pulse2Enable;
 
   int noiseLenCount;
-  int triLenCount;
+  int triangleLenCount;
   int pulse1LenCount;
   int pulse2LenCount;
-
-  bool dmcInterrupt;
 };
 
 #endif

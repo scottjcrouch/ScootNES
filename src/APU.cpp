@@ -50,9 +50,9 @@ uint8_t APU::status() {
     status |= dmcInterrupt << 7;
     status |= frameInterrupt << 6;
     // set if dmc bytes remaining in buffer is > 1
-    // ......
+    // TODO
     status |= (noiseLenCount > 0) << 3;
-    status |= (triLenCount > 0) << 2;
+    status |= (triangleLenCount > 0) << 2;
     status |= (pulse2LenCount > 0) << 1;
     status |= (pulse1LenCount > 0);
 
@@ -67,36 +67,36 @@ void APU::ctrl(uint8_t val) {
     /* ---D NT21, Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1) */
 
     // enable/disable channels
-    enableDMC = !!(val & 0x10);
-    enableNoise = !!(val & 0x08);
-    enableTriangle = !!(val & 0x04);
-    enablePulse2 = !!(val & 0x02);
-    enablePulse1 = !!(val & 0x01);
+    dmcEnable = !!(val & 0x10);
+    noiseEnable = !!(val & 0x08);
+    triangleEnable = !!(val & 0x04);
+    pulse2Enable = !!(val & 0x02);
+    pulse1Enable = !!(val & 0x01);
 
     // reset length counters
-    if (!enableNoise) {
+    if (!noiseEnable) {
 	noiseLenCount = 0;
     }
-    if (!enableTriangle) {
-	triLenCount = 0;
+    if (!triangleEnable) {
+	triangleLenCount = 0;
     }
-    if (!enablePulse2) {
+    if (!pulse1Enable) {
 	pulse1LenCount = 0;
     }
-    if (!enablePulse1) {
+    if (!pulse2Enable) {
 	pulse2LenCount = 0;
     }
 
     // clear dmc interrupt flag
     dmcInterrupt = false;
 
-    if (enableDMC) {
+    if (dmcEnable) {
 	// restart sample only if buffer empty
-	// ......
+	// TODO
     }
     else {
 	// flush buffer and silence it
-	// ......
+	// TODO
     }
 }
 
@@ -111,7 +111,7 @@ void APU::frameCounter(uint8_t val) {
     }
 
     // reset divider and sequences
-    // ......
+    // TODO
 
     if (mode == FIVE_STEP)
     {
