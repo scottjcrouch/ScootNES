@@ -17,7 +17,15 @@ void APU::tick(int cycles) {
 }
 
 /* SQUARE WAVE 1 (0x4000 - 0x4003) */
-void pulse1Ctrl(uint8_t) {}
+void pulse1Ctrl(uint8_t val) {
+    pulse1Duty = (val >> 6) & 0x3;
+    pulse1LenCountHalt = !!(val & 0x20);
+    pulse1EnvLoopEnable = pulse1LenCountHalt;
+    pulse1ConstVol = !!(val & 0x10);
+    pulse1Vol = val & 0xF;
+    pulse1EnvPeriod = pulse1Vol + 1;
+}
+
 void pulse1RampCtrl(uint8_t) {}
 void pulse1FineTune(uint8_t) {}
 void pulse1CoarseTune(uint8_t) {}

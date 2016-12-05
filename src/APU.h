@@ -69,6 +69,13 @@ private:
   int triangleLenCount;
   int pulse1LenCount;
   int pulse2LenCount;
+
+  int pulse1Duty;
+  bool pulse1LenCountHalt;
+  bool pulse1EnvLoopEnable;
+  bool pulse1ConstVol;
+  int pulse1Vol;
+  int pulse1EnvPeriod;
 };
 
 #endif
