@@ -73,7 +73,7 @@ private:
   int pulse1Duty;
   bool pulse1LenCountHalt;
   bool pulse1EnvLoopEnable;
-  bool pulse1ConstVol;
+  bool pulse1EnvDisable;
   int pulse1Vol;
   int pulse1EnvPeriod;
 };

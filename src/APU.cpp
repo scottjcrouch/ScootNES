@@ -19,15 +19,15 @@ void APU::tick(int cycles) {
 /* SQUARE WAVE 1 (0x4000 - 0x4003) */
 void pulse1Ctrl(uint8_t val) {
     /* Bitfield: DDLC VVVV
-       Duty (D),
-       envelope loop/length counter halt (L),
-       constant volume (C),
+       Duty (D)
+       envelope loop/length counter halt (L)
+       constant volume/disable envelope (C)
        volume/envelope period (V) */
     
     pulse1Duty = (val >> 6) & 0x3;
     pulse1LenCountHalt = !!(val & 0x20);
     pulse1EnvLoopEnable = pulse1LenCountHalt;
-    pulse1ConstVol = !!(val & 0x10);
+    pulse1EnvDisable = !!(val & 0x10);
     pulse1Vol = val & 0xF;
     pulse1EnvPeriod = pulse1Vol + 1;
 }
