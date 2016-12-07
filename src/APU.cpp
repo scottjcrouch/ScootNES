@@ -18,6 +18,12 @@ void APU::tick(int cycles) {
 
 /* SQUARE WAVE 1 (0x4000 - 0x4003) */
 void pulse1Ctrl(uint8_t val) {
+    /* Bitfield: DDLC VVVV
+       Duty (D),
+       envelope loop/length counter halt (L),
+       constant volume (C),
+       volume/envelope period (V) */
+    
     pulse1Duty = (val >> 6) & 0x3;
     pulse1LenCountHalt = !!(val & 0x20);
     pulse1EnvLoopEnable = pulse1LenCountHalt;
@@ -26,7 +32,13 @@ void pulse1Ctrl(uint8_t val) {
     pulse1EnvPeriod = pulse1Vol + 1;
 }
 
-void pulse1RampCtrl(uint8_t) {}
+void pulse1RampCtrl(uint8_t) {
+    /* Bitfield: EPPP NSSS
+       sweep enable (E)
+       sweep period (P)
+       sweep negate (N)
+       sweep shift (S) */
+}
 void pulse1FineTune(uint8_t) {}
 void pulse1CoarseTune(uint8_t) {}
 /* SQUARE WAVE 2 (0x4004 - 0x4007) */
@@ -51,7 +63,11 @@ void dmcAddr(uint8_t) {}
 void dmcLen(uint8_t) {}
 
 uint8_t APU::status() {
-    /* IF-D NT21, DMC interr (I), frame interr (F), DMC active (D), length counter > 0 (N/T/2/1) */
+    /* Bitfield: IF-D NT21
+       DMC interrupt (I)
+       frame interrupt (F)
+       DMC active (D)
+       length counter > 0 (N/T/2/1) */
     
     // for all channels but dmc, if length counter > 0 then return true
     uint8_t status = 0;
@@ -72,9 +88,12 @@ uint8_t APU::status() {
 }
 
 void APU::ctrl(uint8_t val) {
-    /* ---D NT21, Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1) */
+    /* Bitfield: ---D NT21
+       Enable DMC (D)
+       Enable Noise (N)
+       Enable Triangle (T)
+       Enable Pulse Channels (2/1) */
 
-    // enable/disable channels
     dmcEnable = !!(val & 0x10);
     noiseEnable = !!(val & 0x08);
     triangleEnable = !!(val & 0x04);
@@ -109,7 +128,9 @@ void APU::ctrl(uint8_t val) {
 }
 
 void APU::frameCounter(uint8_t val) {
-    /* MI-- ----, Mode (M, 0 = 4-step, 1 = 5-step), IRQ inhibit flag (I) */
+    /* Bitfield: MI-- ----
+       Mode (M, 0 = 4-step, 1 = 5-step)
+       IRQ inhibit flag (I) */
 
     mode = (val & 0x80) ? FIVE_STEP : FOUR_STEP;
     inhibitIrq = !!(val & 0x40);
