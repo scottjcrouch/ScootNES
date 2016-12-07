@@ -32,12 +32,19 @@ void pulse1Ctrl(uint8_t val) {
     pulse1EnvPeriod = pulse1Vol + 1;
 }
 
-void pulse1RampCtrl(uint8_t) {
+void pulse1RampCtrl(uint8_t val) {
     /* Bitfield: EPPP NSSS
        sweep enable (E)
        sweep period (P)
        sweep negate (N)
        sweep shift (S) */
+    
+    pulse1SweepEnable = !!(val & 0x80);
+    pulse1SweepPeriod = ((val >> 4) & 0x7) + 1;
+    pulse1SweepNegate = !!(val & 0x8);
+    pulse1SweepShift = val & 0x7;
+
+    pulse1SweepReload = true;
 }
 void pulse1FineTune(uint8_t) {}
 void pulse1CoarseTune(uint8_t) {}

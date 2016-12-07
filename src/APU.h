@@ -76,6 +76,12 @@ private:
   bool pulse1EnvDisable;
   int pulse1Vol;
   int pulse1EnvPeriod;
+
+  bool pulse1SweepEnable;
+  int pulse1SweepPeriod;
+  bool pulse1SweepNegate;
+  int pulse1SweepShift;
+  bool pulse1SweepReload;
 };
 
 #endif
