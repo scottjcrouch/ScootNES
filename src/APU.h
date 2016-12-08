@@ -82,6 +82,11 @@ private:
   bool pulse1SweepNegate;
   int pulse1SweepShift;
   bool pulse1SweepReload;
+
+  int pulse1Timer;
+
+  int pulse1LenCountLoad;
+  bool pulse1EnvStart;
 };
 
 #endif

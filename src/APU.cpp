@@ -49,12 +49,25 @@ void pulse1RampCtrl(uint8_t val) {
 void pulse1FineTune(uint8_t val) {
     /* Bitfield: TTTT TTTT
        Timer low (T) */
+
+    pulse1Timer &= 0x0700;
+    pulse1Timer |= val & 0xFF;
 }
 
 void pulse1CoarseTune(uint8_t val) {
     /* Bitfield: LLLL LTTT
        Length counter load (L)
        timer high (T) */
+
+    pulse1Timer &= 0x00FF;
+    pulse1Timer |= ((val & 0x07) << 8);
+    pulse1LenCountLoad = val & 0xF8;
+
+    // TODO: reload length counter (use lookup table)
+    // TODO: reload divider period (pulse1Timer + 1)
+    // TODO: reset pulse phase
+    // TODO: restart sequencer
+    pulse1EnvStart = true;
 }
 
 void pulse2Ctrl(uint8_t val) {
