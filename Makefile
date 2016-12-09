@@ -18,7 +18,7 @@ OBJECTS= \
 # -Wl,-subsystem,windows gets rid of the console window
 # -mwindows or -mconsole do similar
 # -O2, optimize
-CFLAGS=	-O3
+CFLAGS=	-O3 -DNDEBUG
 
 INC+= -Isrc
 
@@ -32,9 +32,12 @@ else
 	INC+= $(shell sdl2-config --cflags)
 endif
 
-
 .PHONY: all
 all: $(TARGET)
+
+.PHONY: debug
+debug: CFLAGS = -g -Og
+debug: all
 
 $(TARGET): $(OBJECTS)
 	$(CC) $^ -o $(TARGET) $(LIB) $(LFLAGS)
