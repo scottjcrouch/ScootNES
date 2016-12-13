@@ -45,7 +45,9 @@ void Console::boot() {
     frameCount = 0;
     nmiSignal = false;
     irqSignal = false;
-    vbLatch = true;
+    
+    vbLatch = false;
+    ppu->enterVBlank();
 }
 
 void Console::runFrame() {
@@ -56,7 +58,6 @@ void Console::runFrame() {
                 ppu->exitVBlank();
                 currentCycle -= CYC_PER_FRAME;
                 vbLatch = true;
-                break;
             }
             else if (currentCycle >= PRE_REND) {
                 ppu->exitVBlank();
@@ -67,6 +68,7 @@ void Console::runFrame() {
                 if (ppu->nmiOnVBlank) {
                     cpu->signalNMI();
                 }
+		break;
             }
         }
         // cpu ticks at 1/3 of the master clock rate
