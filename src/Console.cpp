@@ -41,7 +41,8 @@ void Console::boot() {
 
     openBus = 0;
 
-    currentCycle = VBLANK;
+    masterClock = VBLANK;
+    cpuDivider = 0;
     frameCount = 0;
     nmiSignal = false;
     irqSignal = false;
@@ -53,16 +54,16 @@ void Console::boot() {
 void Console::runFrame() {
     // spin for 1 frame, until the end of VBlank
     while (true) {
-        if (currentCycle >= POST_REND) {
-            if (currentCycle >= CYC_PER_FRAME) {
+        if (masterClock >= POST_REND) {
+            if (masterClock >= CYC_PER_FRAME) {
                 ppu->exitVBlank();
-                currentCycle -= CYC_PER_FRAME;
+                masterClock = 0;
                 vbLatch = true;
             }
-            else if (currentCycle >= PRE_REND) {
+            else if (masterClock >= PRE_REND) {
                 ppu->exitVBlank();
             }
-            else if ((currentCycle >= VBLANK) && vbLatch) {
+            else if ((masterClock >= VBLANK) && vbLatch) {
                 vbLatch = false;
                 ppu->enterVBlank();
                 if (ppu->nmiOnVBlank) {
@@ -72,11 +73,20 @@ void Console::runFrame() {
             }
         }
         // cpu ticks at 1/3 of the master clock rate
-        currentCycle += cpu->executeNextOp() * 3;
+        tick();
     }
     ++frameCount;
     renderer->load();
     renderer->renderFrame();
+}
+
+void Console::tick() {
+    if (!cpuDivider) {
+	cpu->tick();
+    }
+
+    masterClock++;
+    cpuDivider = (cpuDivider + 1) % 3;
 }
 
 uint8_t Console::cpuRead(uint16_t addr) {

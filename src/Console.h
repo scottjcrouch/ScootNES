@@ -16,6 +16,8 @@ public:
   void runFrame();
   uint32_t *getFrame();
 
+  void tick();
+  
   uint8_t cpuRead(uint16_t addr);
   void cpuWrite(uint16_t addr, uint8_t data);
   uint8_t ppuRead(uint16_t addr);
@@ -34,7 +36,8 @@ public:
   APU *apu;
   Renderer *renderer;
 
-  int currentCycle;
+  int masterClock;
+  int cpuDivider;
   int instrCount;
   int frameCount;
   bool nmiSignal;
