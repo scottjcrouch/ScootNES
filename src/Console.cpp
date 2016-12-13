@@ -42,7 +42,6 @@ void Console::boot() {
     openBus = 0;
 
     currentCycle = VBLANK;
-    instrCount = 0;
     frameCount = 0;
     nmiSignal = false;
     irqSignal = false;
@@ -72,7 +71,6 @@ void Console::runFrame() {
         }
         // cpu ticks at 1/3 of the master clock rate
         currentCycle += cpu->executeNextOp() * 3;
-        ++instrCount;
     }
     ++frameCount;
     renderer->load();
