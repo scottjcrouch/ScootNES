@@ -18,9 +18,10 @@ OBJECTS= \
 # -Wl,-subsystem,windows gets rid of the console window
 # -mwindows or -mconsole do similar
 # -O2, optimize
+# -MMD -MP, generate dependency (.d) files with phony targets
 CFLAGS=	-O3 -DNDEBUG
 
-INC+= -Isrc
+INC+= -Isrc -MMD -MP
 
 ifeq ($(OS),Windows_NT)
 	TARGET=	bin/basicnes.exe
