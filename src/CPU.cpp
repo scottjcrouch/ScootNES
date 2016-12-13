@@ -33,7 +33,6 @@ void CPU::boot() {
     OpJMP();
 
     opCycles = 0;
-    opCode = 0;
 }
 
 uint8_t CPU::read(uint16_t addr) {
@@ -917,8 +916,7 @@ void CPU::signalIRQ() {
 
 int CPU::executeNextOp() {
     opCycles = 0;
-    opCode = read(pc);
-    runInstr(opCode);
+    runInstr(read(pc));
     handleInterrupts();
     return opCycles;
 }
