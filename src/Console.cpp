@@ -279,7 +279,7 @@ void Console::oamDMA(uint8_t offset) {
     for (int i = 0; i < 256; ++i) {
         oamWrite(i, cpuRead(start + i));
     }
-    cpu->tick(514);
+    cpu->addCycles(514);
 }
 
 uint8_t *Console::getPalettePointer() {

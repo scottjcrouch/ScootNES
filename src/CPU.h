@@ -9,8 +9,9 @@ class CPU {
 public:
   CPU(Console *console);
   void boot();
-  int executeNextOp();
-  void tick(int);
+  void executeNextOp();
+  void addCycles(int);
+  void tick();
   void signalNMI();
   void signalIRQ();
 
@@ -44,8 +45,7 @@ public:
   int nmiSignal;
   int irqSignal;
   // misc
-  uint8_t opCode;
-  int opCycles;
+  int cyclesLeft;
 
   void runInstr(uint8_t opCode);
   void push8(uint8_t data);
