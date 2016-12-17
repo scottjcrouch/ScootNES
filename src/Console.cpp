@@ -8,7 +8,6 @@
 #include <PPU.h>
 #include <Cart.h>
 #include <Controller.h>
-#include <Renderer.h>
 
 Console::Console(Cart *cart, Controller *contr1) {
     this->cart = cart;
@@ -16,14 +15,13 @@ Console::Console(Cart *cart, Controller *contr1) {
 }
 
 Console::~Console() {
-    delete cpu, ppu, apu, renderer;
+    delete cpu, ppu, apu;
 }
 
 void Console::boot() {
     cpu = new CPU(this);
     ppu = new PPU(this);
     apu = new APU(this);
-    renderer = new Renderer(this);
 
     cpu->boot();
     ppu->boot();
@@ -76,8 +74,8 @@ void Console::runFrame() {
         tick();
     }
     ++frameCount;
-    renderer->load();
-    renderer->renderFrame();
+    ppu->load();
+    ppu->renderFrame();
 }
 
 void Console::tick() {
@@ -309,5 +307,5 @@ uint8_t *Console::getSprRamPointer() {
 }
 
 uint32_t *Console::getFrame() {
-    return renderer->getFrame();
+    return ppu->getFrame();
 }

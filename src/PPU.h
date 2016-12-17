@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <Renderer.h>
+
 class Console; // forward declaration
 
 class PPU {
@@ -21,6 +23,10 @@ public:
   void setADDR(uint8_t value);
   void setDATA(uint8_t value);
   uint8_t getDATA();
+
+  uint32_t *getFrame();
+  void load();
+  void renderFrame();
 
 //private:
   Console *console;
@@ -73,6 +79,26 @@ public:
 
   // latch used for SCROLL, ADDR. Unset upon STATUS read
   bool latch;
+
+  // rendering
+  static const unsigned int FRAME_WIDTH = 256;
+  static const unsigned int FRAME_HEIGHT = 240;
+  uint32_t frameBuffer[FRAME_WIDTH * FRAME_HEIGHT];
+
+  static const uint32_t universalPalette[64];
+
+  // background objects
+  Pixel bgPixels[512][480];
+  Tile bgTiles[4][32][30];
+  Metatile bgMetaTiles[4][8][8];
+
+  // sprites
+  Sprite sprites[64];
+
+  // palette
+  Palette palette;
+
+  void renderPixel(int x, int y);
 };
 
 #endif
