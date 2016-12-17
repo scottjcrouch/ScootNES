@@ -10,7 +10,7 @@ OBJECTS= \
 	build/CPU.o \
 	build/main.o \
 	build/PPU.o \
-	build/Renderer.o
+	build/Graphics.o
 
 # -w, suppress warnings
 # -g, debug symbols (disable -O2 beforehand)
