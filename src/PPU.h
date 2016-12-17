@@ -31,9 +31,6 @@ public:
 //private:
   Console *console;
 
-  static const int WINDOW_WIDTH = 256;
-  static const int WINDOW_HEIGHT = 240;
-
   // registers
 
   // 0x2000: CTRL
