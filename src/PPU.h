@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <Renderer.h>
+#include <Graphics.h>
 
 class Console; // forward declaration
 

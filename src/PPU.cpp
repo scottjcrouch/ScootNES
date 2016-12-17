@@ -2,7 +2,7 @@
 
 #include <PPU.h>
 #include <Console.h>
-#include <Renderer.h>
+#include <Graphics.h>
 
 PPU::PPU(Console *console) {
     this->console = console;
