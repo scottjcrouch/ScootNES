@@ -6,7 +6,6 @@
 #include <CPU.h>
 #include <PPU.h>
 #include <APU.h>
-#include <Renderer.h>
 
 class Console {
 public:
@@ -34,7 +33,6 @@ public:
   CPU *cpu;
   PPU *ppu;
   APU *apu;
-  Renderer *renderer;
 
   int masterClock;
   int cpuDivider;
