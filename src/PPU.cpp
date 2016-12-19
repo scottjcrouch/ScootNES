@@ -301,8 +301,7 @@ void PPU::renderFrame() {
     }
 }
 
-uint32_t *PPU::getFrame()
-{
+uint32_t *PPU::getFrame() {
     return frameBuffer;
 }
 
