@@ -28,6 +28,10 @@ public:
   void load();
   void renderFrame();
 
+  void tick();
+
+  bool endOfFrame();
+
 //private:
   Console *console;
 
@@ -81,6 +85,17 @@ public:
   static const unsigned int FRAME_WIDTH = 256;
   static const unsigned int FRAME_HEIGHT = 240;
   uint32_t frameBuffer[FRAME_WIDTH * FRAME_HEIGHT];
+
+  static const int SCANL_PER_FRAME  = 262; // 240 rendered + 22 non-rendered
+  static const int CYC_PER_SCANL    = 341;
+  static const int HBLANK           = 256;
+  static const int CYC_PER_FRAME    = CYC_PER_SCANL * SCANL_PER_FRAME;
+  static const int POST_REND        = CYC_PER_SCANL * 240;
+  static const int VBLANK           = CYC_PER_SCANL * 241;
+  static const int PRE_REND         = CYC_PER_SCANL * 261;
+
+  int clockCounter;
+  bool oddFrame;
 
   static const uint32_t universalPalette[64];
 

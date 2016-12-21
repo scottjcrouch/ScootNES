@@ -39,39 +39,19 @@ void Console::boot() {
 
     openBus = 0;
 
-    masterClock = VBLANK;
     cpuDivider = 0;
     frameCount = 0;
     nmiSignal = false;
     irqSignal = false;
-    
-    vbLatch = false;
-    ppu->enterVBlank();
 }
 
 void Console::runFrame() {
     // spin for 1 frame, until the end of VBlank
     while (true) {
-        if (masterClock >= POST_REND) {
-            if (masterClock >= CYC_PER_FRAME) {
-                ppu->exitVBlank();
-                masterClock = 0;
-                vbLatch = true;
-            }
-            else if (masterClock >= PRE_REND) {
-                ppu->exitVBlank();
-            }
-            else if ((masterClock >= VBLANK) && vbLatch) {
-                vbLatch = false;
-                ppu->enterVBlank();
-                if (ppu->nmiOnVBlank) {
-                    cpu->signalNMI();
-                }
-		break;
-            }
-        }
-        // cpu ticks at 1/3 of the master clock rate
         tick();
+	if (ppu->endOfFrame()) {
+	    break;
+	}
     }
     ++frameCount;
     ppu->load();
@@ -82,8 +62,7 @@ void Console::tick() {
     if (!cpuDivider) {
 	cpu->tick();
     }
-
-    masterClock++;
+    ppu->tick();
     cpuDivider = (cpuDivider + 1) % 3;
 }
 

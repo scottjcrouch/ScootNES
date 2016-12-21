@@ -32,7 +32,7 @@ void PPU::boot() {
     // 5 unused bits
     sprOverflow = false;            // if > 8 sprites on any scanline in current frame
     spr0Hit = false;                // at first non-zero pixel overlap in both spr0 and bg
-    isVBlank = false;               // set during VBlank
+    isVBlank = true;                // unset when read
 
     // 0x2003: OAMADDR
     oamAddrBuffer = 0x00;
@@ -124,6 +124,9 @@ void PPU::boot() {
             &(sprSize),
             &(sprPatternTableAddr));
     }
+
+    int clockCounter = VBLANK;
+    bool oddFrame = false;
 }
 
 void PPU::enterVBlank() {
@@ -317,3 +320,31 @@ const uint32_t PPU::universalPalette[64] = {
     0xFFFFFF, 0xABE7FF, 0xC7D7FF, 0xD7CBFF, 0xFFC7FF, 0xFFC7DB,
     0xFFBFB3, 0xFFDBAB, 0xFFE7A3, 0xE3FFA3, 0xABF3BF, 0xB3FFCF,
     0x9FFFF3, 0xAAAAAA, 0x000000, 0x000000};
+
+void PPU::tick() {
+    ++clockCounter;
+    if (clockCounter >= POST_REND) {
+	if (clockCounter == CYC_PER_FRAME) {
+	    exitVBlank();
+	    clockCounter = 0;
+	    if (oddFrame && (showBg || showSpr)) {
+		// skip idle cycle 0
+		++clockCounter;
+	    }
+	}
+	else if (clockCounter == PRE_REND) {
+	    exitVBlank();
+	}
+	else if (clockCounter == VBLANK) {
+	    enterVBlank();
+	    if (nmiOnVBlank) {
+		console->cpu->signalNMI();
+	    }
+	    oddFrame ^= 1;
+	}
+    }
+}
+
+bool PPU::endOfFrame() {
+    return clockCounter == VBLANK;
+}
