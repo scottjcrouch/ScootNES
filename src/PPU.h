@@ -11,8 +11,6 @@ class PPU {
 public:
   PPU(Console *console);
   void boot();
-  void enterVBlank();
-  void exitVBlank();
   void setCTRL(uint8_t value);
   void setMASK(uint8_t value);
   uint8_t getSTATUS();

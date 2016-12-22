@@ -129,14 +129,6 @@ void PPU::boot() {
     bool oddFrame = false;
 }
 
-void PPU::enterVBlank() {
-    isVBlank = true;
-}
-
-void PPU::exitVBlank() {
-    isVBlank = false;
-}
-
 void PPU::setCTRL(uint8_t value) {
     nameTableAddr = value & 0x03;
     vRAMAddrIncr = !!(value & 0x04);
@@ -325,7 +317,7 @@ void PPU::tick() {
     ++clockCounter;
     if (clockCounter >= POST_REND) {
 	if (clockCounter == CYC_PER_FRAME) {
-	    exitVBlank();
+	    isVBlank = false;
 	    clockCounter = 0;
 	    if (oddFrame && (showBg || showSpr)) {
 		// skip idle cycle 0
@@ -333,10 +325,10 @@ void PPU::tick() {
 	    }
 	}
 	else if (clockCounter == PRE_REND) {
-	    exitVBlank();
+	    isVBlank = false;
 	}
 	else if (clockCounter == VBLANK) {
-	    enterVBlank();
+	    isVBlank = true;
 	    if (nmiOnVBlank) {
 		console->cpu->signalNMI();
 	    }
