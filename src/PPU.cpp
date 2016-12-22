@@ -296,6 +296,12 @@ void PPU::renderFrame() {
     }
 }
 
+void PPU::renderScanline(int scanlNum) {
+    for (int x = 0; x < FRAME_WIDTH; x++) {
+	renderPixel(x, scanlNum);
+    }
+}
+
 uint32_t *PPU::getFrame() {
     return frameBuffer;
 }
@@ -319,9 +325,11 @@ void PPU::tick() {
 	if (clockCounter == CYC_PER_FRAME) {
 	    isVBlank = false;
 	    clockCounter = 0;
+	    load();
 	    if (oddFrame && (showBg || showSpr)) {
 		// skip idle cycle 0
 		++clockCounter;
+		renderScanline(0);
 	    }
 	}
 	else if (clockCounter == PRE_REND) {
@@ -334,6 +342,9 @@ void PPU::tick() {
 	    }
 	    oddFrame ^= 1;
 	}
+    }
+    else if (!(clockCounter % CYC_PER_SCANL)) {
+	renderScanline(clockCounter / CYC_PER_SCANL);
     }
 }
 

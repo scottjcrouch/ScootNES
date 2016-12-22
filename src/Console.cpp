@@ -54,8 +54,6 @@ void Console::runFrame() {
 	}
     }
     ++frameCount;
-    ppu->load();
-    ppu->renderFrame();
 }
 
 void Console::tick() {

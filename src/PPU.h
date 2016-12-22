@@ -109,6 +109,7 @@ public:
   Palette palette;
 
   void renderPixel(int x, int y);
+  void renderScanline(int scanlNum);
 };
 
 #endif
