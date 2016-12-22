@@ -125,8 +125,8 @@ void PPU::boot() {
             &(sprPatternTableAddr));
     }
 
-    int clockCounter = VBLANK;
-    bool oddFrame = false;
+    clockCounter = VBLANK;
+    oddFrame = false;
 }
 
 void PPU::setCTRL(uint8_t value) {
