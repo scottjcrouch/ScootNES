@@ -334,6 +334,7 @@ void PPU::tick() {
 	}
 	else if (clockCounter == PRE_REND) {
 	    isVBlank = false;
+	    spr0Hit = false;
 	}
 	else if (clockCounter == VBLANK) {
 	    isVBlank = true;
