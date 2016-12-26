@@ -34,12 +34,9 @@ public:
   PPU *ppu;
   APU *apu;
 
-  int masterClock;
   int cpuDivider;
-  int instrCount;
   bool nmiSignal;
   bool irqSignal;
-  bool vbLatch;
 
 //private:
   static const int SCANL_PER_FRAME  = 262; // 240 rendered + 22 non-rendered
