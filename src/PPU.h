@@ -93,6 +93,7 @@ public:
   static const int PRE_REND         = CYC_PER_SCANL * 261;
 
   int clockCounter;
+  int frameCounter;
   bool oddFrame;
   bool spr0Latch;
 

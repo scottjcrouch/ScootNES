@@ -37,7 +37,6 @@ public:
   int masterClock;
   int cpuDivider;
   int instrCount;
-  int frameCount;
   bool nmiSignal;
   bool irqSignal;
   bool vbLatch;

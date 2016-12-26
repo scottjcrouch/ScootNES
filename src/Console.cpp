@@ -40,7 +40,6 @@ void Console::boot() {
     openBus = 0;
 
     cpuDivider = 0;
-    frameCount = 0;
     nmiSignal = false;
     irqSignal = false;
 }
@@ -53,7 +52,6 @@ void Console::runFrame() {
 	    break;
 	}
     }
-    ++frameCount;
 }
 
 void Console::tick() {

@@ -126,6 +126,7 @@ void PPU::boot() {
     }
 
     clockCounter = VBLANK;
+    frameCounter = 0;
     oddFrame = false;
     spr0Latch = false;
 }
@@ -355,6 +356,7 @@ void PPU::tick() {
 	    if (nmiOnVBlank) {
 		console->cpu->signalNMI();
 	    }
+	    ++frameCounter;
 	    oddFrame ^= 1;
 	}
     }
