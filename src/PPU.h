@@ -94,6 +94,7 @@ public:
 
   int clockCounter;
   bool oddFrame;
+  bool spr0Latch;
 
   static const uint32_t universalPalette[64];
 
