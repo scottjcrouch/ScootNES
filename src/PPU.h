@@ -96,6 +96,7 @@ public:
   int frameCounter;
   bool oddFrame;
   bool spr0Latch;
+  bool spr0Reload;
 
   static const uint32_t universalPalette[64];
 

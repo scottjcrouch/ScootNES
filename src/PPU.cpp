@@ -129,6 +129,7 @@ void PPU::boot() {
     frameCounter = 0;
     oddFrame = false;
     spr0Latch = false;
+    spr0Reload = false;
 }
 
 void PPU::setCTRL(uint8_t value) {
@@ -267,11 +268,12 @@ void PPU::renderPixel(int x, int y) {
 	(bgPixels[realX][realY].getValue() % 4 != 0) &&
 	((x > 7) || (imageMask && sprMask)) &&
 	x != 255 &&
-	!spr0Hit &&
+	!spr0Latch &&
 	showBg &&
 	showSpr) {
 	spr0Hit = true;
 	spr0Latch = true;
+	spr0Reload = true;
     }
     
     // render first occluding sprite that isn't transparent
@@ -350,6 +352,7 @@ void PPU::tick() {
 	    isVBlank = false;
 	    spr0Hit = false;
 	    spr0Latch = false;
+	    spr0Reload = false;
 	}
 	else if (clockCounter == VBLANK) {
 	    isVBlank = true;
@@ -361,11 +364,11 @@ void PPU::tick() {
 	}
     }
     else if (!(clockCounter % CYC_PER_SCANL)) {
-	renderScanline(clockCounter / CYC_PER_SCANL);
-	if (spr0Latch) {
+	if (spr0Reload) {
 	    load();
-	    spr0Latch = false;
+	    spr0Reload = false;
 	}
+	renderScanline(clockCounter / CYC_PER_SCANL);
     }
 }
 
