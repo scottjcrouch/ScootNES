@@ -30,10 +30,10 @@ bool Cart::readFile(std::string romFileName) {
     chrLen = header[5];
     ramLen = header[8];
     mirroring = MIRROR_HOR;
-    if (header[6] & 0x1) {
-        mirroring = MIRROR_ALL;
+    if (header[6] & (0x1 << 3)) {
+        mirroring = MIRROR_NONE;
     }
-    else if (header[6] & (0x1 << 2)) {
+    else if (header[6] & 0x1) {
         mirroring = MIRROR_VERT;
     }
     isRamBattery = !!(header[6] & (0x1 << 1));
