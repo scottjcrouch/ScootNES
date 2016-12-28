@@ -605,6 +605,10 @@ void CPU::AmINY() {
     addrOperand += 1;
     uint8_t high = read(addrOperand);
     targetAddr = (uint16_t)low | ((uint16_t)high << 8);
+    if(low < y) { // page boundary crossed
+        high += 1;
+        targetAddr = (uint16_t)low | ((uint16_t)high << 8);
+    }
     pc += 2;
 }
 
