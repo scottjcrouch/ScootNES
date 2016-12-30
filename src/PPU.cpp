@@ -202,6 +202,13 @@ void PPU::setADDR(uint8_t value) {
         // set low byte
         addrBuffer &= 0xFF00;
         addrBuffer |= value;
+	// set scroll and nametable selector values
+	scrollX &= 0x07; // clear coarse x scroll bits
+	scrollX |= (addrBuffer << 3) & 0xFF; // add new coarse x scroll bits
+	scrollY = 0x0; // clear all y scroll bits
+	scrollY |= (addrBuffer >> 2) & 0xF8; // add new coarse y scroll bits
+	scrollY |= (addrBuffer >> 12) & 0x07; // add new fine y scroll bits
+	nameTableAddr = (addrBuffer >> 10) & 0x03; // add new nametable select bits
     }
     latch = !latch;
 }
