@@ -59,7 +59,7 @@ public:
   uint8_t getValue(uint8_t x, uint8_t y);
   bool occludes(uint8_t x, uint8_t y);
 
-private:
+//private:
   uint8_t *oamData;
   uint8_t *patternTable;
   bool *sprSize;

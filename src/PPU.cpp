@@ -284,6 +284,7 @@ void PPU::renderPixel(int x, int y) {
     }
     
     // render first occluding sprite that isn't transparent
+    bool isBgSpr = false;
     if (showSpr && (x > 7 || sprMask)) {
 	for (int i = 0; i < 64; ++i) {
 	    if (sprites[i].occludes(x, y)) {
@@ -292,7 +293,10 @@ void PPU::renderPixel(int x, int y) {
 		    uint8_t paletteVal = palette.getValue(paletteIndex);
 		    uint32_t pixelColour = universalPalette[paletteVal];
 		    frameBuffer[x + (y * FRAME_WIDTH)] = pixelColour;
-		    return;
+		    isBgSpr = sprites[i].priority;
+		    if (!isBgSpr) {
+			return;
+		    }
 		}
 	    }
 	}
@@ -310,7 +314,9 @@ void PPU::renderPixel(int x, int y) {
     }
 
     // otherwise render universal background colour
-    frameBuffer[x + (y * FRAME_WIDTH)] = universalPalette[palette.getValue(0)];
+    if (!isBgSpr) {
+	frameBuffer[x + (y * FRAME_WIDTH)] = universalPalette[palette.getValue(0)];
+    }
 }
 
 void PPU::renderFrame() {
