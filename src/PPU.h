@@ -30,8 +30,24 @@ public:
 
   bool endOfFrame();
 
+  uint8_t ppuRead(uint16_t addr);
+  void ppuWrite(uint16_t addr, uint8_t data);
+  uint8_t oamRead(uint8_t addr);
+  void oamWrite(uint8_t addr, uint8_t data);
+  void oamDMA(uint8_t offset);
+  uint8_t *getPalettePointer();
+  uint8_t *getNameTablePointer();
+  uint8_t *getPatternTablePointer();
+  uint8_t *getSprRamPointer();
+
+
 //private:
   Console *console;
+
+  // memory
+  uint8_t sprRAM[0x100];
+  uint8_t nameTables[0x1000];
+  uint8_t paletteRAM[0x20];
 
   // registers
 

@@ -28,14 +28,6 @@ void Console::boot() {
     apu->boot();
 
     std::fill_n(cpuRAM, 0x800, 0);
-    std::fill_n(sprRAM, 0x100, 0);
-    std::fill_n(nameTables, 0x1000, 0);
-    uint8_t paletteOnBoot[] = {
-	0x09, 0x01, 0x00, 0x01, 0x00, 0x02, 0x02, 0x0D,
-	0x08, 0x10, 0x08, 0x24, 0x00, 0x00, 0x04, 0x2C,
-	0x09, 0x01, 0x34, 0x03, 0x00, 0x04, 0x00, 0x14,
-	0x08, 0x3A, 0x00, 0x02, 0x00, 0x20, 0x2C, 0x08};
-    std::copy(paletteOnBoot, paletteOnBoot + 0x20, paletteRAM);
 
     openBus = 0;
 
@@ -167,7 +159,7 @@ void Console::cpuWrite(uint16_t addr, uint8_t data) {
             // TODO: APU
         }
         else if (addr == 0x4014) {
-            oamDMA(data);
+            ppu->oamDMA(data);
         }
         else if (addr == 0x4015) {
             // TODO: APU
@@ -191,94 +183,6 @@ void Console::cpuWrite(uint16_t addr, uint8_t data) {
     else {
         printf("Illegal write to %d\n", data);
     }
-}
-
-uint8_t Console::ppuRead(uint16_t addr) {
-    if (addr >= 0x4000) {
-        printf("Address out of bounds %d\n", addr);
-        addr %= 0x4000;
-    }
-    if (addr >= 0x3F00) {
-        uint16_t index = addr % 0x20;
-        return paletteRAM[index];
-    }
-    else if (addr >= 0x2000) {
-        uint16_t index = addr % 0x1000;
-        return nameTables[index];
-    }
-    else {
-        return cart->readChr(addr);
-    }
-}
-
-void Console::ppuWrite(uint16_t addr, uint8_t data) {
-    if (addr >= 0x4000) {
-        printf("Address out of bounds %d\n", addr);
-        addr %= 0x4000;
-    }
-    if (addr >= 0x3F00) {
-        uint16_t index = addr % 0x20;
-        paletteRAM[index] = data;
-        if (addr % 4 == 0) {
-            paletteRAM[index ^ 0x10] = data;
-        }
-    }
-    else if (addr >= 0x2000) {
-        uint16_t index = addr % 0x1000;
-        nameTables[index] = data;
-        if (cart->mirroring == MIRROR_VERT) {
-            nameTables[index ^ 0x800] = data;
-        }
-        else if (cart->mirroring == MIRROR_HOR) {
-            nameTables[index ^ 0x400] = data;
-        }
-        else if (cart->mirroring == MIRROR_ALL) {
-            nameTables[index ^ 0x800] = data;
-            nameTables[index ^ 0x400] = data;
-            nameTables[(index ^ 0x400) ^ 0x800] = data;
-        }
-    }
-    else {
-        cart->writeChr(addr, data);
-    }
-}
-
-uint8_t Console::oamRead(uint8_t index) {
-    return sprRAM[index];
-}
-
-void Console::oamWrite(uint8_t index, uint8_t data) {
-    // the third byte of every sprite entry is missing bits
-    // in hardware, so zero them here before writing
-    if (index % 4 == 2) {
-        data &= 0xE3;
-    }
-    sprRAM[index] = data;
-}
-
-void Console::oamDMA(uint8_t offset) {
-    uint16_t start = (uint16_t)offset;
-    start <<= 8;
-    for (int i = 0; i < 256; ++i) {
-        oamWrite(i, cpuRead(start + i));
-    }
-    cpu->addCycles(514);
-}
-
-uint8_t *Console::getPalettePointer() {
-    return paletteRAM;
-}
-
-uint8_t *Console::getNameTablePointer() {
-    return nameTables;
-}
-
-uint8_t *Console::getPatternTablePointer() {
-    return cart->getChrPointer();
-}
-
-uint8_t *Console::getSprRamPointer() {
-    return sprRAM;
 }
 
 uint32_t *Console::getFrame() {

@@ -9,6 +9,16 @@ PPU::PPU(Console *console) {
 }
 
 void PPU::boot() {
+    // memory
+    std::fill_n(sprRAM, 0x100, 0);
+    std::fill_n(nameTables, 0x1000, 0);
+    uint8_t paletteOnBoot[] = {
+	0x09, 0x01, 0x00, 0x01, 0x00, 0x02, 0x02, 0x0D,
+	0x08, 0x10, 0x08, 0x24, 0x00, 0x00, 0x04, 0x2C,
+	0x09, 0x01, 0x34, 0x03, 0x00, 0x04, 0x00, 0x14,
+	0x08, 0x3A, 0x00, 0x02, 0x00, 0x20, 0x2C, 0x08};
+    std::copy(paletteOnBoot, paletteOnBoot + 0x20, paletteRAM);
+    
     // 0x2000: CTRL
     nameTableAddr = 0;              // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
     vRAMAddrIncr = false;           // 0=1 (across name table), 1=32 (down name table)
@@ -54,7 +64,7 @@ void PPU::boot() {
     latch = false;
 
     // palette for background and sprite tiles
-    palette.init(console->getPalettePointer());
+    palette.init(getPalettePointer());
 
     // background metatiles
     for (int nt = 0; nt < 4; ++nt) {
@@ -64,7 +74,7 @@ void PPU::boot() {
                 uint16_t offset = 0x3C0 + (0x400 * nt) + (y * 8) + x;
                 // init
                 bgMetaTiles[nt][x][y].init(
-                    console->getNameTablePointer() + offset);
+                    getNameTablePointer() + offset);
             }
         }
     }
@@ -89,8 +99,8 @@ void PPU::boot() {
                 bgTiles[nt][x][y].init(
                     &bgMetaTiles[nt][mtX][mtY],
                     quadrant,
-                    console->getNameTablePointer() + offset,
-                    console->getPatternTablePointer(),
+                    getNameTablePointer() + offset,
+                    getPatternTablePointer(),
                     &(bgPatternTableAddr));
             }
         }
@@ -119,8 +129,8 @@ void PPU::boot() {
     // sprite objects
     for (int i = 0; i < 64; i++) {
         sprites[i].init(
-            console->getSprRamPointer() + (i * 4),
-            console->getPatternTablePointer(),
+            getSprRamPointer() + (i * 4),
+            getPatternTablePointer(),
             &(sprSize),
             &(sprPatternTableAddr));
     }
@@ -174,12 +184,12 @@ void PPU::setOAMADDR(uint8_t value) {
 
 void PPU::setOAMDATA(uint8_t value) {
     oamReadBuffer = value;
-    console->oamWrite(oamAddrBuffer++, value);
+    oamWrite(oamAddrBuffer++, value);
 }
 
 uint8_t PPU::getOAMDATA() {
     // apparently unreliable in NES hardware, but some games use it
-    return console->oamRead(oamAddrBuffer);
+    return oamRead(oamAddrBuffer);
 }
 
 void PPU::setSCROLL(uint8_t value) {
@@ -214,7 +224,7 @@ void PPU::setADDR(uint8_t value) {
 }
 
 void PPU::setDATA(uint8_t value) {
-    console->ppuWrite(addrBuffer, value);
+    ppuWrite(addrBuffer, value);
     addrBuffer += ((vRAMAddrIncr) ? 32 : 1);
 }
 
@@ -225,7 +235,7 @@ uint8_t PPU::getDATA() {
         // read, then load data at current address buffer
         // (before incrementing the address) into the read buffer
         returnVal = readBuffer;
-        readBuffer = console->ppuRead(addrBuffer);
+        readBuffer = ppuRead(addrBuffer);
     }
     else {
         // when the address buffer points to the palette address range,
@@ -233,8 +243,8 @@ uint8_t PPU::getDATA() {
         // data at the immediate address, and stores the name table
         // data that would otherwise be mirrored "underneath" the 
         // palette address space in the read buffer
-        returnVal = console->ppuRead(addrBuffer);
-        readBuffer = console->ppuRead(addrBuffer - 0x1000);
+        returnVal = ppuRead(addrBuffer);
+        readBuffer = ppuRead(addrBuffer - 0x1000);
     }
     addrBuffer += ((vRAMAddrIncr) ? 32 : 1);
     return returnVal;
@@ -391,4 +401,92 @@ void PPU::tick() {
 
 bool PPU::endOfFrame() {
     return clockCounter == VBLANK;
+}
+
+uint8_t PPU::ppuRead(uint16_t addr) {
+    if (addr >= 0x4000) {
+        printf("Address out of bounds %d\n", addr);
+        addr %= 0x4000;
+    }
+    if (addr >= 0x3F00) {
+        uint16_t index = addr % 0x20;
+        return paletteRAM[index];
+    }
+    else if (addr >= 0x2000) {
+        uint16_t index = addr % 0x1000;
+        return nameTables[index];
+    }
+    else {
+        return console->cart->readChr(addr);
+    }
+}
+
+void PPU::ppuWrite(uint16_t addr, uint8_t data) {
+    if (addr >= 0x4000) {
+        printf("Address out of bounds %d\n", addr);
+        addr %= 0x4000;
+    }
+    if (addr >= 0x3F00) {
+        uint16_t index = addr % 0x20;
+        paletteRAM[index] = data;
+        if (addr % 4 == 0) {
+            paletteRAM[index ^ 0x10] = data;
+        }
+    }
+    else if (addr >= 0x2000) {
+        uint16_t index = addr % 0x1000;
+        nameTables[index] = data;
+        if (console->cart->mirroring == MIRROR_VERT) {
+            nameTables[index ^ 0x800] = data;
+        }
+        else if (console->cart->mirroring == MIRROR_HOR) {
+            nameTables[index ^ 0x400] = data;
+        }
+        else if (console->cart->mirroring == MIRROR_ALL) {
+            nameTables[index ^ 0x800] = data;
+            nameTables[index ^ 0x400] = data;
+            nameTables[(index ^ 0x400) ^ 0x800] = data;
+        }
+    }
+    else {
+        console->cart->writeChr(addr, data);
+    }
+}
+
+uint8_t PPU::oamRead(uint8_t index) {
+    return sprRAM[index];
+}
+
+void PPU::oamWrite(uint8_t index, uint8_t data) {
+    // the third byte of every sprite entry is missing bits
+    // in hardware, so zero them here before writing
+    if (index % 4 == 2) {
+        data &= 0xE3;
+    }
+    sprRAM[index] = data;
+}
+
+void PPU::oamDMA(uint8_t offset) {
+    uint16_t start = (uint16_t)offset;
+    start <<= 8;
+    for (int i = 0; i < 256; ++i) {
+        oamWrite(i, console->cpuRead(start + i));
+    }
+    console->cpu->addCycles(514);
+}
+
+uint8_t *PPU::getPalettePointer() {
+    return paletteRAM;
+}
+
+uint8_t *PPU::getNameTablePointer() {
+    return nameTables;
+}
+
+uint8_t *PPU::getPatternTablePointer() {
+    return console->cart->getChrPointer();
+}
+
+uint8_t *PPU::getSprRamPointer() {
+    return sprRAM;
 }

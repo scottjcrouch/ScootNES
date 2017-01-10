@@ -19,14 +19,6 @@ public:
   
   uint8_t cpuRead(uint16_t addr);
   void cpuWrite(uint16_t addr, uint8_t data);
-  uint8_t ppuRead(uint16_t addr);
-  void ppuWrite(uint16_t addr, uint8_t data);
-  uint8_t oamRead(uint8_t addr);
-  void oamWrite(uint8_t addr, uint8_t data);
-  uint8_t *getPalettePointer();
-  uint8_t *getNameTablePointer();
-  uint8_t *getPatternTablePointer();
-  uint8_t *getSprRamPointer();
 
   Cart *cart;
   Controller *contr1;
@@ -45,8 +37,6 @@ public:
   uint8_t paletteRAM[0x20];
 
   uint8_t openBus;
-
-  void oamDMA(uint8_t offset);
 };
 
 #endif
