@@ -39,14 +39,6 @@ public:
   bool irqSignal;
 
 //private:
-  static const int SCANL_PER_FRAME  = 262; // 240 rendered + 22 non-rendered
-  static const int CYC_PER_SCANL    = 341;
-  static const int HBLANK           = 256;
-  static const int CYC_PER_FRAME    = CYC_PER_SCANL * SCANL_PER_FRAME;
-  static const int POST_REND        = CYC_PER_SCANL * 240;
-  static const int VBLANK           = CYC_PER_SCANL * 241;
-  static const int PRE_REND         = CYC_PER_SCANL * 261;
-
   uint8_t cpuRAM[0x800];
   uint8_t sprRAM[0x100];
   uint8_t nameTables[0x1000];
