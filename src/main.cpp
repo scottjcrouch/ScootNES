@@ -124,16 +124,6 @@ int main(int argc, char *args[]) {
 
     std::string romFileName(args[1]);
     
-    //romFileName = "roms/cpu/nestest/nestest.nes";
-    //romFileName = "roms/cpu/instr_test-v3/official_only.nes";
-    //romFileName = "roms/cpu/cpu_interrupts_v2/rom_singles/1-cli_latency.nes";
-    //romFileName = "roms/cpu/cpu_interrupts_v2/rom_singles/2-nmi_and_brk.nes";
-    //romFileName = "roms/cpu/cpu_interrupts_v2/rom_singles/3-nmi_and_irq.nes";
-    //romFileName = "roms/cpu/cpu_interrupts_v2/rom_singles/4-irq_and_dma.nes";
-    //romFileName = "roms/cpu/cpu_interrupts_v2/rom_singles/5-branch_delays_irq.nes";
-    //romFileName = "roms/ppu/palette.nes";
-    //romFileName = "roms/ppu/nestress.nes";
-
     Cart *cart = new Cart();
     if (!cart->readFile(romFileName)) {
         printf("cart failed to read file\n");
