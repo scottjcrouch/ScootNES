@@ -470,7 +470,7 @@ void PPU::oamDMA(uint8_t offset) {
     uint16_t start = (uint16_t)offset;
     start <<= 8;
     for (int i = 0; i < 256; ++i) {
-        oamWrite(i, console->cpuRead(start + i));
+        oamWrite(i, console->cpu->read(start + i));
     }
     console->cpu->addCycles(514);
 }

@@ -37,9 +37,6 @@ public:
 
   void tick();
   
-  uint8_t cpuRead(uint16_t addr);
-  void cpuWrite(uint16_t addr, uint8_t data);
-
   Cart *cart;
   Controller *controller1;
   CPU *cpu;
@@ -47,14 +44,6 @@ public:
   APU *apu;
 
   Divider cpuDivider;
-
-//private:
-  uint8_t cpuRAM[0x800];
-  uint8_t sprRAM[0x100];
-  uint8_t nameTables[0x1000];
-  uint8_t paletteRAM[0x20];
-
-  uint8_t openBus;
 };
 
 #endif

@@ -3,11 +3,14 @@
 
 #include <stdint.h>
 
-class Console; // forward declaration
+#include <Cart.h>
+#include <PPU.h>
+#include <APU.h>
+#include <Controller.h>
 
 class CPU {
 public:
-  CPU(Console *console);
+  CPU(Cart* cart, PPU* ppu, APU* apu, Controller* controller1);
   void boot();
   void executeNextOp();
   void addCycles(int);
@@ -16,7 +19,10 @@ public:
   void signalIRQ();
 
 //private:
-  Console *console;
+  Cart* cart;
+  PPU* ppu;
+  APU* apu;
+  Controller* controller1;
 
   // interrupt vectors
   static const uint16_t NMI_VECTOR = 0xFFFA;
@@ -46,6 +52,10 @@ public:
   int irqSignal;
   // misc
   int cyclesLeft;
+
+  // memory
+  uint8_t cpuRAM[0x800];
+  uint8_t openBus;
 
   void runInstr(uint8_t opCode);
   void push8(uint8_t data);
