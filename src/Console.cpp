@@ -36,8 +36,7 @@ void Console::boot() {
     irqSignal = false;
 }
 
-void Console::runFrame() {
-    // spin for 1 frame, until the end of VBlank
+void Console::runForOneFrame() {
     while (true) {
         tick();
 	if (ppu->endOfFrame()) {
@@ -185,6 +184,6 @@ void Console::cpuWrite(uint16_t addr, uint8_t data) {
     }
 }
 
-uint32_t *Console::getFrame() {
-    return ppu->getFrame();
+uint32_t *Console::getFrameBuffer() {
+    return ppu->getFrameBuffer();
 }

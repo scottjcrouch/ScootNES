@@ -345,7 +345,7 @@ void PPU::renderScanline(int scanlNum) {
     }
 }
 
-uint32_t *PPU::getFrame() {
+uint32_t *PPU::getFrameBuffer() {
     return frameBuffer;
 }
 

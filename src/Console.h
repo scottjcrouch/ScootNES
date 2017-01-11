@@ -12,8 +12,8 @@ public:
   Console(Cart *cart, Controller *contr1);
   ~Console();
   void boot();
-  void runFrame();
-  uint32_t *getFrame();
+  void runForOneFrame();
+  uint32_t *getFrameBuffer();
 
   void tick();
   

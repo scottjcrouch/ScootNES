@@ -74,7 +74,7 @@ bool initVideo() {
     return true;
 }
 
-void freeVideo() {
+void freeAndQuitSDL() {
     SDL_DestroyTexture(frameTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -121,18 +121,18 @@ int main(int argc, char *args[]) {
     // main loop
     bool isQuitting = false;
     bool isPaused = false;
-    SDL_Event e;
+    SDL_Event event;
     while (!isQuitting) {
         // track time elapsed during frame/loop
         unsigned int frameTimer = SDL_GetTicks();
 
         // handle events
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
+        while (SDL_PollEvent(&event) != 0) {
+            if (event.type == SDL_QUIT) {
                 isQuitting = true;
             }
-            else if (e.type == SDL_KEYDOWN) {
-		SDL_Keycode sym = e.key.keysym.sym;
+            else if (event.type == SDL_KEYDOWN) {
+		SDL_Keycode sym = event.key.keysym.sym;
 		if (controllerKeyBinds.count(sym) > 0) {
 		    controller1->press(controllerKeyBinds[sym]);
 		}
@@ -143,8 +143,8 @@ int main(int argc, char *args[]) {
                     isPaused ^= 1;
                 }
             }
-            else if (e.type == SDL_KEYUP) {
-                SDL_Keycode sym = e.key.keysym.sym;
+            else if (event.type == SDL_KEYUP) {
+                SDL_Keycode sym = event.key.keysym.sym;
                 if (controllerKeyBinds.count(sym) > 0) {
 		    controller1->release(controllerKeyBinds[sym]);
 		}
@@ -157,14 +157,11 @@ int main(int argc, char *args[]) {
 
         // spin cpu for 1 frame
         if (!isPaused) {
-            console->runFrame();
+            console->runForOneFrame();
         }
         
-        // get frame array
-        uint32_t *frameArray = console->getFrame();
-
-        // apply frame data to texture
-        SDL_UpdateTexture(frameTexture, NULL, frameArray, 256 * sizeof(uint32_t));
+        // apply frame buffer data to texture
+        SDL_UpdateTexture(frameTexture, NULL, console->getFrameBuffer(), 256 * sizeof(uint32_t));
 
         // render the texture
         SDL_RenderCopy(renderer, frameTexture, NULL, NULL);
@@ -180,7 +177,7 @@ int main(int argc, char *args[]) {
     }
 
     // cleanup
-    freeVideo();
+    freeAndQuitSDL();
     delete cart, controller1, console;
 
     return 0;

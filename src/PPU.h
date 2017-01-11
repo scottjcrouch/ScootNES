@@ -22,7 +22,7 @@ public:
   void setDATA(uint8_t value);
   uint8_t getDATA();
 
-  uint32_t *getFrame();
+  uint32_t *getFrameBuffer();
   void load();
   void renderFrame();
 
