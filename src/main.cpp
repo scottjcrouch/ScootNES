@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <fstream>
 #include <string>
+#include <map>
 
 #include <SDL.h>
 
@@ -17,6 +18,8 @@ const unsigned int TICKS_PER_FRAME = 1000 / GAME_FPS;
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 SDL_Texture *frameTexture = NULL;
+
+std::map<SDL_Keycode,Controller::Button> controllerKeyBinds;
 
 bool initVideo() {
     // init SDL
@@ -81,35 +84,15 @@ void freeVideo() {
     SDL_Quit();
 }
 
-bool getButton(Controller::Button &b, SDL_Keycode sym) {
-    switch (sym) {
-    case SDLK_UP:
-        b = Controller::BUTTON_UP;
-        return true;
-    case SDLK_DOWN:
-        b = Controller::BUTTON_DOWN;
-        return true;
-    case SDLK_LEFT:
-        b = Controller::BUTTON_LEFT;
-        return true;
-    case SDLK_RIGHT:
-        b = Controller::BUTTON_RIGHT;
-        return true;
-    case SDLK_z:
-        b = Controller::BUTTON_A;
-        return true;
-    case SDLK_x:
-        b = Controller::BUTTON_B;
-        return true;
-    case SDLK_SPACE:
-        b = Controller::BUTTON_SELECT;
-        return true;
-    case SDLK_RETURN:
-        b = Controller::BUTTON_START;
-        return true;
-    default:
-        return false;
-    }
+void addControllerKeyBinds() {
+    controllerKeyBinds[SDLK_UP]      = Controller::BUTTON_UP;
+    controllerKeyBinds[SDLK_DOWN]    = Controller::BUTTON_DOWN;
+    controllerKeyBinds[SDLK_LEFT]    = Controller::BUTTON_LEFT;
+    controllerKeyBinds[SDLK_RIGHT]   = Controller::BUTTON_RIGHT;
+    controllerKeyBinds[SDLK_z]       = Controller::BUTTON_A;
+    controllerKeyBinds[SDLK_x]       = Controller::BUTTON_B;
+    controllerKeyBinds[SDLK_SPACE]   = Controller::BUTTON_SELECT;
+    controllerKeyBinds[SDLK_RETURN]  = Controller::BUTTON_START;
 }
 
 int main(int argc, char *args[]) {
@@ -129,9 +112,11 @@ int main(int argc, char *args[]) {
         printf("cart failed to read file\n");
         return 1;
     }
-    Controller *contr1 = new Controller();
-    Console *console = new Console(cart, contr1);
+    Controller *controller1 = new Controller();
+    Console *console = new Console(cart, controller1);
     console->boot();
+
+    addControllerKeyBinds();
 
     // main loop
     bool isQuitting = false;
@@ -147,22 +132,22 @@ int main(int argc, char *args[]) {
                 isQuitting = true;
             }
             else if (e.type == SDL_KEYDOWN) {
-                Controller::Button b;
-                if (getButton(b, e.key.keysym.sym)) {
-                    contr1->press(b);
-                }
-                else if (e.key.keysym.sym == SDLK_ESCAPE) {
+		SDL_Keycode sym = e.key.keysym.sym;
+		if (controllerKeyBinds.count(sym) > 0) {
+		    controller1->press(controllerKeyBinds[sym]);
+		}
+                else if (sym == SDLK_ESCAPE) {
                     isQuitting = true;
                 }
-                else if (e.key.keysym.sym == SDLK_p) {
+                else if (sym == SDLK_p) {
                     isPaused ^= 1;
                 }
             }
             else if (e.type == SDL_KEYUP) {
-                Controller::Button b;
-                if (getButton(b, e.key.keysym.sym)) {
-                    contr1->release(b);
-                }
+                SDL_Keycode sym = e.key.keysym.sym;
+                if (controllerKeyBinds.count(sym) > 0) {
+		    controller1->release(controllerKeyBinds[sym]);
+		}
             }
         }
 
@@ -196,7 +181,7 @@ int main(int argc, char *args[]) {
 
     // cleanup
     freeVideo();
-    delete cart, contr1, console;
+    delete cart, controller1, console;
 
     return 0;
 }
