@@ -134,17 +134,17 @@ int main(int argc, char *args[]) {
     console->boot();
 
     // main loop
-    bool quit = false;
-    bool pause = false;
+    bool isQuitting = false;
+    bool isPaused = false;
     SDL_Event e;
-    while (!quit) {
+    while (!isQuitting) {
         // track time elapsed during frame/loop
         unsigned int frameTimer = SDL_GetTicks();
 
         // handle events
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
-                quit = true;
+                isQuitting = true;
             }
             else if (e.type == SDL_KEYDOWN) {
                 Controller::Button b;
@@ -152,10 +152,10 @@ int main(int argc, char *args[]) {
                     contr1->press(b);
                 }
                 else if (e.key.keysym.sym == SDLK_ESCAPE) {
-                    quit = true;
+                    isQuitting = true;
                 }
                 else if (e.key.keysym.sym == SDLK_p) {
-                    pause = !pause;
+                    isPaused ^= 1;
                 }
             }
             else if (e.type == SDL_KEYUP) {
@@ -171,7 +171,7 @@ int main(int argc, char *args[]) {
         SDL_RenderClear(renderer);
 
         // spin cpu for 1 frame
-        if (!pause) {
+        if (!isPaused) {
             console->runFrame();
         }
         
