@@ -31,7 +31,7 @@ void Console::boot() {
 
     openBus = 0;
 
-    cpuDivider = 0;
+    cpuDivider.setInterval(3);
 }
 
 void Console::runForOneFrame() {
@@ -41,11 +41,11 @@ void Console::runForOneFrame() {
 }
 
 void Console::tick() {
-    if (!cpuDivider) {
+    cpuDivider.tick();
+    if (cpuDivider.hasClocked()) {
 	cpu->tick();
     }
     ppu->tick();
-    cpuDivider = (cpuDivider + 1) % 3;
 }
 
 uint8_t Console::cpuRead(uint16_t addr) {
