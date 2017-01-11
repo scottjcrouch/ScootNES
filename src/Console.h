@@ -9,7 +9,7 @@
 
 class Console {
 public:
-  Console(Cart *cart, Controller *contr1);
+  Console(Cart *cart, Controller *controller1);
   ~Console();
   void boot();
   void runForOneFrame();
@@ -21,14 +21,12 @@ public:
   void cpuWrite(uint16_t addr, uint8_t data);
 
   Cart *cart;
-  Controller *contr1;
+  Controller *controller1;
   CPU *cpu;
   PPU *ppu;
   APU *apu;
 
   int cpuDivider;
-  bool nmiSignal;
-  bool irqSignal;
 
 //private:
   uint8_t cpuRAM[0x800];

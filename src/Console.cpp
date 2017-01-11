@@ -9,9 +9,9 @@
 #include <Cart.h>
 #include <Controller.h>
 
-Console::Console(Cart *cart, Controller *contr1) {
+Console::Console(Cart *cart, Controller *controller1) {
     this->cart = cart;
-    this->contr1 = contr1;
+    this->controller1 = controller1;
 }
 
 Console::~Console() {
@@ -32,17 +32,12 @@ void Console::boot() {
     openBus = 0;
 
     cpuDivider = 0;
-    nmiSignal = false;
-    irqSignal = false;
 }
 
 void Console::runForOneFrame() {
-    while (true) {
+    do {
         tick();
-	if (ppu->endOfFrame()) {
-	    break;
-	}
-    }
+    } while (!ppu->endOfFrame());
 }
 
 void Console::tick() {
@@ -95,7 +90,7 @@ uint8_t Console::cpuRead(uint16_t addr) {
             return 0;
         }
         else if (addr == 0x4016) {
-            return contr1->poll();
+            return controller1->poll();
         }
         else if (addr == 0x4017) {
             // TODO: controller 2 and APU
@@ -164,7 +159,7 @@ void Console::cpuWrite(uint16_t addr, uint8_t data) {
             // TODO: APU
         }
         else if (addr == 0x4016) {
-            contr1->setStrobe(!!(data & 0x1));
+            controller1->setStrobe(!!(data & 0x1));
         }
         else if (addr == 0x4017) {
             // TODO: controller 2 and APU
