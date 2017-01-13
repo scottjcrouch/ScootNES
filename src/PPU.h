@@ -33,7 +33,6 @@ public:
   void ppuWrite(uint16_t addr, uint8_t data);
   uint8_t oamRead(uint8_t addr);
   void oamWrite(uint8_t addr, uint8_t data);
-  void oamDMA(uint8_t offset);
   uint8_t *getPalettePointer();
   uint8_t *getNameTablePointer();
   uint8_t *getPatternTablePointer();

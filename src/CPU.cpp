@@ -149,7 +149,11 @@ void CPU::write(uint16_t addr, uint8_t data) {
             // TODO: APU
         }
         else if (addr == 0x4014) {
-            ppu->oamDMA(data);
+	    uint16_t startAddr = ((uint16_t)data) << 8;
+	    for (int i = 0; i < 256; ++i) {
+		ppu->oamWrite(i, read(startAddr + i));
+	    }
+	    addCycles(514);
         }
         else if (addr == 0x4015) {
             // TODO: APU
