@@ -3,13 +3,12 @@
 
 #include <stdint.h>
 
+#include <Cart.h>
 #include <Graphics.h>
-
-class Console; // forward declaration
 
 class PPU {
 public:
-  PPU(Console *console);
+  PPU(Cart *cart);
   void setCTRL(uint8_t value);
   void setMASK(uint8_t value);
   uint8_t getSTATUS();
@@ -40,7 +39,7 @@ public:
 
 
 //private:
-  Console *console;
+  Cart *cart;
 
   // memory
   uint8_t sprRAM[0x100];

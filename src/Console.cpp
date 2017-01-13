@@ -14,7 +14,7 @@ Console::~Console() {
 }
 
 void Console::boot() {
-    ppu = new PPU(this);
+    ppu = new PPU(&cart);
     cpu = new CPU(&cart, ppu, &apu, &controller1);
 
     cpuDivider.setInterval(3);
