@@ -6,9 +6,7 @@
 
 PPU::PPU(Console *console) {
     this->console = console;
-}
 
-void PPU::boot() {
     // memory
     std::fill_n(sprRAM, 0x100, 0);
     std::fill_n(nameTables, 0x1000, 0);

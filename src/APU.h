@@ -9,7 +9,6 @@ class APU {
 public:
   APU(Console *console);
 
-  void boot();
   void tick(int);
 
   /** Mapped access registers **/

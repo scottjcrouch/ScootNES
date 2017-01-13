@@ -11,7 +11,6 @@
 class CPU {
 public:
   CPU(Cart* cart, PPU* ppu, APU* apu, Controller* controller1);
-  void boot();
   void executeNextOp();
   void addCycles(int);
   void tick();

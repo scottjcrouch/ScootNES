@@ -13,9 +13,7 @@ CPU::CPU(Cart* cart, PPU* ppu, APU* apu, Controller* controller1) {
     this->ppu = ppu;
     this->apu = apu;
     this->controller1 = controller1;
-}
 
-void CPU::boot() {
     pc = 0x0000;
     sp = 0xFD;
     acc = 0x00;

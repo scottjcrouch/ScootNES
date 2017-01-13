@@ -5,9 +5,7 @@
 
 APU::APU(Console *console) {
     this->console = console;
-}
 
-void APU::boot() {
     frameCounter(0xFF);
     ctrl(0);
 }
