@@ -29,7 +29,6 @@ private:
 
 class Console {
 public:
-  Console(Cart *cart, Controller *controller1);
   ~Console();
   void boot();
   void runForOneFrame();
@@ -37,8 +36,8 @@ public:
 
   void tick();
   
-  Cart *cart;
-  Controller *controller1;
+  Cart cart;
+  Controller controller1;
   CPU *cpu;
   PPU *ppu;
   APU *apu;

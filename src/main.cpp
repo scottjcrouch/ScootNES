@@ -107,13 +107,13 @@ int main(int argc, char *args[]) {
 
     std::string romFileName(args[1]);
     
-    Cart *cart = new Cart();
-    if (!cart->readFile(romFileName)) {
+    Console console;
+    
+    if (!console.cart.readFile(romFileName)) {
         printf("cart failed to read file\n");
         return 1;
     }
-    Controller *controller1 = new Controller();
-    Console console(cart, controller1);
+
     console.boot();
 
     addControllerKeyBinds();
@@ -134,7 +134,7 @@ int main(int argc, char *args[]) {
             else if (event.type == SDL_KEYDOWN) {
 		SDL_Keycode sym = event.key.keysym.sym;
 		if (controllerKeyBinds.count(sym) > 0) {
-		    controller1->press(controllerKeyBinds[sym]);
+		    console.controller1.press(controllerKeyBinds[sym]);
 		}
                 else if (sym == SDLK_ESCAPE) {
                     isQuitting = true;
@@ -146,7 +146,7 @@ int main(int argc, char *args[]) {
             else if (event.type == SDL_KEYUP) {
                 SDL_Keycode sym = event.key.keysym.sym;
                 if (controllerKeyBinds.count(sym) > 0) {
-		    controller1->release(controllerKeyBinds[sym]);
+		    console.controller1.release(controllerKeyBinds[sym]);
 		}
             }
         }
@@ -178,7 +178,6 @@ int main(int argc, char *args[]) {
 
     // cleanup
     freeAndQuitSDL();
-    delete cart, controller1;
 
     return 0;
 }

@@ -9,11 +9,6 @@
 #include <Cart.h>
 #include <Controller.h>
 
-Console::Console(Cart *cart, Controller *controller1) {
-    this->cart = cart;
-    this->controller1 = controller1;
-}
-
 Console::~Console() {
     delete cpu, ppu, apu;
 }
@@ -23,7 +18,7 @@ void Console::boot() {
     apu->boot();
     ppu = new PPU(this);
     ppu->boot();
-    cpu = new CPU(cart, ppu, apu, controller1);
+    cpu = new CPU(&cart, ppu, apu, &controller1);
     cpu->boot();
 
     cpuDivider.setInterval(3);

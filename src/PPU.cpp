@@ -417,7 +417,7 @@ uint8_t PPU::ppuRead(uint16_t addr) {
         return nameTables[index];
     }
     else {
-        return console->cart->readChr(addr);
+        return console->cart.readChr(addr);
     }
 }
 
@@ -436,20 +436,20 @@ void PPU::ppuWrite(uint16_t addr, uint8_t data) {
     else if (addr >= 0x2000) {
         uint16_t index = addr % 0x1000;
         nameTables[index] = data;
-        if (console->cart->mirroring == MIRROR_VERT) {
+        if (console->cart.mirroring == MIRROR_VERT) {
             nameTables[index ^ 0x800] = data;
         }
-        else if (console->cart->mirroring == MIRROR_HOR) {
+        else if (console->cart.mirroring == MIRROR_HOR) {
             nameTables[index ^ 0x400] = data;
         }
-        else if (console->cart->mirroring == MIRROR_ALL) {
+        else if (console->cart.mirroring == MIRROR_ALL) {
             nameTables[index ^ 0x800] = data;
             nameTables[index ^ 0x400] = data;
             nameTables[(index ^ 0x400) ^ 0x800] = data;
         }
     }
     else {
-        console->cart->writeChr(addr, data);
+        console->cart.writeChr(addr, data);
     }
 }
 
@@ -484,7 +484,7 @@ uint8_t *PPU::getNameTablePointer() {
 }
 
 uint8_t *PPU::getPatternTablePointer() {
-    return console->cart->getChrPointer();
+    return console->cart.getChrPointer();
 }
 
 uint8_t *PPU::getSprRamPointer() {
