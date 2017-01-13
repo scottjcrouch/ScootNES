@@ -1,11 +1,8 @@
 #include <stdint.h>
 
-#include <Console.h>
 #include <APU.h>
 
-APU::APU(Console *console) {
-    this->console = console;
-
+APU::APU() {
     frameCounter(0xFF);
     ctrl(0);
 }

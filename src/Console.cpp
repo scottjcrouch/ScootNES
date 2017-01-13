@@ -10,13 +10,12 @@
 #include <Controller.h>
 
 Console::~Console() {
-    delete cpu, ppu, apu;
+    delete cpu, ppu;
 }
 
 void Console::boot() {
-    apu = new APU(this);
     ppu = new PPU(this);
-    cpu = new CPU(&cart, ppu, apu, &controller1);
+    cpu = new CPU(&cart, ppu, &apu, &controller1);
 
     cpuDivider.setInterval(3);
 }

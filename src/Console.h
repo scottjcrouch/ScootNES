@@ -40,7 +40,7 @@ public:
   Controller controller1;
   CPU *cpu;
   PPU *ppu;
-  APU *apu;
+  APU apu;
 
   Divider cpuDivider;
 };

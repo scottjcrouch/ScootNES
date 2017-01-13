@@ -3,11 +3,9 @@
 
 #include <stdint.h>
 
-class Console; // forward declaration
-
 class APU {
 public:
-  APU(Console *console);
+  APU();
 
   void tick(int);
 
@@ -45,8 +43,6 @@ public:
   void frameCounter(uint8_t);
 
 private:
-  Console *console;
-
   enum ApuMode {
     FOUR_STEP,
     FIVE_STEP,
