@@ -113,8 +113,8 @@ int main(int argc, char *args[]) {
         return 1;
     }
     Controller *controller1 = new Controller();
-    Console *console = new Console(cart, controller1);
-    console->boot();
+    Console console(cart, controller1);
+    console.boot();
 
     addControllerKeyBinds();
 
@@ -157,11 +157,11 @@ int main(int argc, char *args[]) {
 
         // spin cpu for 1 frame
         if (!isPaused) {
-            console->runForOneFrame();
+            console.runForOneFrame();
         }
         
         // apply frame buffer data to texture
-        SDL_UpdateTexture(frameTexture, NULL, console->getFrameBuffer(), 256 * sizeof(uint32_t));
+        SDL_UpdateTexture(frameTexture, NULL, console.getFrameBuffer(), 256 * sizeof(uint32_t));
 
         // render the texture
         SDL_RenderCopy(renderer, frameTexture, NULL, NULL);
@@ -178,7 +178,7 @@ int main(int argc, char *args[]) {
 
     // cleanup
     freeAndQuitSDL();
-    delete cart, controller1, console;
+    delete cart, controller1;
 
     return 0;
 }
