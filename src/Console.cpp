@@ -21,9 +21,15 @@ void Console::boot() {
 }
 
 void Console::runForOneFrame() {
-    do {
+    while(true) {
         tick();
-    } while (!ppu->endOfFrame());
+	if (ppu->endOfFrame()) {
+	    if (ppu->nmiOnVBlank) {
+		cpu->signalNMI();
+	    }
+	    break;
+	}
+    }
 }
 
 void Console::tick() {

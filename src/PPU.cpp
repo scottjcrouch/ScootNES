@@ -381,9 +381,6 @@ void PPU::tick() {
 	}
 	else if (clockCounter == VBLANK) {
 	    isVBlank = true;
-	    if (nmiOnVBlank) {
-		console->cpu->signalNMI();
-	    }
 	    ++frameCounter;
 	    oddFrame ^= 1;
 	}
