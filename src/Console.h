@@ -34,14 +34,15 @@ public:
   void runForOneFrame();
   uint32_t *getFrameBuffer();
 
-  void tick();
-  
   Cart cart;
   Controller controller1;
+
+private:
+  void tick();
+
   CPU *cpu;
   PPU *ppu;
   APU apu;
-
   Divider cpuDivider;
 };
 
