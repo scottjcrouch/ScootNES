@@ -14,7 +14,7 @@ void APU::tick(int cycles) {
     // TODO: increment counters
 }
 
-void pulse1Ctrl(uint8_t val) {
+void APU::pulse1Ctrl(uint8_t val) {
     /* Bitfield: DDLC VVVV
        Duty (D)
        envelope loop/length counter halt (L)
@@ -29,7 +29,7 @@ void pulse1Ctrl(uint8_t val) {
     pulse1EnvPeriod = pulse1Vol + 1;
 }
 
-void pulse1RampCtrl(uint8_t val) {
+void APU::pulse1RampCtrl(uint8_t val) {
     /* Bitfield: EPPP NSSS
        sweep enable (E)
        sweep period (P)
@@ -44,7 +44,7 @@ void pulse1RampCtrl(uint8_t val) {
     pulse1SweepReload = true;
 }
 
-void pulse1FineTune(uint8_t val) {
+void APU::pulse1FineTune(uint8_t val) {
     /* Bitfield: TTTT TTTT
        Timer low (T) */
 
@@ -52,7 +52,7 @@ void pulse1FineTune(uint8_t val) {
     pulse1Timer |= val & 0xFF;
 }
 
-void pulse1CoarseTune(uint8_t val) {
+void APU::pulse1CoarseTune(uint8_t val) {
     /* Bitfield: LLLL LTTT
        Length counter load (L)
        timer high (T) */
@@ -68,7 +68,7 @@ void pulse1CoarseTune(uint8_t val) {
     pulse1EnvStart = true;
 }
 
-void pulse2Ctrl(uint8_t val) {
+void APU::pulse2Ctrl(uint8_t val) {
     /* Bitfield: DDLC VVVV
        Duty (D)
        envelope loop/length counter halt (L)
@@ -76,7 +76,7 @@ void pulse2Ctrl(uint8_t val) {
        volume/envelope period (V) */
 }
 
-void pulse2RampCtrl(uint8_t val) {
+void APU::pulse2RampCtrl(uint8_t val) {
     /* Bitfield: EPPP NSSS
        sweep enable (E)
        sweep period (P)
@@ -84,78 +84,78 @@ void pulse2RampCtrl(uint8_t val) {
        sweep shift (S) */
 }
 
-void pulse2FineTune(uint8_t val) {
+void APU::pulse2FineTune(uint8_t val) {
     /* Bitfield: TTTT TTTT
        Timer low (T) */
 }
 
-void pulse2CoarseTune(uint8_t val) {
+void APU::pulse2CoarseTune(uint8_t val) {
     /* Bitfield: LLLL LTTT
        Length counter load (L)
        timer high (T) */
 }
 
-void triangleCtrl1(uint8_t val) {
+void APU::triangleCtrl1(uint8_t val) {
     /* Bitfield: CRRR RRRR
        Length counter halt / linear counter control (C)
        linear counter load (R) */
 }
 
-void triangleCtrl2(uint8_t val) {
+void APU::triangleCtrl2(uint8_t val) {
     /* Unused */
 }
 
-void triangleFreq1(uint8_t val) {
+void APU::triangleFreq1(uint8_t val) {
     /* Bitfield: TTTT TTTT
        Timer low (T) */
 }
 
-void triangleFreq2(uint8_t val) {
+void APU::triangleFreq2(uint8_t val) {
     /* Bitfield: LLLL LTTT
        Length counter load (L)
        timer high (T) */
 }
 
-void noiseCtrl1(uint8_t val) {
+void APU::noiseCtrl1(uint8_t val) {
     /* Bitfield: --LC VVVV
        Envelope loop / length counter halt (L)
        constant volume (C)
        volume/envelope (V) */
 }
 
-void noiseCtrl2(uint8_t val) {
+void APU::noiseCtrl2(uint8_t val) {
     /* Unused */
 }
 
-void noiseFreq1(uint8_t val) {
+void APU::noiseFreq1(uint8_t val) {
     /* Bitfield: L--- PPPP
        Loop noise (L)
        noise period (P) */
 }
 
-void noiseFreq2(uint8_t val) {
+void APU::noiseFreq2(uint8_t val) {
     /* Bitfield: LLLL L---
        Length counter load (L) */
 }
 
-void dmcCtrl(uint8_t val) {
+void APU::dmcCtrl(uint8_t val) {
     /* Bitfield: IL-- RRRR
        IRQ enable (I)
        loop (L)
        frequency (R) */
 }
 
-void dmcDA(uint8_t val) {
+void APU::dmcDA(uint8_t val) {
     /* Bitfield: -DDD DDDD
        Load counter (D) */
 }
 
-void dmcAddr(uint8_t val) {
+void APU::dmcAddr(uint8_t val) {
     /* Bitfield: AAAA AAAA
        Sample address (A) */
 }
 
-void dmcLen(uint8_t val) {
+void APU::dmcLen(uint8_t val) {
     /* Bitfield: LLLL LLLL
        Sample length (L) */
 }
