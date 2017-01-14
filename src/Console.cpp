@@ -1,6 +1,4 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <algorithm>
+#include <memory>
 
 #include <Console.h>
 #include <CPU.h>
@@ -9,13 +7,9 @@
 #include <Cart.h>
 #include <Controller.h>
 
-Console::~Console() {
-    delete cpu, ppu;
-}
-
 void Console::boot() {
-    ppu = new PPU(&cart);
-    cpu = new CPU(&cart, ppu, &apu, &controller1);
+    ppu = std::unique_ptr<PPU>(new PPU(&cart));
+    cpu = std::unique_ptr<CPU>(new CPU(ppu.get(), &cart, &apu, &controller1));
 
     cpuDivider.setInterval(3);
 }

@@ -8,9 +8,9 @@
 #include <APU.h>
 #include <Controller.h>
 
-CPU::CPU(Cart* cart, PPU* ppu, APU* apu, Controller* controller1) {
-    this->cart = cart;
+CPU::CPU(PPU* ppu, Cart* cart, APU* apu, Controller* controller1) {
     this->ppu = ppu;
+    this->cart = cart;
     this->apu = apu;
     this->controller1 = controller1;
 

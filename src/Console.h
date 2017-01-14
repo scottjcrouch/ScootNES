@@ -1,6 +1,8 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
+#include <memory>
+
 #include <Cart.h>
 #include <Controller.h>
 #include <CPU.h>
@@ -33,20 +35,19 @@ private:
 
 class Console {
 public:
-    ~Console();
     void boot();
     void runForOneFrame();
     uint32_t *getFrameBuffer();
 
     Cart cart;
     Controller controller1;
+    APU apu;
 
 private:
     void tick();
 
-    APU apu;
-    PPU *ppu;
-    CPU *cpu;
+    std::unique_ptr<PPU> ppu;
+    std::unique_ptr<CPU> cpu;
     Divider cpuDivider;
 };
 
