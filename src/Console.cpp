@@ -10,8 +10,6 @@
 void Console::boot() {
     ppu = std::unique_ptr<PPU>(new PPU(&cart));
     cpu = std::unique_ptr<CPU>(new CPU(ppu.get(), &cart, &apu, &controller1));
-
-    cpuDivider.setInterval(3);
 }
 
 void Console::runForOneFrame() {
