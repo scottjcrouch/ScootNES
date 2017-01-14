@@ -33,21 +33,21 @@ private:
 
 class Console {
 public:
-  ~Console();
-  void boot();
-  void runForOneFrame();
-  uint32_t *getFrameBuffer();
+    ~Console();
+    void boot();
+    void runForOneFrame();
+    uint32_t *getFrameBuffer();
 
-  Cart cart;
-  Controller controller1;
+    Cart cart;
+    Controller controller1;
 
 private:
-  void tick();
+    void tick();
 
-  CPU *cpu;
-  PPU *ppu;
-  APU apu;
-  Divider cpuDivider;
+    APU apu;
+    PPU *ppu;
+    CPU *cpu;
+    Divider cpuDivider;
 };
 
 #endif
