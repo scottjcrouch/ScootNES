@@ -9,6 +9,9 @@
 
 class Divider {
 public:
+    Divider(int interval = 1) {
+	setInterval(interval);
+    }
     void setInterval(int interval) {
 	this->interval = interval;
 	clockCounter = interval - 1;
@@ -22,6 +25,7 @@ public:
     bool hasClocked() {
 	return clockCounter == 0;
     }
+
 private:
     int interval;
     int clockCounter;
