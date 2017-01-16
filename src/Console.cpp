@@ -13,14 +13,12 @@ void Console::boot() {
 }
 
 void Console::runForOneFrame() {
-    while(true) {
+    do {
         tick();
-	if (ppu->endOfFrame()) {
-	    if (ppu->nmiOnVBlank) {
-		cpu->signalNMI();
-	    }
-	    break;
-	}
+    } while (!ppu->endOfFrame());
+
+    if (ppu->isNmiEnabled()) {
+	cpu->signalNMI();
     }
 }
 

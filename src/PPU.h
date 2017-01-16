@@ -25,6 +25,7 @@ public:
   void renderFrame();
 
   void tick();
+  bool isNmiEnabled();
 
   bool endOfFrame();
 

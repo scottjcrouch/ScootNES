@@ -460,6 +460,10 @@ void PPU::oamWrite(uint8_t index, uint8_t data) {
     sprRAM[index] = data;
 }
 
+bool PPU::isNmiEnabled() {
+    return nmiOnVBlank;
+}
+
 uint8_t *PPU::getPalettePointer() {
     return paletteRAM;
 }
