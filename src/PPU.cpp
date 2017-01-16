@@ -415,35 +415,35 @@ uint8_t PPU::ppuRead(uint16_t addr) {
     }
 }
 
-void PPU::ppuWrite(uint16_t addr, uint8_t data) {
+void PPU::ppuWrite(uint16_t addr, uint8_t value) {
     if (addr >= 0x4000) {
         printf("Address out of bounds %d\n", addr);
         addr %= 0x4000;
     }
     if (addr >= 0x3F00) {
         uint16_t index = addr % 0x20;
-        paletteRAM[index] = data;
+        paletteRAM[index] = value;
         if (addr % 4 == 0) {
-            paletteRAM[index ^ 0x10] = data;
+            paletteRAM[index ^ 0x10] = value;
         }
     }
     else if (addr >= 0x2000) {
         uint16_t index = addr % 0x1000;
-        nameTables[index] = data;
+        nameTables[index] = value;
         if (cart->mirroring == Cart::MIRROR_VERT) {
-            nameTables[index ^ 0x800] = data;
+            nameTables[index ^ 0x800] = value;
         }
         else if (cart->mirroring == Cart::MIRROR_HOR) {
-            nameTables[index ^ 0x400] = data;
+            nameTables[index ^ 0x400] = value;
         }
         else if (cart->mirroring == Cart::MIRROR_ALL) {
-            nameTables[index ^ 0x800] = data;
-            nameTables[index ^ 0x400] = data;
-            nameTables[(index ^ 0x400) ^ 0x800] = data;
+            nameTables[index ^ 0x800] = value;
+            nameTables[index ^ 0x400] = value;
+            nameTables[(index ^ 0x400) ^ 0x800] = value;
         }
     }
     else {
-        cart->writeChr(addr, data);
+        cart->writeChr(addr, value);
     }
 }
 
@@ -451,13 +451,13 @@ uint8_t PPU::oamRead(uint8_t index) {
     return sprRAM[index];
 }
 
-void PPU::oamWrite(uint8_t index, uint8_t data) {
+void PPU::oamWrite(uint8_t index, uint8_t value) {
     // the third byte of every sprite entry is missing bits
     // in hardware, so zero them here before writing
     if (index % 4 == 2) {
-        data &= 0xE3;
+        value &= 0xE3;
     }
-    sprRAM[index] = data;
+    sprRAM[index] = value;
 }
 
 bool PPU::isNmiEnabled() {

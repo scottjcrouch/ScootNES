@@ -109,36 +109,36 @@ uint8_t CPU::read(uint16_t addr) {
     }
 }
 
-void CPU::write(uint16_t addr, uint8_t data) {
-    openBus = data;
+void CPU::write(uint16_t addr, uint8_t value) {
+    openBus = value;
     if (addr < 0x2000) {
-        cpuRAM[addr % 0x800] = data;
+        cpuRAM[addr % 0x800] = value;
     }
     else if (addr < 0x4000) {
         int port = addr % 8;
         switch (port) {
         case 0: // 0x2000
-            ppu->setCTRL(data);
+            ppu->setCTRL(value);
             break;
         case 1: // 0x2001
-            ppu->setMASK(data);
+            ppu->setMASK(value);
             break;
         case 2: // 0x2002
             break;
         case 3: // 0x2003
-            ppu->setOAMADDR(data);
+            ppu->setOAMADDR(value);
             break;
         case 4: // 0x2004
-            ppu->setOAMDATA(data);
+            ppu->setOAMDATA(value);
             break;
         case 5: // 0x2005
-            ppu->setSCROLL(data);
+            ppu->setSCROLL(value);
             break;
         case 6: // 0x2006
-            ppu->setADDR(data);
+            ppu->setADDR(value);
             break;
         case 7: // 0x2007
-            ppu->setDATA(data);
+            ppu->setDATA(value);
             break;
         default:
             printf("Invalid port %d\n", port);
@@ -149,7 +149,7 @@ void CPU::write(uint16_t addr, uint8_t data) {
             // TODO: APU
         }
         else if (addr == 0x4014) {
-	    uint16_t startAddr = ((uint16_t)data) << 8;
+	    uint16_t startAddr = ((uint16_t)value) << 8;
 	    for (int i = 0; i < 256; ++i) {
 		ppu->oamWrite(i, read(startAddr + i));
 	    }
@@ -159,7 +159,7 @@ void CPU::write(uint16_t addr, uint8_t data) {
             // TODO: APU
         }
         else if (addr == 0x4016) {
-            controller1->setStrobe(!!(data & 0x1));
+            controller1->setStrobe(!!(value & 0x1));
         }
         else if (addr == 0x4017) {
             // TODO: controller 2 and APU
@@ -172,21 +172,21 @@ void CPU::write(uint16_t addr, uint8_t data) {
         // TODO: expansion rom
     }
     else if (addr < 0x8000) {
-        cart->writeRam(addr - 0x6000, data);
+        cart->writeRam(addr - 0x6000, value);
     }
     else {
-        printf("Illegal write to %d\n", data);
+        printf("Illegal write to %d\n", value);
     }
 }
 
-void CPU::push8(uint8_t data) {
-    write(sp | 0x0100, data);
+void CPU::push8(uint8_t value) {
+    write(sp | 0x0100, value);
     sp -= 1;
 }
 
-void CPU::push16(uint16_t data) {
-    push8((data >> 8) & 0xFF);
-    push8(data & 0xFF);
+void CPU::push16(uint16_t value) {
+    push8((value >> 8) & 0xFF);
+    push8(value & 0xFF);
 }
 
 uint8_t CPU::pop8() {
@@ -219,15 +219,15 @@ uint8_t CPU::getStatus() {
     return flags;
 }
 
-void CPU::setStatus(uint8_t data) {
-    carry       = !!(data & 0x01);
-    zero        = !!(data & 0x02);
-    intdisable  = !!(data & 0x04);
-    decmode     = !!(data & 0x08);
-    brk         = !!(data & 0x10);
+void CPU::setStatus(uint8_t value) {
+    carry       = !!(value & 0x01);
+    zero        = !!(value & 0x02);
+    intdisable  = !!(value & 0x04);
+    decmode     = !!(value & 0x08);
+    brk         = !!(value & 0x10);
     // bit 5 unused
-    overflow    = !!(data & 0x40);
-    negative    = !!(data & 0x80);
+    overflow    = !!(value & 0x40);
+    negative    = !!(value & 0x80);
 }
 
 void CPU::handleInterrupts() {

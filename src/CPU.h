@@ -57,17 +57,17 @@ public:
   uint8_t openBus;
 
   void runInstr(uint8_t opCode);
-  void push8(uint8_t data);
-  void push16(uint16_t data);
+  void push8(uint8_t value);
+  void push16(uint16_t value);
   uint8_t pop8();
   uint16_t pop16();
   uint16_t loadAddr(uint16_t addr);
   uint8_t getStatus();
-  void setStatus(uint8_t data);
+  void setStatus(uint8_t value);
   void handleInterrupts();
   void branch();
   uint8_t read(uint16_t addr);
-  void write(uint16_t addr, uint8_t data);
+  void write(uint16_t addr, uint8_t value);
 
   // instructions
   void OpADC();
