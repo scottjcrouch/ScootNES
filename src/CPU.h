@@ -53,7 +53,7 @@ public:
   int cyclesLeft;
 
   // memory
-  uint8_t cpuRAM[0x800];
+  uint8_t cpuRAM[0x800] = {0};
   uint8_t openBus;
 
   void runInstr(uint8_t opCode);

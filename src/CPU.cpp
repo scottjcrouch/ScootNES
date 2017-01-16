@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <stdlib.h>
-#include <algorithm>
 
 #include <CPU.h>
 #include <Cart.h>
@@ -38,10 +37,6 @@ CPU::CPU(PPU* ppu, Cart* cart, APU* apu, Controller* controller1) {
     OpJMP();
 
     cyclesLeft = 0;
-
-    openBus = 0;
-
-    std::fill_n(cpuRAM, 0x800, 0);
 }
 
 uint8_t CPU::read(uint16_t addr) {
