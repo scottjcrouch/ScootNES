@@ -630,7 +630,7 @@ void CPU::OpTYA() {
     negative = !!(acc & 0x80);
 }
 
-/* Undocument Ops */
+/* Undocumented Ops */
 
 void CPU::OpJAM() { }
 void CPU::OpSLO() { }
