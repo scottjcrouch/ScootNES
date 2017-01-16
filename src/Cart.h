@@ -5,13 +5,6 @@
 #include <stdint.h>
 #include <string>
 
-enum Mirroring {
-  MIRROR_VERT,
-  MIRROR_HOR,
-  MIRROR_ALL,
-  MIRROR_NONE,
-};
-
 class Cart {
 public:
   ~Cart();
@@ -24,8 +17,15 @@ public:
   void writeRam(int index, uint8_t value);
   uint8_t *getChrPointer();
 
-  Mirroring mirroring;
+  enum Mirroring {
+      MIRROR_VERT,
+      MIRROR_HOR,
+      MIRROR_ALL,
+      MIRROR_NONE,
+  };
 
+  Mirroring mirroring;
+  
 private:
   int prgLen;
   int chrLen;

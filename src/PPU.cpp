@@ -430,13 +430,13 @@ void PPU::ppuWrite(uint16_t addr, uint8_t data) {
     else if (addr >= 0x2000) {
         uint16_t index = addr % 0x1000;
         nameTables[index] = data;
-        if (cart->mirroring == MIRROR_VERT) {
+        if (cart->mirroring == Cart::MIRROR_VERT) {
             nameTables[index ^ 0x800] = data;
         }
-        else if (cart->mirroring == MIRROR_HOR) {
+        else if (cart->mirroring == Cart::MIRROR_HOR) {
             nameTables[index ^ 0x400] = data;
         }
-        else if (cart->mirroring == MIRROR_ALL) {
+        else if (cart->mirroring == Cart::MIRROR_ALL) {
             nameTables[index ^ 0x800] = data;
             nameTables[index ^ 0x400] = data;
             nameTables[(index ^ 0x400) ^ 0x800] = data;
