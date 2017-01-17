@@ -7,7 +7,7 @@
 #include <APU.h>
 #include <Controller.h>
 
-CPU::CPU(PPU* ppu, Cart* cart, APU* apu, Controller* controller1) {
+void CPU::boot(PPU* ppu, Cart* cart, APU* apu, Controller* controller1) {
     this->ppu = ppu;
     this->cart = cart;
     this->apu = apu;

@@ -8,7 +8,7 @@
 
 class PPU {
 public:
-  PPU(Cart *cart);
+  void boot(Cart *cart);
   void setCTRL(uint8_t value);
   void setMASK(uint8_t value);
   uint8_t getSTATUS();

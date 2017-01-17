@@ -1,8 +1,6 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <memory>
-
 #include <Cart.h>
 #include <Controller.h>
 #include <CPU.h>
@@ -47,8 +45,8 @@ public:
 private:
     void tick();
 
-    std::unique_ptr<PPU> ppu;
-    std::unique_ptr<CPU> cpu;
+    PPU ppu;
+    CPU cpu;
     Divider cpuDivider;
 };
 

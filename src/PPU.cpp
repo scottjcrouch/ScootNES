@@ -3,7 +3,7 @@
 #include <PPU.h>
 #include <Graphics.h>
 
-PPU::PPU(Cart *cart) {
+void PPU::boot(Cart *cart) {
     this->cart = cart;
 
     // memory
