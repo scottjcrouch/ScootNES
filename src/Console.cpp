@@ -12,6 +12,10 @@ void Console::boot() {
     cpu = std::unique_ptr<CPU>(new CPU(ppu.get(), &cart, &apu, &controller1));
 }
 
+uint32_t *Console::getFrameBuffer() {
+    return ppu->getFrameBuffer();
+}
+
 void Console::runForOneFrame() {
     do {
         tick();
@@ -28,8 +32,4 @@ void Console::tick() {
 	cpu->tick();
     }
     ppu->tick();
-}
-
-uint32_t *Console::getFrameBuffer() {
-    return ppu->getFrameBuffer();
 }

@@ -37,8 +37,8 @@ class Console {
 public:
     Console() : cpuDivider(3) { }
     void boot();
-    void runForOneFrame();
     uint32_t *getFrameBuffer();
+    void runForOneFrame();
 
     Cart cart;
     Controller controller1;
