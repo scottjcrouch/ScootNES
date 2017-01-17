@@ -258,6 +258,30 @@ void CPU::branch() {
     pc = branchAddr;
 }
 
+void CPU::addCycles(int c) {
+    cyclesLeft += c;
+}
+
+void CPU::tick() {
+    if (cyclesLeft == 0) {
+	executeNextOp();
+    }
+    cyclesLeft -= 1;
+}
+
+void CPU::signalNMI() {
+    nmiSignal = 1;
+}
+
+void CPU::signalIRQ() {
+    irqSignal = 1;
+}
+
+void CPU::executeNextOp() {
+    runInstr(read(pc));
+    handleInterrupts();
+}
+
 /* Instructions */
 
 void CPU::OpADC() {
@@ -1035,28 +1059,4 @@ void CPU::runInstr(uint8_t opCode) {
         case (0xFF): AmABX(); OpISC(); addCycles(7); break;
         default: printf("Invalid opcode\n");
     }
-}
-
-void CPU::addCycles(int c) {
-    cyclesLeft += c;
-}
-
-void CPU::tick() {
-    if (cyclesLeft == 0) {
-	executeNextOp();
-    }
-    cyclesLeft -= 1;
-}
-
-void CPU::signalNMI() {
-    nmiSignal = 1;
-}
-
-void CPU::signalIRQ() {
-    irqSignal = 1;
-}
-
-void CPU::executeNextOp() {
-    runInstr(read(pc));
-    handleInterrupts();
 }
