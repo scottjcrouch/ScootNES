@@ -12,6 +12,9 @@ OBJECTS= \
 	build/PPU.o \
 	build/Graphics.o
 
+DEPS= $(OBJECTS:.o=.d)
+-include $(DEPS)
+
 # -w, suppress warnings
 # -g, debug symbols (disable -O2 beforehand)
 # -Wall, enable most warnings
