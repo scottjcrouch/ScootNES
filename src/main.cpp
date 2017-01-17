@@ -18,6 +18,8 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 SDL_Texture *frameTexture = NULL;
 
+Console console;
+
 std::map<SDL_Keycode,Controller::Button> controllerKeyBinds;
 
 bool initVideo() {
@@ -105,8 +107,6 @@ int main(int argc, char *args[]) {
     }
 
     std::string romFileName(args[1]);
-    
-    Console console;
     
     if (!console.cart.readFile(romFileName)) {
         printf("cart failed to read file\n");
