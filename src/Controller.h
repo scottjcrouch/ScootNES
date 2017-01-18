@@ -5,8 +5,6 @@
 
 class Controller {
 public:
-  Controller();
-
   enum Button {
     BUTTON_A,
     BUTTON_B,
@@ -25,9 +23,9 @@ public:
   void release(Button b);
 
 private:
-  bool strobe;
-  bool buttons[BUTTON_TOTAL];
-  int shiftReg;
+  bool strobe = false;
+  bool buttons[BUTTON_TOTAL] = {false};
+  int shiftReg = -1;
 };
 
 #endif

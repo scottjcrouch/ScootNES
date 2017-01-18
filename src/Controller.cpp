@@ -1,14 +1,6 @@
 #include <Controller.h>
 #include <stdint.h>
 
-Controller::Controller() {
-    strobe = false;
-    for(int i = 0; i < BUTTON_TOTAL; ++i) {
-        buttons[i] = false;
-    }
-    shiftReg = -1;
-}
-
 void Controller::setStrobe(bool b) {
     strobe = b;
     if(strobe) {
