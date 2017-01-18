@@ -130,7 +130,7 @@ void CPU::write(uint16_t addr, uint8_t value) {
 	case 0x4014: {
 	    uint16_t startAddr = ((uint16_t)value) << 8;
 	    for (int i = 0; i < 256; ++i) {
-		ppu->oamWrite(i, read(startAddr + i));
+		ppu->setOAMDATA(read(startAddr + i));
 	    }
 	    addCycles(514);
 	    break;
