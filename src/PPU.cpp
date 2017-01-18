@@ -396,6 +396,7 @@ void PPU::tick() {
 	    load();
 	    spr0Reload = false;
 	}
+	oamAddrBuffer = 0;
 	renderScanline(clockCounter / CYC_PER_SCANL);
     }
 }
