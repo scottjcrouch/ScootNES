@@ -223,7 +223,7 @@ void PPU::setADDR(uint8_t value) {
 }
 
 void PPU::setDATA(uint8_t value) {
-    ppuWrite(addrBuffer, value);
+    write(addrBuffer, value);
     addrBuffer += ((vRAMAddrIncr) ? 32 : 1);
 }
 
@@ -234,7 +234,7 @@ uint8_t PPU::getDATA() {
         // read, then load data at current address buffer
         // (before incrementing the address) into the read buffer
         returnVal = readBuffer;
-        readBuffer = ppuRead(addrBuffer);
+        readBuffer = read(addrBuffer);
     }
     else {
         // when the address buffer points to the palette address range,
@@ -242,8 +242,8 @@ uint8_t PPU::getDATA() {
         // data at the immediate address, and stores the name table
         // data that would otherwise be mirrored "underneath" the 
         // palette address space in the read buffer
-        returnVal = ppuRead(addrBuffer);
-        readBuffer = ppuRead(addrBuffer - 0x1000);
+        returnVal = read(addrBuffer);
+        readBuffer = read(addrBuffer - 0x1000);
     }
     addrBuffer += ((vRAMAddrIncr) ? 32 : 1);
     return returnVal;
@@ -402,7 +402,7 @@ bool PPU::endOfFrame() {
     return clockCounter == VBLANK;
 }
 
-uint8_t PPU::ppuRead(uint16_t addr) {
+uint8_t PPU::read(uint16_t addr) {
     if (addr >= 0x4000) {
         printf("Address out of bounds %d\n", addr);
         addr %= 0x4000;
@@ -420,7 +420,7 @@ uint8_t PPU::ppuRead(uint16_t addr) {
     }
 }
 
-void PPU::ppuWrite(uint16_t addr, uint8_t value) {
+void PPU::write(uint16_t addr, uint8_t value) {
     if (addr >= 0x4000) {
         printf("Address out of bounds %d\n", addr);
         addr %= 0x4000;

@@ -30,8 +30,8 @@ public:
 
   bool endOfFrame();
 
-  uint8_t ppuRead(uint16_t addr);
-  void ppuWrite(uint16_t addr, uint8_t value);
+  uint8_t read(uint16_t addr);
+  void write(uint16_t addr, uint8_t value);
   uint8_t oamRead(uint8_t addr);
   void oamWrite(uint8_t addr, uint8_t value);
   uint8_t *getPalettePointer();
