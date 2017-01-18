@@ -32,8 +32,6 @@ public:
 
   uint8_t read(uint16_t addr);
   void write(uint16_t addr, uint8_t value);
-  uint8_t oamRead(uint8_t addr);
-  void oamWrite(uint8_t addr, uint8_t value);
   uint8_t *getPalettePointer();
   uint8_t *getNameTablePointer();
   uint8_t *getPatternTablePointer();
@@ -78,9 +76,6 @@ public:
 
   // 0x2003: OAMADDR
   uint8_t oamAddrBuffer;
-
-  // 0x2004: OAMDATA
-  uint8_t oamReadBuffer;
 
   // 0x2005: SCROLL
   uint8_t scrollX;

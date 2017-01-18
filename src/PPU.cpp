@@ -46,9 +46,6 @@ void PPU::boot(Cart *cart, CPU *cpu) {
     // 0x2003: OAMADDR
     oamAddrBuffer = 0x00;
 
-    // 0x2004: OAMDATA
-    oamReadBuffer = 0x00;
-
     // 0x2005: SCROLL
     scrollX = 0x00;
     scrollY = 0x00;
@@ -182,13 +179,18 @@ void PPU::setOAMADDR(uint8_t value) {
 }
 
 void PPU::setOAMDATA(uint8_t value) {
-    oamReadBuffer = value;
-    oamWrite(oamAddrBuffer++, value);
+    // the third byte of every sprite entry is missing bits
+    // in hardware, so zero them here before writing
+    if (oamAddrBuffer % 4 == 2) {
+        value &= 0xE3;
+    }
+    sprRAM[oamAddrBuffer] = value;
+    oamAddrBuffer++;
 }
 
 uint8_t PPU::getOAMDATA() {
     // apparently unreliable in NES hardware, but some games use it
-    return oamRead(oamAddrBuffer);
+    return sprRAM[oamAddrBuffer];
 }
 
 void PPU::setSCROLL(uint8_t value) {
@@ -450,19 +452,6 @@ void PPU::write(uint16_t addr, uint8_t value) {
     else {
         cart->writeChr(addr, value);
     }
-}
-
-uint8_t PPU::oamRead(uint8_t index) {
-    return sprRAM[index];
-}
-
-void PPU::oamWrite(uint8_t index, uint8_t value) {
-    // the third byte of every sprite entry is missing bits
-    // in hardware, so zero them here before writing
-    if (index % 4 == 2) {
-        value &= 0xE3;
-    }
-    sprRAM[index] = value;
 }
 
 uint8_t *PPU::getPalettePointer() {
