@@ -88,7 +88,8 @@ uint8_t Cart::readPrg(int index) {
 }
 
 void Cart::writePrg(int index, uint8_t value) {
-    printf("ERROR: Tried to write to PRG-ROM\n");
+    // TODO: mapper registers
+    printf("Tried to write to PRG-ROM, mapper functionality incomplete\n");
 }
 
 uint8_t Cart::readChr(int index) {
