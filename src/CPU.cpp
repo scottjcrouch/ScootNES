@@ -62,33 +62,19 @@ uint8_t CPU::read(uint16_t addr) {
             return openBus;
         case 7: // 0x2007
             return ppu->getDATA();
-        default:
-            printf("Invalid port %d\n", port);
-            return 0;
         }
     }
     else if (addr < 0x4020) {
-        if (addr <= 0x4013) {
-            // TODO: APU
+	switch (addr) {
+	case 0x4013: // TODO: APU
             return 0;
-        }
-        else if (addr == 0x4014) {
-            // write only oam dma register
-            return openBus;
-        }
-        else if (addr == 0x4015) {
-            // TODO: APU
+        case 0x4015: // TODO: APU
             return 0;
-        }
-        else if (addr == 0x4016) {
+	case 0x4016:
             return controller1->poll();
-        }
-        else if (addr == 0x4017) {
-            // TODO: controller 2 and APU
+	case 0x4017: // TODO: controller 2 and APU
             return 0;
-        }
-        else {
-            // disabled/unused APU test registers
+	default: // disabled/unused APU test registers
             return openBus;
         }
     }
@@ -135,33 +121,30 @@ void CPU::write(uint16_t addr, uint8_t value) {
         case 7: // 0x2007
             ppu->setDATA(value);
             break;
-        default:
-            printf("Invalid port %d\n", port);
         }
     }
     else if (addr < 0x4020) {
-        if (addr <= 0x4013) {
-            // TODO: APU
-        }
-        else if (addr == 0x4014) {
+	switch (addr) {
+	case 0x4013: // TODO: APU
+	    break;
+	case 0x4014: {
 	    uint16_t startAddr = ((uint16_t)value) << 8;
 	    for (int i = 0; i < 256; ++i) {
 		ppu->oamWrite(i, read(startAddr + i));
 	    }
 	    addCycles(514);
-        }
-        else if (addr == 0x4015) {
-            // TODO: APU
-        }
-        else if (addr == 0x4016) {
-            controller1->setStrobe(!!(value & 0x1));
-        }
-        else if (addr == 0x4017) {
-            // TODO: controller 2 and APU
-        }
-        else {
-            // disabled/unused APU test registers
-        }
+	    break;
+	}
+	case 0x4015: // TODO: APU
+	    break;
+	case 0x4016:
+	    controller1->setStrobe(!!(value & 0x1));
+	    break;
+	case 0x4017: // TODO: controller 2 and APU
+	    break;
+	default: // disabled/unused APU test registers
+	    break;
+	}
     }
     else if (addr < 0x6000) {
         // TODO: expansion rom
@@ -170,7 +153,7 @@ void CPU::write(uint16_t addr, uint8_t value) {
         cart->writeRam(addr - 0x6000, value);
     }
     else {
-        printf("Illegal write to %d\n", value);
+        cart->writePrg(addr - 0x6000, value);
     }
 }
 
@@ -1057,6 +1040,5 @@ void CPU::runInstr(uint8_t opCode) {
         case (0xFD): AmABX_C(); OpSBC(); addCycles(4); break;
         case (0xFE): AmABX(); OpINC(); addCycles(7); break;
         case (0xFF): AmABX(); OpISC(); addCycles(7); break;
-        default: printf("Invalid opcode\n");
     }
 }
