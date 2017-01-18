@@ -6,7 +6,7 @@
 #include <Controller.h>
 
 void Console::boot() {
-    ppu.boot(&cart);
+    ppu.boot(&cart, &cpu);
     cpu.boot(&ppu, &cart, &apu, &controller1);
 }
 
@@ -18,10 +18,6 @@ void Console::runForOneFrame() {
     do {
         tick();
     } while (!ppu.endOfFrame());
-
-    if (ppu.isNmiEnabled()) {
-	cpu.signalNMI();
-    }
 }
 
 void Console::tick() {

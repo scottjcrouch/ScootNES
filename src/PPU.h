@@ -6,9 +6,11 @@
 #include <Cart.h>
 #include <Graphics.h>
 
+class CPU;
+
 class PPU {
 public:
-  void boot(Cart *cart);
+  void boot(Cart *cart, CPU *cpu);
   void setCTRL(uint8_t value);
   void setMASK(uint8_t value);
   uint8_t getSTATUS();
@@ -25,7 +27,6 @@ public:
   void renderFrame();
 
   void tick();
-  bool isNmiEnabled();
 
   bool endOfFrame();
 
@@ -41,6 +42,7 @@ public:
 
 //private:
   Cart *cart;
+  CPU *cpu;
 
   // memory
   uint8_t sprRAM[0x100];

@@ -1,10 +1,12 @@
 #include <stdint.h>
 
 #include <PPU.h>
+#include <CPU.h>
 #include <Graphics.h>
 
-void PPU::boot(Cart *cart) {
+void PPU::boot(Cart *cart, CPU *cpu) {
     this->cart = cart;
+    this->cpu = cpu;
 
     // memory
     std::fill_n(sprRAM, 0x100, 0);
@@ -380,6 +382,9 @@ void PPU::tick() {
 	}
 	else if (clockCounter == VBLANK) {
 	    isVBlank = true;
+	    if (nmiOnVBlank) {
+		cpu->signalNMI();
+	    }
 	    ++frameCounter;
 	    oddFrame ^= 1;
 	}
@@ -458,10 +463,6 @@ void PPU::oamWrite(uint8_t index, uint8_t value) {
         value &= 0xE3;
     }
     sprRAM[index] = value;
-}
-
-bool PPU::isNmiEnabled() {
-    return nmiOnVBlank;
 }
 
 uint8_t *PPU::getPalettePointer() {
