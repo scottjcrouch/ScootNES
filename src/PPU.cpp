@@ -356,7 +356,8 @@ const uint32_t PPU::universalPalette[64] = {
 void PPU::tick() {
     ++clockCounter;
     if (clockCounter >= POST_REND) {
-	if (clockCounter == CYC_PER_FRAME) {
+	switch (clockCounter) {
+	case CYC_PER_FRAME:
 	    isVBlank = false;
 	    clockCounter = 0;
 	    load();
@@ -365,20 +366,21 @@ void PPU::tick() {
 		++clockCounter;
 		renderScanline(0);
 	    }
-	}
-	else if (clockCounter == PRE_REND) {
+	    break;
+	case PRE_REND:
 	    isVBlank = false;
 	    spr0Hit = false;
 	    spr0Latch = false;
 	    spr0Reload = false;
-	}
-	else if (clockCounter == VBLANK) {
+	    break;
+	case VBLANK:
 	    isVBlank = true;
 	    if (nmiOnVBlank) {
 		cpu->signalNMI();
 	    }
 	    ++frameCounter;
 	    oddFrame ^= 1;
+	    break;
 	}
     }
     else if (!(clockCounter % CYC_PER_SCANL)) {
@@ -396,10 +398,7 @@ bool PPU::endOfFrame() {
 }
 
 uint8_t PPU::read(uint16_t addr) {
-    if (addr >= 0x4000) {
-        printf("Address out of bounds %d\n", addr);
-        addr %= 0x4000;
-    }
+    addr %= 0x4000;
     if (addr >= 0x3F00) {
         uint16_t index = addr % 0x20;
         return paletteRAM[index];
@@ -414,10 +413,7 @@ uint8_t PPU::read(uint16_t addr) {
 }
 
 void PPU::write(uint16_t addr, uint8_t value) {
-    if (addr >= 0x4000) {
-        printf("Address out of bounds %d\n", addr);
-        addr %= 0x4000;
-    }
+    addr %= 0x4000;
     if (addr >= 0x3F00) {
         uint16_t index = addr % 0x20;
         paletteRAM[index] = value;
@@ -428,17 +424,19 @@ void PPU::write(uint16_t addr, uint8_t value) {
     else if (addr >= 0x2000) {
         uint16_t index = addr % 0x1000;
         nameTables[index] = value;
-        if (cart->mirroring == Cart::MIRROR_VERT) {
-            nameTables[index ^ 0x800] = value;
-        }
-        else if (cart->mirroring == Cart::MIRROR_HOR) {
-            nameTables[index ^ 0x400] = value;
-        }
-        else if (cart->mirroring == Cart::MIRROR_ALL) {
-            nameTables[index ^ 0x800] = value;
+	switch (cart->mirroring) {
+	case Cart::MIRROR_VERT:
+	    nameTables[index ^ 0x800] = value;
+	    break;
+	case Cart::MIRROR_HOR:
+	    nameTables[index ^ 0x400] = value;
+	    break;
+	case Cart::MIRROR_ALL:
+	    nameTables[index ^ 0x800] = value;
             nameTables[index ^ 0x400] = value;
             nameTables[(index ^ 0x400) ^ 0x800] = value;
-        }
+	    break;
+	}
     }
     else {
         cart->writeChr(addr, value);
