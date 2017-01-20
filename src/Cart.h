@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include <string>
 
+static const int PRG_BANK_SIZE = 16 * 1024;
+static const int CHR_BANK_SIZE = 8 * 1024;
+static const int RAM_BANK_SIZE = 8 * 1024;
+
 class Cart {
 public:
   ~Cart();
@@ -33,10 +37,6 @@ private:
   bool isRamBattery;
   bool isTrainer;
   int mapperNum;
-
-  static const int PRG_BANK_SIZE = 16 * 1024;
-  static const int CHR_BANK_SIZE = 8 * 1024;
-  static const int RAM_BANK_SIZE = 8 * 1024;
 
   uint8_t *trainer;
   uint8_t *prg;

@@ -8,6 +8,10 @@
 #include <APU.h>
 #include <Controller.h>
 
+static const uint16_t NMI_VECTOR = 0xFFFA;
+static const uint16_t RESET_VECTOR = 0xFFFC;
+static const uint16_t IRQ_VECTOR = 0xFFFE;
+
 class CPU {
 public:
     void boot(PPU* ppu, Cart* cart, APU* apu, Controller* controller1);
@@ -21,10 +25,6 @@ private:
     APU* apu;
     Controller* controller1;
 
-    // interrupt vectors
-    static const uint16_t NMI_VECTOR = 0xFFFA;
-    static const uint16_t RESET_VECTOR = 0xFFFC;
-    static const uint16_t IRQ_VECTOR = 0xFFFE;
     // registers
     uint16_t pc;
     uint8_t sp;
