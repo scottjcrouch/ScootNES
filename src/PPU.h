@@ -36,6 +36,8 @@ private:
     void writePalette(uint16_t addr, uint8_t value);
     uint8_t readNameTables(uint16_t addr);
     void writeNameTables(uint16_t addr, uint8_t value);
+    uint8_t readPatternTables(uint16_t addr);
+    void writePatternTables(uint16_t addr, uint8_t value);
     uint8_t *getPalettePointer();
     uint8_t *getNameTablePointer();
     uint8_t *getPatternTablePointer();

@@ -406,7 +406,7 @@ uint8_t PPU::read(uint16_t addr) {
 	return readNameTables(addr);
     }
     else {
-        return cart->readChr(addr);
+        return readPatternTables(addr);
     }
 }
 
@@ -419,7 +419,7 @@ void PPU::write(uint16_t addr, uint8_t value) {
 	writeNameTables(addr, value);
     }
     else {
-        cart->writeChr(addr, value);
+        writePatternTables(addr, value);
     }
 }
 
@@ -456,6 +456,14 @@ void PPU::writeNameTables(uint16_t addr, uint8_t value) {
 	nameTables[(index ^ 0x400) ^ 0x800] = value;
 	break;
     }
+}
+
+uint8_t PPU::readPatternTables(uint16_t addr) {
+    return cart->readChr(addr);
+}
+
+void PPU::writePatternTables(uint16_t addr, uint8_t value) {
+    cart->writeChr(addr, value);
 }
 
 uint8_t *PPU::getPalettePointer() {
