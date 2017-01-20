@@ -400,8 +400,7 @@ bool PPU::endOfFrame() {
 uint8_t PPU::read(uint16_t addr) {
     addr %= 0x4000;
     if (addr >= 0x3F00) {
-        uint16_t index = addr % 0x20;
-        return paletteRAM[index];
+        return readPalette(addr);
     }
     else if (addr >= 0x2000) {
         uint16_t index = addr % 0x1000;
@@ -415,11 +414,7 @@ uint8_t PPU::read(uint16_t addr) {
 void PPU::write(uint16_t addr, uint8_t value) {
     addr %= 0x4000;
     if (addr >= 0x3F00) {
-        uint16_t index = addr % 0x20;
-        paletteRAM[index] = value;
-        if (addr % 4 == 0) {
-            paletteRAM[index ^ 0x10] = value;
-        }
+	writePalette(addr, value);
     }
     else if (addr >= 0x2000) {
         uint16_t index = addr % 0x1000;
@@ -440,6 +435,18 @@ void PPU::write(uint16_t addr, uint8_t value) {
     }
     else {
         cart->writeChr(addr, value);
+    }
+}
+
+uint8_t PPU::readPalette(uint16_t addr) {
+    return paletteRAM[addr % 0x20];
+}
+
+void PPU::writePalette(uint16_t addr, uint8_t value) {
+    int index = addr % 0x20;
+    paletteRAM[index] = value;
+    if (index % 4 == 0) {
+	paletteRAM[index ^ 0x10] = value;
     }
 }
 

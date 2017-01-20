@@ -32,6 +32,8 @@ private:
     void renderFrame();
     void renderPixel(int x, int y);
     void renderScanline(int scanlNum);
+    uint8_t readPalette(uint16_t addr);
+    void writePalette(uint16_t addr, uint8_t value);
     uint8_t *getPalettePointer();
     uint8_t *getNameTablePointer();
     uint8_t *getPatternTablePointer();
