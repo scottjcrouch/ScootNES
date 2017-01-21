@@ -8,7 +8,6 @@ public:
   void init(uint8_t *palettePointer);
   uint8_t getValue(int index);
 
-private:
   uint8_t *palettePointer;
 };
 
@@ -17,7 +16,6 @@ public:
   void init(uint8_t *attribute);
   uint8_t getValue(uint8_t quadrant);
 
-private:
   uint8_t *attribute;
 };
 
@@ -27,7 +25,6 @@ public:
   uint8_t getValue(uint8_t x, uint8_t y);
   void reload();
 
-private:
   // metatile it belongs to
   Metatile *metaTile;
   // position in metatile
@@ -44,7 +41,6 @@ public:
   void init(Tile *tile, uint8_t x, uint8_t y);
   uint8_t getValue();
 
-private:
   // tile it belongs to
   Tile *tile;
   // position within that tile
@@ -59,7 +55,6 @@ public:
   uint8_t getValue(uint8_t x, uint8_t y);
   bool occludes(uint8_t x, uint8_t y);
 
-//private:
   uint8_t *oamData;
   uint8_t *patternTable;
   bool *sprSize;
