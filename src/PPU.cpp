@@ -391,7 +391,7 @@ bool PPU::endOfFrame() {
 uint8_t PPU::read(uint16_t addr) {
     addr %= 0x4000;
     if (addr >= 0x3F00) {
-        return readPalette(addr);
+        return readPalette(addr % 0x20);
     }
     else if (addr >= 0x2000) {
 	return readNameTables(addr);
@@ -404,7 +404,7 @@ uint8_t PPU::read(uint16_t addr) {
 void PPU::write(uint16_t addr, uint8_t value) {
     addr %= 0x4000;
     if (addr >= 0x3F00) {
-	writePalette(addr, value);
+	writePalette(addr % 0x20, value);
     }
     else if (addr >= 0x2000) {
 	writeNameTables(addr, value);
@@ -414,12 +414,14 @@ void PPU::write(uint16_t addr, uint8_t value) {
     }
 }
 
-uint8_t PPU::readPalette(uint16_t addr) {
-    return paletteRAM[addr % 0x20];
+uint8_t PPU::readPalette(uint16_t index) {
+    if (index % 4 == 0) {
+	return paletteRAM[0];
+    }
+    return paletteRAM[index];
 }
 
-void PPU::writePalette(uint16_t addr, uint8_t value) {
-    int index = addr % 0x20;
+void PPU::writePalette(uint16_t index, uint8_t value) {
     paletteRAM[index] = value;
     if (index % 4 == 0) {
 	paletteRAM[index ^ 0x10] = value;
