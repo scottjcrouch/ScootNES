@@ -391,7 +391,7 @@ uint8_t PPU::read(uint16_t addr) {
         return readPalette(addr % 0x20);
     }
     else if (addr >= 0x2000) {
-	return readNameTables(addr);
+	return readNameTables(addr % 0x1000);
     }
     else {
         return readPatternTables(addr);
@@ -404,7 +404,7 @@ void PPU::write(uint16_t addr, uint8_t value) {
 	writePalette(addr % 0x20, value);
     }
     else if (addr >= 0x2000) {
-	writeNameTables(addr, value);
+	writeNameTables(addr % 0x1000, value);
     }
     else {
         writePatternTables(addr, value);
@@ -425,13 +425,11 @@ void PPU::writePalette(uint16_t index, uint8_t value) {
     }
 }
 
-uint8_t PPU::readNameTables(uint16_t addr) {
-    int index = addr % 0x1000;
+uint8_t PPU::readNameTables(uint16_t index) {
     return nameTables[index];
 }
 
-void PPU::writeNameTables(uint16_t addr, uint8_t value) {
-    int index = addr % 0x1000;
+void PPU::writeNameTables(uint16_t index, uint8_t value) {
     nameTables[index] = value;
     switch (cart->mirroring) {
     case Cart::MIRROR_VERT:
