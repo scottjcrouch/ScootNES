@@ -20,7 +20,11 @@ void Metatile::init(uint8_t *attribute) {
 }
 
 uint8_t Metatile::getValue(uint8_t quadrant) {
-    return ((*attribute) >> (quadrant * 2)) & 0b11;
+    return ((attributeByte) >> (quadrant * 2)) & 0b11;
+}
+
+void Metatile::reload() {
+    attributeByte = *attribute;
 }
 
 void Tile::init(Metatile *metaTile, uint8_t quadrant, uint8_t *patternIndex, uint8_t *patternTable, bool *ptOffset) {

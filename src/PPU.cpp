@@ -248,12 +248,16 @@ void PPU::load() {
                 bgTiles[nt][x][y].reload();
             }
         }
+	for (int x = 0; x < 8; ++x) {
+            for (int y = 0; y < 8; ++y) {
+                bgMetaTiles[nt][x][y].reload();
+            }
+        }
     }
     for (int i = 0; i < 64; ++i) {
         sprites[i].reload();
     }
     // TODO reload ppu data here such as scrollX and scrollY
-    // reload sprites, due to oamaddr changing
 }
 
 void PPU::renderPixel(int x, int y) {

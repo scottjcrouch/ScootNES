@@ -15,8 +15,10 @@ class Metatile {
 public:
   void init(uint8_t *attribute);
   uint8_t getValue(uint8_t quadrant);
+  void reload();
 
   uint8_t *attribute;
+  uint8_t attributeByte;
 };
 
 class Tile {
