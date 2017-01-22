@@ -49,18 +49,7 @@ void PPU::boot(Cart *cart, CPU *cpu) {
     // latch used for SCROLL, ADDR. Unset upon STATUS read
     latch = false;
 
-    // background metatiles
-    for (int nt = 0; nt < 4; ++nt) {
-        for (int x = 0; x < 8; ++x) {
-            for (int y = 0; y < 8; ++y) {
-                // offset in nametable where attribute data is located
-                uint16_t offset = 0x3C0 + (0x400 * nt) + (y * 8) + x;
-                // init
-                bgMetaTiles[nt][x][y].init(
-                    getNameTablePointer() + offset);
-            }
-        }
-    }
+    buildMetatiles();
     // background tiles
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 32; ++x) {
@@ -245,12 +234,8 @@ void PPU::load() {
                 bgTiles[nt][x][y].reload();
             }
         }
-	for (int x = 0; x < 8; ++x) {
-            for (int y = 0; y < 8; ++y) {
-                bgMetaTiles[nt][x][y].reload();
-            }
-        }
     }
+    loadMetatiles();
     for (int i = 0; i < 64; ++i) {
         sprites[i].reload();
     }
@@ -464,4 +449,27 @@ uint8_t *PPU::getPatternTablePointer() {
 
 uint8_t *PPU::getSprRamPointer() {
     return sprRAM;
+}
+
+void PPU::buildMetatiles() {
+    for (int nt = 0; nt < 4; ++nt) {
+        for (int x = 0; x < 8; ++x) {
+            for (int y = 0; y < 8; ++y) {
+                // index in nametable where attribute data is located
+                uint16_t nameTableIndex = 0x3C0 + (0x400 * nt) + (y * 8) + x;
+                bgMetaTiles[nt][x][y].nameTableIndex = nameTableIndex;
+            }
+        }
+    }
+}
+
+void PPU::loadMetatiles() {
+    for (int nt = 0; nt < 4; ++nt) {
+	for (int x = 0; x < 8; ++x) {
+            for (int y = 0; y < 8; ++y) {
+                bgMetaTiles[nt][x][y].attributeByte =
+		    readNameTables(bgMetaTiles[nt][x][y].nameTableIndex);
+            }
+        }
+    }
 }

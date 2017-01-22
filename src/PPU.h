@@ -65,6 +65,8 @@ private:
     uint8_t *getNameTablePointer();
     uint8_t *getPatternTablePointer();
     uint8_t *getSprRamPointer();
+    void buildMetatiles();
+    void loadMetatiles();
 
     Cart *cart;
     CPU *cpu;
