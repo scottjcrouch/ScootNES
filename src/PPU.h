@@ -52,7 +52,7 @@ public:
 private:
     uint8_t read(uint16_t addr);
     void write(uint16_t addr, uint8_t value);
-    void load();
+    void reloadGraphicsData();
     void renderFrame();
     void renderPixel(int x, int y);
     void renderScanline(int scanlNum);
@@ -65,8 +65,8 @@ private:
     uint8_t *getNameTablePointer();
     uint8_t *getPatternTablePointer();
     uint8_t *getSprRamPointer();
-    void buildMetatiles();
-    void loadMetatiles();
+    void buildMetatileData();
+    void reloadMetatileData();
 
     Cart *cart;
     CPU *cpu;

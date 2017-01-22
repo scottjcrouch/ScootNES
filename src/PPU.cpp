@@ -49,7 +49,7 @@ void PPU::boot(Cart *cart, CPU *cpu) {
     // latch used for SCROLL, ADDR. Unset upon STATUS read
     latch = false;
 
-    buildMetatiles();
+    buildMetatileData();
     // background tiles
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 32; ++x) {
@@ -227,7 +227,7 @@ uint8_t PPU::getDATA() {
     return returnVal;
 }
 
-void PPU::load() {
+void PPU::reloadGraphicsData() {
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 32; ++x) {
             for (int y = 0; y < 30; ++y) {
@@ -235,7 +235,7 @@ void PPU::load() {
             }
         }
     }
-    loadMetatiles();
+    reloadMetatileData();
     for (int i = 0; i < 64; ++i) {
         sprites[i].reload();
     }
@@ -333,7 +333,7 @@ void PPU::tick() {
 	case CYC_PER_FRAME:
 	    isVBlank = false;
 	    clockCounter = 0;
-	    load();
+	    reloadGraphicsData();
 	    if (oddFrame && (showBg || showSpr)) {
 		// skip idle cycle 0
 		++clockCounter;
@@ -358,7 +358,7 @@ void PPU::tick() {
     }
     else if (!(clockCounter % CYC_PER_SCANL)) {
 	if (spr0Reload) {
-	    load();
+	    reloadGraphicsData();
 	    spr0Reload = false;
 	}
 	oamAddrBuffer = 0;
@@ -451,7 +451,7 @@ uint8_t *PPU::getSprRamPointer() {
     return sprRAM;
 }
 
-void PPU::buildMetatiles() {
+void PPU::buildMetatileData() {
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 8; ++x) {
             for (int y = 0; y < 8; ++y) {
@@ -463,7 +463,7 @@ void PPU::buildMetatiles() {
     }
 }
 
-void PPU::loadMetatiles() {
+void PPU::reloadMetatileData() {
     for (int nt = 0; nt < 4; ++nt) {
 	for (int x = 0; x < 8; ++x) {
             for (int y = 0; y < 8; ++y) {
