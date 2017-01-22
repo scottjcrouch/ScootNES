@@ -3,14 +3,6 @@
 
 #include <stdint.h>
 
-class Palette {
-public:
-  void init(uint8_t *palettePointer);
-  uint8_t getValue(int index);
-
-  uint8_t *palettePointer;
-};
-
 class Metatile {
 public:
   void init(uint8_t *attribute);

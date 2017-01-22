@@ -49,9 +49,6 @@ void PPU::boot(Cart *cart, CPU *cpu) {
     // latch used for SCROLL, ADDR. Unset upon STATUS read
     latch = false;
 
-    // palette for background and sprite tiles
-    palette.init(getPalettePointer());
-
     // background metatiles
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 8; ++x) {
@@ -295,7 +292,7 @@ void PPU::renderPixel(int x, int y) {
 	    if (sprites[i].occludes(x, y)) {
 		uint8_t paletteIndex = sprites[i].getValue(x, y);
 		if (paletteIndex % 4 != 0) {
-		    uint8_t paletteVal = palette.getValue(paletteIndex);
+		    uint8_t paletteVal = readPalette(paletteIndex);
 		    uint32_t pixelColour = universalPalette[paletteVal];
 		    frameBuffer[x + (y * FRAME_WIDTH)] = pixelColour;
 		    isBgSpr = sprites[i].priority;
@@ -311,7 +308,7 @@ void PPU::renderPixel(int x, int y) {
     if (showBg && (x > 7 || imageMask)) {
 	uint8_t paletteIndex = bgPixels[realX][realY].getValue();
 	if (paletteIndex % 4 != 0) {
-	    uint8_t paletteVal = palette.getValue(paletteIndex);
+	    uint8_t paletteVal = readPalette(paletteIndex);
 	    uint32_t pixelColour = universalPalette[paletteVal];
 	    frameBuffer[x + (y * FRAME_WIDTH)] = pixelColour;
 	    return;
@@ -320,7 +317,7 @@ void PPU::renderPixel(int x, int y) {
 
     // otherwise render universal background colour
     if (!isBgSpr) {
-	frameBuffer[x + (y * FRAME_WIDTH)] = universalPalette[palette.getValue(0)];
+	frameBuffer[x + (y * FRAME_WIDTH)] = universalPalette[readPalette(0)];
     }
 }
 
@@ -457,10 +454,6 @@ uint8_t PPU::readPatternTables(uint16_t addr) {
 
 void PPU::writePatternTables(uint16_t addr, uint8_t value) {
     cart->writeChr(addr, value);
-}
-
-uint8_t *PPU::getPalettePointer() {
-    return paletteRAM;
 }
 
 uint8_t *PPU::getNameTablePointer() {

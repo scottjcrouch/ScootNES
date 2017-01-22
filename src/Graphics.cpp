@@ -2,19 +2,6 @@
 
 #include <Graphics.h>
 
-void Palette::init(uint8_t *palettePointer) {
-    this->palettePointer = palettePointer;
-}
-
-uint8_t Palette::getValue(int index) {
-    if (index % 4 == 0) {
-        return *palettePointer;
-    }
-    else {
-        return *(palettePointer + index);
-    }
-}
-
 void Metatile::init(uint8_t *attribute) {
     this->attribute = attribute;
 }

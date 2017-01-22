@@ -62,7 +62,6 @@ private:
     void writeNameTables(uint16_t addr, uint8_t value);
     uint8_t readPatternTables(uint16_t addr);
     void writePatternTables(uint16_t addr, uint8_t value);
-    uint8_t *getPalettePointer();
     uint8_t *getNameTablePointer();
     uint8_t *getPatternTablePointer();
     uint8_t *getSprRamPointer();
@@ -124,7 +123,6 @@ private:
     Tile bgTiles[4][32][30];
     Metatile bgMetaTiles[4][8][8];
     Sprite sprites[64];
-    Palette palette;
 };
 
 #endif
