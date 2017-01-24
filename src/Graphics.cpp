@@ -6,14 +6,6 @@ uint8_t Metatile::getValue(uint8_t quadrant) {
     return ((attributeByte) >> (quadrant * 2)) & 0b11;
 }
 
-void Tile::init(Metatile *metaTile, uint8_t quadrant, uint8_t *patternIndex, uint8_t *patternTable, bool *ptOffset) {
-    this->metaTile = metaTile;
-    this->quadrant = quadrant;
-    this->patternIndex = patternIndex;
-    this->patternTable = patternTable;
-    this->ptOffset = ptOffset;
-}
-
 static uint8_t getBit(uint8_t byte, int index) {
     return (byte >> index) & 0x1;
 }
@@ -23,15 +15,7 @@ uint8_t Tile::getValue(uint8_t x, uint8_t y) {
     uint8_t bit1 = getBit(pattern[y + 8], 7 - x);
     uint8_t index = bit0 | (bit1 << 1);
     uint8_t selector = metaTile->getValue(quadrant) << 2;
-    return index | selector;
-}
-
-void Tile::reload() {
-    int addr = *patternIndex * 16;
-    if (*ptOffset) {
-        addr += 0x1000;
-    }
-    pattern = patternTable + addr;
+    return selector | index;
 }
 
 void Pixel::init(Tile *tile, uint8_t x, uint8_t y) {

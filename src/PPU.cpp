@@ -50,33 +50,7 @@ void PPU::boot(Cart *cart, CPU *cpu) {
     latch = false;
 
     buildMetatileData();
-    // background tiles
-    for (int nt = 0; nt < 4; ++nt) {
-        for (int x = 0; x < 32; ++x) {
-            for (int y = 0; y < 30; ++y) {
-                // offset in name table where data is located
-                uint16_t offset = (0x400 * nt) + x + (y * 32);
-                // position within enclosing metatile
-                uint8_t quadrant = 0;
-                if ((x % 4) >= 2) {
-                    quadrant |= 0b01;
-                }
-                if ((y % 4) >= 2) {
-                    quadrant |= 0b10;
-                }
-                // coordinates of parent metatile
-                uint8_t mtX = x / 4;
-                uint8_t mtY = y / 4;
-                // init
-                bgTiles[nt][x][y].init(
-                    &bgMetaTiles[nt][mtX][mtY],
-                    quadrant,
-                    getNameTablePointer() + offset,
-                    getPatternTablePointer(),
-                    &(bgPatternTableAddr));
-            }
-        }
-    }
+    buildTileData();
     // background pixels
     for (int x = 0; x < 512; ++x) {
         for (int y = 0; y < 480; ++y) {
@@ -228,13 +202,7 @@ uint8_t PPU::getDATA() {
 }
 
 void PPU::reloadGraphicsData() {
-    for (int nt = 0; nt < 4; ++nt) {
-        for (int x = 0; x < 32; ++x) {
-            for (int y = 0; y < 30; ++y) {
-                bgTiles[nt][x][y].reload();
-            }
-        }
-    }
+    reloadTileData();
     reloadMetatileData();
     for (int i = 0; i < 64; ++i) {
         sprites[i].reload();
@@ -431,12 +399,12 @@ void PPU::writeNameTables(uint16_t index, uint8_t value) {
     }
 }
 
-uint8_t PPU::readPatternTables(uint16_t addr) {
-    return cart->readChr(addr);
+uint8_t PPU::readPatternTables(uint16_t index) {
+    return cart->readChr(index);
 }
 
-void PPU::writePatternTables(uint16_t addr, uint8_t value) {
-    cart->writeChr(addr, value);
+void PPU::writePatternTables(uint16_t index, uint8_t value) {
+    cart->writeChr(index, value);
 }
 
 uint8_t *PPU::getNameTablePointer() {
@@ -469,6 +437,49 @@ void PPU::reloadMetatileData() {
             for (int y = 0; y < 8; ++y) {
                 bgMetaTiles[nt][x][y].attributeByte =
 		    readNameTables(bgMetaTiles[nt][x][y].nameTableIndex);
+            }
+        }
+    }
+}
+
+void PPU::buildTileData() {
+    for (int nt = 0; nt < 4; ++nt) {
+        for (int x = 0; x < 32; ++x) {
+            for (int y = 0; y < 30; ++y) {
+                // offset in name table where data is located
+                uint16_t nameTableIndex = (0x400 * nt) + x + (y * 32);
+                // position within enclosing metatile
+                uint8_t quadrant = 0;
+                if ((x % 4) >= 2) {
+                    quadrant |= 0b01;
+                }
+                if ((y % 4) >= 2) {
+                    quadrant |= 0b10;
+                }
+                // coordinates of parent metatile
+                uint8_t mtX = x / 4;
+                uint8_t mtY = y / 4;
+		bgTiles[nt][x][y].metaTile = &bgMetaTiles[nt][mtX][mtY];
+		bgTiles[nt][x][y].quadrant = quadrant;
+		bgTiles[nt][x][y].nameTableIndex = nameTableIndex;
+            }
+        }
+    }
+}
+
+void PPU::reloadTileData() {
+    for (int nt = 0; nt < 4; ++nt) {
+        for (int x = 0; x < 32; ++x) {
+            for (int y = 0; y < 30; ++y) {
+		int patternTableIndex =
+		    readNameTables(bgTiles[nt][x][y].nameTableIndex) * 16;
+		if (bgPatternTableAddr) {
+		    patternTableIndex += 0x1000;
+		}
+		for (int i = 0; i < 16; ++i) {
+		    bgTiles[nt][x][y].pattern[i] =
+			readPatternTables(patternTableIndex + i);
+		}
             }
         }
     }

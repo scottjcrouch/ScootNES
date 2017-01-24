@@ -13,19 +13,12 @@ public:
 
 class Tile {
 public:
-    void init(Metatile *metaTile, uint8_t quadrant, uint8_t *patternIndex, uint8_t *patternTable, bool *ptOffset);
     uint8_t getValue(uint8_t x, uint8_t y);
-    void reload();
 
-    // metatile it belongs to
     Metatile *metaTile;
-    // position in metatile
     uint8_t quadrant;
-    uint8_t *patternIndex;
-    uint8_t *patternTable;
-    bool *ptOffset;
-
-    uint8_t *pattern;
+    uint16_t nameTableIndex;
+    uint8_t pattern[16];
 };
 
 class Pixel {

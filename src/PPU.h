@@ -67,6 +67,8 @@ private:
     uint8_t *getSprRamPointer();
     void buildMetatileData();
     void reloadMetatileData();
+    void buildTileData();
+    void reloadTileData();
 
     Cart *cart;
     CPU *cpu;
