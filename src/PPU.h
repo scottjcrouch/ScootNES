@@ -89,9 +89,9 @@ private:
     // 0x2000: CTRL
     int nameTableAddr;          // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
     bool vRAMAddrIncr;          // 0=1 (across name table), 1=32 (down name table)
-    bool sprPatternTableAddr;   // 0=0x0000, 1=0x1000, ignored if sprSize is 8x16
-    bool bgPatternTableAddr;    // 0=0x0000, 1=0x1000
-    bool sprSize;               // 0=8x8, 1=8x16
+    bool sprPatternTableSelector;// 0=0x0000, 1=0x1000, ignored if sprSize is 8x16
+    bool bgPatternTableSelector;// 0=0x0000, 1=0x1000
+    bool bigSprites;            // 0=8x8, 1=8x16
     bool nmiOnVBlank;
     // 0x2001: MASK
     bool grayscale;             // mirrors palette to only shades of grey

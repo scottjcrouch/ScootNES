@@ -11,9 +11,9 @@ void PPU::boot(Cart *cart, CPU *cpu) {
     // 0x2000: CTRL
     nameTableAddr = 0;              // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
     vRAMAddrIncr = false;           // 0=1 (across name table), 1=32 (down name table)
-    sprPatternTableAddr = false;    // 0=0x0000, 1=0x1000, ignored if sprSize is 8x16
-    bgPatternTableAddr = false;     // 0=0x0000, 1=0x1000
-    sprSize = false;                // 0=8x8, 1=8x16
+    sprPatternTableSelector = false;// 0=0x0000, 1=0x1000, ignored if bigSprites is 8x16
+    bgPatternTableSelector = false; // 0=0x0000, 1=0x1000
+    bigSprites = false;             // 0=8x8, 1=8x16
     // unused bit
     nmiOnVBlank = false;
 
@@ -64,9 +64,9 @@ void PPU::boot(Cart *cart, CPU *cpu) {
 void PPU::setCTRL(uint8_t value) {
     nameTableAddr = value & 0x03;
     vRAMAddrIncr = !!(value & 0x04);
-    sprPatternTableAddr = !!(value & 0x08);
-    bgPatternTableAddr = !!(value & 0x10);
-    sprSize = !!(value & 0x20);
+    sprPatternTableSelector = !!(value & 0x08);
+    bgPatternTableSelector = !!(value & 0x10);
+    bigSprites = !!(value & 0x20);
     nmiOnVBlank = !!(value & 0x80);
 }
 
@@ -429,7 +429,7 @@ void PPU::reloadTileData() {
             for (int y = 0; y < 30; ++y) {
 		int patternTableIndex =
 		    readNameTables(bgTiles[nt][x][y].nameTableIndex) * 16;
-		if (bgPatternTableAddr) {
+		if (bgPatternTableSelector) {
 		    patternTableIndex += 0x1000;
 		}
 		for (int i = 0; i < 16; ++i) {
@@ -477,14 +477,14 @@ void PPU::reloadSpriteData() {
 
 	sprites[i].yPos++;
 	sprites[i].xBound = (int)(sprites[i].xPos) + 8;
-	sprites[i].yBound = (int)(sprites[i].yPos) + (sprSize ? 16 : 8);
+	sprites[i].yBound = (int)(sprites[i].yPos) + (bigSprites ? 16 : 8);
 
 	if (!sprites[i].visible) {
 	    continue;
 	}
         
 	int patternTableIndex = 0;
-	if (sprSize) {
+	if (bigSprites) {
 	    // 8x16 sprite
 	    patternTableIndex = (sprRAM[sprites[i].oamIndex + 1] & 0b11111110) * 16;
 	    if (sprRAM[sprites[i].oamIndex + 1] & 0b00000001) {
@@ -494,12 +494,12 @@ void PPU::reloadSpriteData() {
 	else {
 	    // 8x8 sprite
 	    patternTableIndex = sprRAM[sprites[i].oamIndex + 1] * 16;
-	    if (sprPatternTableAddr) {
+	    if (sprPatternTableSelector) {
 		// stuff
 		patternTableIndex += 0x1000;
 	    }
 	}
-	for (int patternOffset = 0; patternOffset < (sprSize ? 32 : 16); ++patternOffset) {
+	for (int patternOffset = 0; patternOffset < (bigSprites ? 32 : 16); ++patternOffset) {
 	    sprites[i].pattern[patternOffset] =
 		readPatternTables(patternTableIndex + patternOffset);
 	}
