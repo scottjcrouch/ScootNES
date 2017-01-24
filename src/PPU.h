@@ -70,6 +70,8 @@ private:
     void buildTileData();
     void reloadTileData();
     void buildPixelData();
+    void buildSpriteData();
+    void reloadSpriteData();
 
     Cart *cart;
     CPU *cpu;

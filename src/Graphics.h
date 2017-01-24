@@ -32,20 +32,15 @@ public:
 
 class Sprite {
 public:
-    void init(uint8_t *oamData, uint8_t *patternTable, bool *sprSize, bool *sprPatternTableAddr);
-    void reload();
     uint8_t getValue(uint8_t x, uint8_t y);
     bool occludes(uint8_t x, uint8_t y);
 
-    uint8_t *oamData;
-    uint8_t *patternTable;
-    bool *sprSize;
-    bool *sprPatternTableAddr;
+    uint8_t oamIndex;
     uint8_t xPos;
     uint8_t yPos;
     int xBound;
     int yBound;
-    uint8_t *pattern;
+    uint8_t pattern[32];
     uint8_t paletteSelect;
     bool priority;
     bool flipHor;

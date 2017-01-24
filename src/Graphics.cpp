@@ -24,50 +24,6 @@ uint8_t Pixel::getValue() {
     return tile->getValue(x, y);
 }
 
-void Sprite::init(uint8_t *oamData, uint8_t *patternTable, bool *sprSize, bool *sprPatternTableAddr) {
-    this->oamData = oamData;
-    this->patternTable = patternTable;
-    this->sprSize = sprSize;
-    this->sprPatternTableAddr = sprPatternTableAddr;
-}
-
-void Sprite::reload() {
-    xPos = oamData[3];
-    yPos = oamData[0];
-    visible = (xPos < 0xF9) && (yPos < 0xEF);
-
-    yPos++;
-    xBound = (int)xPos + 8;
-    yBound = (int)yPos + (*sprSize ? 16 : 8);
-
-    if (!visible) {
-	return;
-    }
-        
-    int ptOffset = 0;
-    if (*sprSize) {
-        // 8x16 sprite
-        ptOffset = (oamData[1] & 0b11111110) * 16;
-        if (oamData[1] & 0b00000001) {
-            ptOffset += 0x1000;
-        }
-    }
-    else {
-        // 8x8 sprite
-        ptOffset = oamData[1] * 16;
-        if (*sprPatternTableAddr) {
-            // stuff
-            ptOffset += 0x1000;
-        }
-    }
-    pattern = patternTable + ptOffset;
-    
-    paletteSelect = ((oamData[2] & 0b00000011) << 2) | 0x10;
-    priority = !!(oamData[2] & 0b00100000);
-    flipHor = !!(oamData[2] & 0b01000000);
-    flipVert = !!(oamData[2] & 0b10000000);
-}
-
 uint8_t Sprite::getValue(uint8_t x, uint8_t y) {
     x -= xPos;
     y -= yPos;
@@ -79,7 +35,7 @@ uint8_t Sprite::getValue(uint8_t x, uint8_t y) {
     uint8_t bit0 = getBit(pattern[bitY], bitX);
     uint8_t bit1 = getBit(pattern[bitY + 8], bitX);
     uint8_t index = bit0 | (bit1 << 1);
-    return index | paletteSelect;
+    return paletteSelect | index;
 }
 
 bool Sprite::occludes(uint8_t x, uint8_t y) {

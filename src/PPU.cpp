@@ -52,14 +52,7 @@ void PPU::boot(Cart *cart, CPU *cpu) {
     buildMetatileData();
     buildTileData();
     buildPixelData();
-    // sprite objects
-    for (int i = 0; i < 64; i++) {
-        sprites[i].init(
-            getSprRamPointer() + (i * 4),
-            getPatternTablePointer(),
-            &(sprSize),
-            &(sprPatternTableAddr));
-    }
+    buildSpriteData();
 
     clockCounter = VBLANK;
     frameCounter = 0;
@@ -184,9 +177,7 @@ uint8_t PPU::getDATA() {
 void PPU::reloadGraphicsData() {
     reloadTileData();
     reloadMetatileData();
-    for (int i = 0; i < 64; ++i) {
-        sprites[i].reload();
-    }
+    reloadSpriteData();
     // TODO reload ppu data here such as scrollX and scrollY
 }
 
@@ -483,5 +474,55 @@ void PPU::buildPixelData() {
 	    bgPixels[x][y].x = x % 8;
 	    bgPixels[x][y].y = y % 8;
         }
+    }
+}
+
+void PPU::buildSpriteData() {
+    for (int i = 0; i < 64; i++) {
+	sprites[i].oamIndex = i * 4;
+    }
+}
+
+void PPU::reloadSpriteData() {
+    for (int i = 0; i < 64; ++i) {
+	sprites[i].xPos = sprRAM[sprites[i].oamIndex + 3];
+	sprites[i].yPos = sprRAM[sprites[i].oamIndex];
+	sprites[i].visible =
+	    (sprites[i].xPos < 0xF9) && (sprites[i].yPos < 0xEF);
+
+	sprites[i].yPos++;
+	sprites[i].xBound = (int)(sprites[i].xPos) + 8;
+	sprites[i].yBound = (int)(sprites[i].yPos) + (sprSize ? 16 : 8);
+
+	if (!sprites[i].visible) {
+	    continue;
+	}
+        
+	int patternTableIndex = 0;
+	if (sprSize) {
+	    // 8x16 sprite
+	    patternTableIndex = (sprRAM[sprites[i].oamIndex + 1] & 0b11111110) * 16;
+	    if (sprRAM[sprites[i].oamIndex + 1] & 0b00000001) {
+		patternTableIndex += 0x1000;
+	    }
+	}
+	else {
+	    // 8x8 sprite
+	    patternTableIndex = sprRAM[sprites[i].oamIndex + 1] * 16;
+	    if (sprPatternTableAddr) {
+		// stuff
+		patternTableIndex += 0x1000;
+	    }
+	}
+	for (int patternOffset = 0; patternOffset < (sprSize ? 32 : 16); ++patternOffset) {
+	    sprites[i].pattern[patternOffset] =
+		readPatternTables(patternTableIndex + patternOffset);
+	}
+	
+	sprites[i].paletteSelect =
+	    ((sprRAM[sprites[i].oamIndex + 2] & 0b00000011) << 2) | 0x10;
+	sprites[i].priority = !!(sprRAM[sprites[i].oamIndex + 2] & 0b00100000);
+	sprites[i].flipHor  = !!(sprRAM[sprites[i].oamIndex + 2] & 0b01000000);
+	sprites[i].flipVert = !!(sprRAM[sprites[i].oamIndex + 2] & 0b10000000);
     }
 }
