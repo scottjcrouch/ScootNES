@@ -18,12 +18,6 @@ uint8_t Tile::getValue(uint8_t x, uint8_t y) {
     return selector | index;
 }
 
-void Pixel::init(Tile *tile, uint8_t x, uint8_t y) {
-    this->tile = tile;
-    this->x = x;
-    this->y = y;
-}
-
 uint8_t Pixel::getValue() {
     // get pixel's 4-bit index into its
     // 16 byte palette array

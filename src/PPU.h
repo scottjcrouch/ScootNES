@@ -69,6 +69,7 @@ private:
     void reloadMetatileData();
     void buildTileData();
     void reloadTileData();
+    void buildPixelData();
 
     Cart *cart;
     CPU *cpu;

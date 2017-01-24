@@ -51,27 +51,7 @@ void PPU::boot(Cart *cart, CPU *cpu) {
 
     buildMetatileData();
     buildTileData();
-    // background pixels
-    for (int x = 0; x < 512; ++x) {
-        for (int y = 0; y < 480; ++y) {
-            // find tile to which pixel belongs
-            int nt = 0;
-            if (x >= 256) {
-                nt += 0b01;
-            }
-            if (y >= 240) {
-                nt += 0b10;
-            }
-            int tileX = (x % 256) / 8;
-            int tileY = (y % 240) / 8;
-            // init
-            bgPixels[x][y].init(
-                &bgTiles[nt][tileX][tileY],
-                x % 8,
-                y % 8);
-        }
-    }
-
+    buildPixelData();
     // sprite objects
     for (int i = 0; i < 64; i++) {
         sprites[i].init(
@@ -481,6 +461,27 @@ void PPU::reloadTileData() {
 			readPatternTables(patternTableIndex + i);
 		}
             }
+        }
+    }
+}
+
+void PPU::buildPixelData() {
+    for (int x = 0; x < 512; ++x) {
+        for (int y = 0; y < 480; ++y) {
+            // find tile to which pixel belongs
+            int nt = 0;
+            if (x >= 256) {
+                nt += 0b01;
+            }
+            if (y >= 240) {
+                nt += 0b10;
+            }
+            int tileX = (x % 256) / 8;
+            int tileY = (y % 240) / 8;
+            // init
+	    bgPixels[x][y].tile = &bgTiles[nt][tileX][tileY];
+	    bgPixels[x][y].x = x % 8;
+	    bgPixels[x][y].y = y % 8;
         }
     }
 }

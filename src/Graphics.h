@@ -23,12 +23,9 @@ public:
 
 class Pixel {
 public:
-    void init(Tile *tile, uint8_t x, uint8_t y);
     uint8_t getValue();
 
-    // tile it belongs to
     Tile *tile;
-    // position within that tile
     uint8_t x;
     uint8_t y;
 };
