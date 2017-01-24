@@ -62,9 +62,6 @@ private:
     void writeNameTables(uint16_t addr, uint8_t value);
     uint8_t readPatternTables(uint16_t addr);
     void writePatternTables(uint16_t addr, uint8_t value);
-    uint8_t *getNameTablePointer();
-    uint8_t *getPatternTablePointer();
-    uint8_t *getSprRamPointer();
     void buildMetatileData();
     void reloadMetatileData();
     void buildTileData();

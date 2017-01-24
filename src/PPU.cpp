@@ -178,7 +178,6 @@ void PPU::reloadGraphicsData() {
     reloadTileData();
     reloadMetatileData();
     reloadSpriteData();
-    // TODO reload ppu data here such as scrollX and scrollY
 }
 
 void PPU::renderPixel(int x, int y) {
@@ -249,8 +248,6 @@ void PPU::renderFrame() {
     for (int y = 0; y < FRAME_HEIGHT; y++) {
         for (int x = 0; x < FRAME_WIDTH; x++) {
             renderPixel(x, y);
-            //if(!(x%8) || !(y%8))
-            //    frameBuffer[x + (y * FRAME_WIDTH)] = 0xFF0000;
         }
     }
 }
@@ -376,18 +373,6 @@ uint8_t PPU::readPatternTables(uint16_t index) {
 
 void PPU::writePatternTables(uint16_t index, uint8_t value) {
     cart->writeChr(index, value);
-}
-
-uint8_t *PPU::getNameTablePointer() {
-    return nameTables;
-}
-
-uint8_t *PPU::getPatternTablePointer() {
-    return cart->getChrPointer();
-}
-
-uint8_t *PPU::getSprRamPointer() {
-    return sprRAM;
 }
 
 void PPU::buildMetatileData() {
