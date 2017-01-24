@@ -35,9 +35,14 @@ void Sprite::reload() {
     xPos = oamData[3];
     yPos = oamData[0];
     visible = (xPos < 0xF9) && (yPos < 0xEF);
+
     yPos++;
     xBound = (int)xPos + 8;
     yBound = (int)yPos + (*sprSize ? 16 : 8);
+
+    if (!visible) {
+	return;
+    }
         
     int ptOffset = 0;
     if (*sprSize) {
