@@ -222,6 +222,9 @@ void PPU::renderPixel(int x, int y) {
 		    if (!isBgSpr) {
 			return;
 		    }
+		    else {
+			break;
+		    }
 		}
 	    }
 	}
