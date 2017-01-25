@@ -10,7 +10,7 @@ void PPU::boot(Cart *cart, CPU *cpu) {
 
     // 0x2000: CTRL
     nameTableAddr = 0;              // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
-    vRAMAddrIncr = false;           // 0=1 (across name table), 1=32 (down name table)
+    vRamAddrIncr = false;           // 0=1 (across name table), 1=32 (down name table)
     sprPatternTableSelector = false;// 0=0x0000, 1=0x1000, ignored if bigSprites is 8x16
     bgPatternTableSelector = false; // 0=0x0000, 1=0x1000
     bigSprites = false;             // 0=8x8, 1=8x16
@@ -63,7 +63,7 @@ void PPU::boot(Cart *cart, CPU *cpu) {
 
 void PPU::setCTRL(uint8_t value) {
     nameTableAddr = value & 0x03;
-    vRAMAddrIncr = !!(value & 0x04);
+    vRamAddrIncr = !!(value & 0x04);
     sprPatternTableSelector = !!(value & 0x08);
     bgPatternTableSelector = !!(value & 0x10);
     bigSprites = !!(value & 0x20);
@@ -149,7 +149,7 @@ void PPU::setADDR(uint8_t value) {
 
 void PPU::setDATA(uint8_t value) {
     write(addrBuffer, value);
-    addrBuffer += ((vRAMAddrIncr) ? 32 : 1);
+    addrBuffer += ((vRamAddrIncr) ? 32 : 1);
 }
 
 uint8_t PPU::getDATA() {
@@ -170,7 +170,7 @@ uint8_t PPU::getDATA() {
         returnVal = read(addrBuffer);
         readBuffer = read(addrBuffer - 0x1000);
     }
-    addrBuffer += ((vRAMAddrIncr) ? 32 : 1);
+    addrBuffer += ((vRamAddrIncr) ? 32 : 1);
     return returnVal;
 }
 
@@ -337,15 +337,15 @@ void PPU::write(uint16_t addr, uint8_t value) {
 
 uint8_t PPU::readPalette(uint16_t index) {
     if (index % 4 == 0) {
-	return paletteRAM[0];
+	return paletteRam[0];
     }
-    return paletteRAM[index];
+    return paletteRam[index];
 }
 
 void PPU::writePalette(uint16_t index, uint8_t value) {
-    paletteRAM[index] = value;
+    paletteRam[index] = value;
     if (index % 4 == 0) {
-	paletteRAM[index ^ 0x10] = value;
+	paletteRam[index ^ 0x10] = value;
     }
 }
 
@@ -367,7 +367,7 @@ uint8_t PPU::readNameTables(uint16_t index) {
 	printf("4-screen nametables not yet supported\n");
 	break;
     }
-    return ciRAM[index];
+    return ciRam[index];
 }
 
 void PPU::writeNameTables(uint16_t index, uint8_t value) {
@@ -388,7 +388,7 @@ void PPU::writeNameTables(uint16_t index, uint8_t value) {
 	printf("4-screen nametables not yet supported\n");
 	break;
     }
-    ciRAM[index] = value;
+    ciRam[index] = value;
 }
 
 uint8_t PPU::readPatternTables(uint16_t index) {

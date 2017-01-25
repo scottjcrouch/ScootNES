@@ -48,7 +48,7 @@ private:
     int nmiSignal;
     int irqSignal;
     // memory
-    uint8_t cpuRAM[0x800] = {0};
+    uint8_t cpuRam[0x800] = {0};
     uint8_t openBus;
 
     void executeNextOp();

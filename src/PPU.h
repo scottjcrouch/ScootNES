@@ -75,8 +75,8 @@ private:
 
     // memory
     uint8_t oam[0x100] = {0};
-    uint8_t ciRAM[0x800] = {0};
-    uint8_t paletteRAM[0x20] = {
+    uint8_t ciRam[0x800] = {0};
+    uint8_t paletteRam[0x20] = {
 	0x09, 0x01, 0x00, 0x01, 0x00, 0x02, 0x02, 0x0D,
 	0x08, 0x10, 0x08, 0x24, 0x00, 0x00, 0x04, 0x2C,
 	0x09, 0x01, 0x34, 0x03, 0x00, 0x04, 0x00, 0x14,
@@ -88,7 +88,7 @@ private:
     bool latch;
     // 0x2000: CTRL
     int nameTableAddr;          // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
-    bool vRAMAddrIncr;          // 0=1 (across name table), 1=32 (down name table)
+    bool vRamAddrIncr;          // 0=1 (across name table), 1=32 (down name table)
     bool sprPatternTableSelector;// 0=0x0000, 1=0x1000, ignored if sprSize is 8x16
     bool bgPatternTableSelector;// 0=0x0000, 1=0x1000
     bool bigSprites;            // 0=8x8, 1=8x16

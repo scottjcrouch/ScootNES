@@ -41,7 +41,7 @@ void CPU::boot(PPU* ppu, Cart* cart, APU* apu, Controller* controller1) {
 
 uint8_t CPU::read(uint16_t addr) {
     if (addr < 0x2000) {
-        return cpuRAM[addr % 0x800];
+        return cpuRam[addr % 0x800];
     }
     else if (addr < 0x4000) {
         int port = addr % 8;
@@ -93,7 +93,7 @@ uint8_t CPU::read(uint16_t addr) {
 void CPU::write(uint16_t addr, uint8_t value) {
     openBus = value;
     if (addr < 0x2000) {
-        cpuRAM[addr % 0x800] = value;
+        cpuRam[addr % 0x800] = value;
     }
     else if (addr < 0x4000) {
         int port = addr % 8;
