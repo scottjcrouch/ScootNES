@@ -107,13 +107,13 @@ void PPU::setOAMDATA(uint8_t value) {
     if (oamAddrBuffer % 4 == 2) {
         value &= 0xE3;
     }
-    sprRAM[oamAddrBuffer] = value;
+    oam[oamAddrBuffer] = value;
     oamAddrBuffer++;
 }
 
 uint8_t PPU::getOAMDATA() {
     // apparently unreliable in NES hardware, but some games use it
-    return sprRAM[oamAddrBuffer];
+    return oam[oamAddrBuffer];
 }
 
 void PPU::setSCROLL(uint8_t value) {
@@ -367,7 +367,7 @@ uint8_t PPU::readNameTables(uint16_t index) {
 	printf("4-screen nametables not yet supported\n");
 	break;
     }
-    return nameTables[index];
+    return ciRAM[index];
 }
 
 void PPU::writeNameTables(uint16_t index, uint8_t value) {
@@ -388,7 +388,7 @@ void PPU::writeNameTables(uint16_t index, uint8_t value) {
 	printf("4-screen nametables not yet supported\n");
 	break;
     }
-    nameTables[index] = value;
+    ciRAM[index] = value;
 }
 
 uint8_t PPU::readPatternTables(uint16_t index) {
@@ -494,8 +494,8 @@ void PPU::buildSpriteData() {
 
 void PPU::reloadSpriteData() {
     for (int i = 0; i < 64; ++i) {
-	sprites[i].xPos = sprRAM[sprites[i].oamIndex + 3];
-	sprites[i].yPos = sprRAM[sprites[i].oamIndex];
+	sprites[i].xPos = oam[sprites[i].oamIndex + 3];
+	sprites[i].yPos = oam[sprites[i].oamIndex];
 	sprites[i].visible =
 	    (sprites[i].xPos < 0xF9) && (sprites[i].yPos < 0xEF);
 
@@ -510,14 +510,14 @@ void PPU::reloadSpriteData() {
 	int patternTableIndex = 0;
 	if (bigSprites) {
 	    // 8x16 sprite
-	    patternTableIndex = (sprRAM[sprites[i].oamIndex + 1] & 0b11111110) * 16;
-	    if (sprRAM[sprites[i].oamIndex + 1] & 0b00000001) {
+	    patternTableIndex = (oam[sprites[i].oamIndex + 1] & 0b11111110) * 16;
+	    if (oam[sprites[i].oamIndex + 1] & 0b00000001) {
 		patternTableIndex += 0x1000;
 	    }
 	}
 	else {
 	    // 8x8 sprite
-	    patternTableIndex = sprRAM[sprites[i].oamIndex + 1] * 16;
+	    patternTableIndex = oam[sprites[i].oamIndex + 1] * 16;
 	    if (sprPatternTableSelector) {
 		// stuff
 		patternTableIndex += 0x1000;
@@ -529,9 +529,9 @@ void PPU::reloadSpriteData() {
 	}
 	
 	sprites[i].paletteSelect =
-	    ((sprRAM[sprites[i].oamIndex + 2] & 0b00000011) << 2) | 0x10;
-	sprites[i].priority = !!(sprRAM[sprites[i].oamIndex + 2] & 0b00100000);
-	sprites[i].flipHor  = !!(sprRAM[sprites[i].oamIndex + 2] & 0b01000000);
-	sprites[i].flipVert = !!(sprRAM[sprites[i].oamIndex + 2] & 0b10000000);
+	    ((oam[sprites[i].oamIndex + 2] & 0b00000011) << 2) | 0x10;
+	sprites[i].priority = !!(oam[sprites[i].oamIndex + 2] & 0b00100000);
+	sprites[i].flipHor  = !!(oam[sprites[i].oamIndex + 2] & 0b01000000);
+	sprites[i].flipVert = !!(oam[sprites[i].oamIndex + 2] & 0b10000000);
     }
 }
