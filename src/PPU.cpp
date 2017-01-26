@@ -350,45 +350,33 @@ void PPU::writePalette(uint16_t index, uint8_t value) {
 }
 
 uint8_t PPU::readNameTables(uint16_t index) {
-    switch (cart->mirroring) {
-    case Cart::MIRROR_VERT:
-	index %= 0x800;
-	break;
-    case Cart::MIRROR_HOR:
-	if (index & 0x800) {
-	    index |= 0x400;
-	}
-	index %= 0x800;
-	break;
-    case Cart::MIRROR_ALL:
-	printf("Single screen nametable not yet supported\n");
-	break;
-    case Cart::MIRROR_NONE:
-	printf("4-screen nametables not yet supported\n");
-	break;
-    }
-    return ciRam[index];
+    uint16_t mirroredIndex = getCiRamIndexFromNameTableIndex(index);
+    return ciRam[mirroredIndex];
 }
 
 void PPU::writeNameTables(uint16_t index, uint8_t value) {
+    uint16_t mirroredIndex = getCiRamIndexFromNameTableIndex(index);
+    ciRam[mirroredIndex] = value;
+}
+
+uint16_t PPU::getCiRamIndexFromNameTableIndex(uint16_t index) {
     switch (cart->mirroring) {
     case Cart::MIRROR_VERT:
-	index %= 0x800;
-	break;
+	return index % 0x800;
     case Cart::MIRROR_HOR:
 	if (index & 0x800) {
 	    index |= 0x400;
 	}
-	index %= 0x800;
-	break;
+	return index % 0x800;
     case Cart::MIRROR_ALL:
+	// TODO: mapper manipulates bit 0x400
 	printf("Single screen nametable not yet supported\n");
-	break;
+	return 0;
     case Cart::MIRROR_NONE:
+	// TODO: access additional ram on the cart
 	printf("4-screen nametables not yet supported\n");
-	break;
+	return 0;
     }
-    ciRam[index] = value;
 }
 
 uint8_t PPU::readPatternTables(uint16_t index) {

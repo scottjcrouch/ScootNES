@@ -62,6 +62,7 @@ private:
     void writeNameTables(uint16_t addr, uint8_t value);
     uint8_t readPatternTables(uint16_t addr);
     void writePatternTables(uint16_t addr, uint8_t value);
+    uint16_t getCiRamIndexFromNameTableIndex(uint16_t index);
     void buildMetatileData();
     void reloadMetatileData();
     void buildTileData();
