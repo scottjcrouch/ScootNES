@@ -7,7 +7,7 @@
 #include <Cart.h>
 
 Cart::~Cart() {
-    delete trainer, prg, chr, ram;
+    delete prg, chr, ram;
 }
 
 bool Cart::readFile(std::string romFileName) {
@@ -45,8 +45,6 @@ bool Cart::readFile(std::string romFileName) {
     }
 
     // load trainer data
-    trainer = new uint8_t[512];
-    std::fill_n(trainer, 512, 0);
     if (isTrainer) {
         romFile.read((char *)trainer, 512);
     }

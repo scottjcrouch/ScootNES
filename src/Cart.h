@@ -37,7 +37,7 @@ private:
   bool isTrainer;
   int mapperNum;
 
-  uint8_t *trainer;
+  uint8_t trainer[512] = {0};
   uint8_t *prg;
   uint8_t *chr;
   uint8_t *ram;
