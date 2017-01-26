@@ -19,7 +19,6 @@ public:
   void writeChr(int index, uint8_t value);
   uint8_t readRam(int index);
   void writeRam(int index, uint8_t value);
-  uint8_t *getChrPointer();
 
   enum Mirroring {
       MIRROR_VERT,

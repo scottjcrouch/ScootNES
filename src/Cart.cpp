@@ -119,7 +119,3 @@ void Cart::writeRam(int index, uint8_t value) {
     }
     ram[index] = value;
 }
-
-uint8_t *Cart::getChrPointer() {
-    return chr;
-}
