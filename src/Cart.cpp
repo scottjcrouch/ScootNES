@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <fstream>
 #include <string>
-#include <algorithm>
 
 #include <Cart.h>
 
@@ -51,12 +50,10 @@ bool Cart::readFile(std::string romFileName) {
 
     // load program data
     prg = new uint8_t[prgLen * PRG_BANK_SIZE];
-    std::fill_n(prg, prgLen * PRG_BANK_SIZE, 0);
     romFile.read((char *)prg, prgLen * PRG_BANK_SIZE);
 
     // load pattern/character data
     chr = new uint8_t[CHR_BANK_SIZE];
-    std::fill_n(chr, CHR_BANK_SIZE, 0);
     // if chrLen is 0 it is simply an empty bank that 
     // the program will normally copy data to from prg 
     // using ppuADDR/ppuDATA
@@ -69,7 +66,6 @@ bool Cart::readFile(std::string romFileName) {
 
     // load ram data
     ram = new uint8_t[RAM_BANK_SIZE];
-    std::fill_n(ram, RAM_BANK_SIZE, 0);
     if (isRamBattery) {
         printf("ERROR: loading battery backed ram not yet supported\n");
         return false;
