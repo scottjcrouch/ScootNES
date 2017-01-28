@@ -2,12 +2,9 @@
 #include <stdio.h>
 #include <fstream>
 #include <string>
+#include <memory>
 
 #include <Cart.h>
-
-Cart::~Cart() {
-    delete prg, chr, ram;
-}
 
 bool Cart::readFile(std::string romFileName) {
     std::ifstream romFile(romFileName.c_str(), std::ios::binary);
@@ -49,11 +46,11 @@ bool Cart::readFile(std::string romFileName) {
     }
 
     // load program data
-    prg = new uint8_t[prgLen * PRG_BANK_SIZE];
-    romFile.read((char *)prg, prgLen * PRG_BANK_SIZE);
+    prg = std::unique_ptr<uint8_t[]>(new uint8_t[prgLen * PRG_BANK_SIZE]);
+    romFile.read((char*)prg.get(), prgLen * PRG_BANK_SIZE);
 
     // load pattern/character data
-    chr = new uint8_t[CHR_BANK_SIZE];
+    chr = std::unique_ptr<uint8_t[]>(new uint8_t[CHR_BANK_SIZE]);
     // if chrLen is 0 it is simply an empty bank that 
     // the program will normally copy data to from prg 
     // using ppuADDR/ppuDATA
@@ -62,10 +59,10 @@ bool Cart::readFile(std::string romFileName) {
         printf("ERROR: chrLen %d not yet supported\n", chrLen);
         return false;
     }
-    romFile.read((char *)chr, chrLen * CHR_BANK_SIZE);
+    romFile.read((char*)chr.get(), chrLen * CHR_BANK_SIZE);
 
     // load ram data
-    ram = new uint8_t[RAM_BANK_SIZE];
+    ram = std::unique_ptr<uint8_t[]>(new uint8_t[RAM_BANK_SIZE]);
     if (isRamBattery) {
         printf("ERROR: loading battery backed ram not yet supported\n");
         return false;

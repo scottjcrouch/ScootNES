@@ -4,6 +4,7 @@
 #include <fstream>
 #include <stdint.h>
 #include <string>
+#include <memory>
 
 static const int PRG_BANK_SIZE = 16 * 1024;
 static const int CHR_BANK_SIZE = 8 * 1024;
@@ -11,7 +12,6 @@ static const int RAM_BANK_SIZE = 8 * 1024;
 
 class Cart {
 public:
-  ~Cart();
   bool readFile(std::string romFileName);
   uint8_t readPrg(int index);
   void writePrg(int index, uint8_t value);
@@ -38,9 +38,9 @@ private:
   int mapperNum;
 
   uint8_t trainer[512] = {0};
-  uint8_t *prg;
-  uint8_t *chr;
-  uint8_t *ram;
+  std::unique_ptr<uint8_t[]> prg;
+  std::unique_ptr<uint8_t[]> chr;
+  std::unique_ptr<uint8_t[]> ram;
 };
 
 #endif
