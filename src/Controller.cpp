@@ -1,5 +1,6 @@
+#include <cstdint>
+
 #include <Controller.h>
-#include <stdint.h>
 
 void Controller::setStrobe(bool b) {
     strobe = b;

@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include <cstdint>
 
 #include <PPU.h>
 #include <CPU.h>

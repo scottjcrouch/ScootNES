@@ -1,8 +1,7 @@
 #ifndef CART_H
 #define CART_H
 
-#include <fstream>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <memory>
 

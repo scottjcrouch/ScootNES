@@ -1,7 +1,7 @@
 #ifndef PPU_H
 #define PPU_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <Cart.h>
 #include <Graphics.h>

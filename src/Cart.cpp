@@ -1,5 +1,5 @@
-#include <stdint.h>
-#include <stdio.h>
+#include <cstdint>
+#include <cstdio>
 #include <fstream>
 #include <string>
 #include <memory>

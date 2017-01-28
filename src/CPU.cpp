@@ -1,5 +1,5 @@
-#include <stdint.h>
-#include <stdlib.h>
+#include <cstdint>
+#include <cstdlib>
 
 #include <CPU.h>
 #include <Cart.h>

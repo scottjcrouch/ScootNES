@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include <fstream>
 #include <string>
 #include <map>

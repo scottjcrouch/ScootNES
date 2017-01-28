@@ -1,7 +1,7 @@
 #ifndef APU_H
 #define APU_H
 
-#include <stdint.h>
+#include <cstdint>
 
 class APU {
 public:

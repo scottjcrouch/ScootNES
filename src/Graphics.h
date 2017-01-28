@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 class Metatile {
 public:
