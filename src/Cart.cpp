@@ -7,79 +7,95 @@
 #include <Cart.h>
 
 bool Cart::loadFile(std::string romFileName) {
-    std::ifstream romFile(romFileName.c_str(), std::ios::binary);
+    std::ifstream romFileStream(romFileName.c_str(), std::ios::binary);
+    
+    char iNesHeader[16];
+    romFileStream.read(iNesHeader, 16);
 
-    char header[16];
-
-    // verify header
-    romFile.read(header, 16);
-    if (header[0] != 'N' ||
-        header[1] != 'E' ||
-        header[2] != 'S' ||
-        header[3] != 0x1A) {
-        printf("ERROR: Invalid iNES header\n");
-        return false;
+    if(!verifyINesHeaderSignature(iNesHeader)) {
+	printf("ERROR: Invalid iNES header\n");
+	return false;
     }
 
-    // read header data
-    prgLen = header[4];
-    chrLen = header[5];
-    ramLen = header[8];
-    mirroring = MIRROR_HOR;
-    if (header[6] & (0x1 << 3)) {
-        mirroring = MIRROR_NONE;
-    }
-    else if (header[6] & 0x1) {
-        mirroring = MIRROR_VERT;
-    }
-    isRamBattery = !!(header[6] & (0x1 << 1));
-    isTrainer = !!(header[6] & (0x1 << 2));
-    mapperNum = (header[6] >> 4) + (header[7] & 0xF0);
-    if (mapperNum != 0) {
-        printf("ERROR: Mapper %d not yet supported\n", mapperNum);
-        return false;
-    }
+    loadINesHeaderData(iNesHeader);
+    
+    allocateCartMemory();
 
-    // load trainer data
-    if (isTrainer) {
-        romFile.read((char *)trainer, 512);
-    }
+    loadCartMemoryFromFile(romFileStream);
 
-    // load program data
-    prg = std::unique_ptr<uint8_t[]>(new uint8_t[prgLen * PRG_BANK_SIZE]);
-    romFile.read((char*)prg.get(), prgLen * PRG_BANK_SIZE);
-
-    // load pattern/character data
-    chr = std::unique_ptr<uint8_t[]>(new uint8_t[CHR_BANK_SIZE]);
-    // if chrLen is 0 it is simply an empty bank that 
-    // the program will normally copy data to from prg 
-    // using ppuADDR/ppuDATA
-    // TODO!!!!
-    if (chrLen != 1) {
-        printf("ERROR: chrLen %d not yet supported\n", chrLen);
-        return false;
-    }
-    romFile.read((char*)chr.get(), chrLen * CHR_BANK_SIZE);
-
-    // load ram data
-    ram = std::unique_ptr<uint8_t[]>(new uint8_t[RAM_BANK_SIZE]);
     if (isRamBattery) {
         printf("ERROR: loading battery backed ram not yet supported\n");
         return false;
     }
 
-    romFile.close();
-
+    if (mapperNum != 0) {
+        printf("ERROR: Mapper %d not yet supported\n", mapperNum);
+        return false;
+    }
+    
+    romFileStream.close();
+    
     return true;
 }
 
+bool Cart::verifyINesHeaderSignature(char* iNesHeader) {
+    return (iNesHeader[0] == 'N' &&
+	    iNesHeader[1] == 'E' &&
+	    iNesHeader[2] == 'S' &&
+	    iNesHeader[3] == 0x1A);
+}
+
+void Cart::loadINesHeaderData(char* iNesHeader) {
+    prgSize = iNesHeader[4] * PRG_BANK_SIZE;
+
+    chrSize = iNesHeader[5] * CHR_BANK_SIZE;
+    chrIsSingleRamBank = (chrSize == 0);
+
+    ramSize  = iNesHeader[8] * RAM_BANK_SIZE;
+
+    isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
+    
+    mirroring = MIRROR_HOR;
+    if (iNesHeader[6] & (0x1 << 3)) {
+        mirroring = MIRROR_NONE;
+    }
+    else if (iNesHeader[6] & 0x1) {
+        mirroring = MIRROR_VERT;
+    }
+    
+    isTrainer = !!(iNesHeader[6] & (0x1 << 2));
+    
+    mapperNum = (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
+}
+
+void Cart::allocateCartMemory() {
+    prg = std::unique_ptr<uint8_t[]>(new uint8_t[prgSize]);
+
+    if (chrIsSingleRamBank) {
+	chr = std::unique_ptr<uint8_t[]>(new uint8_t[CHR_BANK_SIZE]);
+    }
+    else {
+	chr = std::unique_ptr<uint8_t[]>(new uint8_t[chrSize]);
+    }
+    
+    ram = std::unique_ptr<uint8_t[]>(new uint8_t[ramSize]);     
+}
+
+void Cart::loadCartMemoryFromFile(std::ifstream& romFileStream) {
+    romFileStream.read((char*)prg.get(), prgSize);
+    romFileStream.read((char*)chr.get(), chrSize);
+    if (isTrainer) {
+        romFileStream.read((char *)trainer, 512);
+    }
+}
+
 uint8_t Cart::readPrg(int index) {
-    index %= prgLen * PRG_BANK_SIZE;
+    index %= prgSize;
     return prg[index];
 }
 
 void Cart::writePrg(int index, uint8_t value) {
-    // TODO: mapper registers
+    // TODO: mapper side effects
     printf("Tried to write to PRG-ROM, mapper functionality incomplete\n");
 }
 
@@ -88,8 +104,8 @@ uint8_t Cart::readChr(int index) {
 }
 
 void Cart::writeChr(int index, uint8_t value) {
-    // check if chr is writeable
-    if (chrLen == 0) {
+    // TODO: mapper side effects
+    if (chrIsSingleRamBank) {
         chr[index] = value;
     }
     else {
@@ -105,6 +121,7 @@ uint8_t Cart::readRam(int index) {
 }
 
 void Cart::writeRam(int index, uint8_t value) {
+    // TODO: mapper side effects
     if(index > RAM_BANK_SIZE) {
         printf("ERROR: PRG-RAM access out of bounds\n");
     }

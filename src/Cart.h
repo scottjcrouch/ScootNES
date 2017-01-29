@@ -2,6 +2,7 @@
 #define CART_H
 
 #include <cstdint>
+#include <fstream>
 #include <string>
 #include <memory>
 
@@ -29,13 +30,18 @@ public:
     Mirroring mirroring;
   
 private:
-    int prgLen;
-    int chrLen;
-    int ramLen;
+    bool verifyINesHeaderSignature(char* header);
+    void loadINesHeaderData(char* header);
+    void allocateCartMemory();
+    void loadCartMemoryFromFile(std::ifstream& romFileStream);
+    
+    int prgSize;
+    int chrSize;
+    bool chrIsSingleRamBank;
+    int ramSize;
     bool isRamBattery;
     bool isTrainer;
     int mapperNum;
-
     uint8_t trainer[512] = {0};
     std::unique_ptr<uint8_t[]> prg;
     std::unique_ptr<uint8_t[]> chr;
