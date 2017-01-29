@@ -6,7 +6,7 @@
 
 #include <Cart.h>
 
-bool Cart::readFile(std::string romFileName) {
+bool Cart::loadFile(std::string romFileName) {
     std::ifstream romFile(romFileName.c_str(), std::ios::binary);
 
     char header[16];

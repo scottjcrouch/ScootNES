@@ -11,7 +11,7 @@ static const int RAM_BANK_SIZE = 8 * 1024;
 
 class Cart {
 public:
-    bool readFile(std::string romFileName);
+    bool loadFile(std::string romFileName);
     uint8_t readPrg(int index);
     void writePrg(int index, uint8_t value);
     uint8_t readChr(int index);
