@@ -6,6 +6,8 @@
 #include <string>
 #include <memory>
 
+#include <Mapper.h>
+
 static const int PRG_BANK_SIZE = 16 * 1024;
 static const int CHR_BANK_SIZE = 8 * 1024;
 static const int RAM_BANK_SIZE = 8 * 1024;
@@ -34,6 +36,7 @@ private:
     void loadINesHeaderData(char* header);
     void allocateCartMemory();
     void loadCartMemoryFromFile(std::ifstream& romFileStream);
+    bool initializeMapper();
     
     int prgSize;
     int chrSize;
@@ -46,6 +49,8 @@ private:
     std::unique_ptr<uint8_t[]> prg;
     std::unique_ptr<uint8_t[]> chr;
     std::unique_ptr<uint8_t[]> ram;
+
+    std::unique_ptr<Mapper> mapper;
 };
 
 #endif

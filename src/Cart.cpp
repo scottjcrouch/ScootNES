@@ -5,6 +5,8 @@
 #include <memory>
 
 #include <Cart.h>
+#include <Mapper.h>
+#include <Mapper0.h>
 
 bool Cart::loadFile(std::string romFileName) {
     std::ifstream romFileStream(romFileName.c_str(), std::ios::binary);
@@ -28,10 +30,11 @@ bool Cart::loadFile(std::string romFileName) {
         return false;
     }
 
-    if (mapperNum != 0) {
-        printf("ERROR: Mapper %d not yet supported\n", mapperNum);
-        return false;
+    if (!initializeMapper()) {
+	printf("ERROR: Mapper %d not yet supported\n", mapperNum);
     }
+
+    mapper->doStuff();
     
     romFileStream.close();
     
@@ -86,6 +89,16 @@ void Cart::loadCartMemoryFromFile(std::ifstream& romFileStream) {
     romFileStream.read((char*)chr.get(), chrSize);
     if (isTrainer) {
         romFileStream.read((char *)trainer, 512);
+    }
+}
+
+bool Cart::initializeMapper() {
+    switch(mapperNum) {
+    case 0:
+	mapper = std::unique_ptr<Mapper>(new Mapper0);
+	return true;
+    default:
+        return false;
     }
 }
 
