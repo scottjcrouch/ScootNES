@@ -78,15 +78,8 @@ uint8_t CPU::read(uint16_t addr) {
             return openBus;
         }
     }
-    else if (addr < 0x6000) {
-        // TODO: expansion rom
-        return 0;
-    }
-    else if (addr < 0x8000) {
-        return cart->readRam(addr - 0x6000);
-    }
     else {
-        return cart->readPrg(addr - 0x8000);
+        return cart->readPrg(addr);
     }
 }
 
@@ -146,14 +139,8 @@ void CPU::write(uint16_t addr, uint8_t value) {
 	    break;
 	}
     }
-    else if (addr < 0x6000) {
-        // TODO: expansion rom
-    }
-    else if (addr < 0x8000) {
-        cart->writeRam(addr - 0x6000, value);
-    }
     else {
-        cart->writePrg(addr - 0x6000, value);
+        cart->writePrg(addr, value);
     }
 }
 

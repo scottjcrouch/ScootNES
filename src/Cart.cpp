@@ -102,41 +102,24 @@ bool Cart::initializeMapper() {
     }
 }
 
-uint8_t Cart::readPrg(int index) {
-    index %= prgSize;
+uint8_t Cart::readPrg(uint16_t addr) {
+    int index = addr % prgSize;
     return prg[index];
 }
 
-void Cart::writePrg(int index, uint8_t value) {
-    // TODO: mapper side effects
+void Cart::writePrg(uint16_t addr, uint8_t value) {
     printf("Tried to write to PRG-ROM, mapper functionality incomplete\n");
 }
 
-uint8_t Cart::readChr(int index) {
-    return chr[index];
+uint8_t Cart::readChr(uint16_t addr) {
+    return chr[addr];
 }
 
-void Cart::writeChr(int index, uint8_t value) {
-    // TODO: mapper side effects
+void Cart::writeChr(uint16_t addr, uint8_t value) {
     if (chrIsSingleRamBank) {
-        chr[index] = value;
+        chr[addr] = value;
     }
     else {
-        printf("ERROR: Tried to write 0x%X to CHR-ROM: 0x%X\n", value, index);
+        printf("ERROR: Tried to write 0x%X to CHR-ROM: 0x%X\n", value, addr);
     }
-}
-
-uint8_t Cart::readRam(int index) {
-    if(index > RAM_BANK_SIZE) {
-        printf("ERROR: PRG-RAM access out of bounds\n");
-    }
-    return ram[index];
-}
-
-void Cart::writeRam(int index, uint8_t value) {
-    // TODO: mapper side effects
-    if(index > RAM_BANK_SIZE) {
-        printf("ERROR: PRG-RAM access out of bounds\n");
-    }
-    ram[index] = value;
 }
