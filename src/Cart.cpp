@@ -88,7 +88,7 @@ void Cart::loadCartMemoryFromFile(std::ifstream& romFileStream) {
     romFileStream.read((char*)prg.get(), prgSize);
     romFileStream.read((char*)chr.get(), chrSize);
     if (isTrainer) {
-        romFileStream.read((char *)trainer, 512);
+        romFileStream.read((char *)trainer, TRAINER_SIZE);
     }
 }
 

@@ -11,6 +11,7 @@
 static const int PRG_BANK_SIZE = 16 * 1024;
 static const int CHR_BANK_SIZE = 8 * 1024;
 static const int RAM_BANK_SIZE = 8 * 1024;
+static const int TRAINER_SIZE = 512;
 
 class Cart {
 public:
