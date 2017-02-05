@@ -3,7 +3,7 @@
 
 class Mapper {
 public:
-    virtual void doStuff();
+    virtual void doStuff() { };
     
 private:
     

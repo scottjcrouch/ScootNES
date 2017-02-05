@@ -11,7 +11,6 @@ OBJECTS= \
 	build/main.o \
 	build/PPU.o \
 	build/Graphics.o \
-	build/Mapper.o \
 	build/Mapper0.o
 
 DEPS= $(OBJECTS:.o=.d)
