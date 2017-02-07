@@ -1,0 +1,12 @@
+#ifndef MIRRORING_H
+#define MIRRORING_H
+
+enum Mirroring {
+    MIRROR_VERTICAL,
+    MIRROR_HORIZONTAL,
+    MIRROR_LOWER_BANK,
+    MIRROR_UPPER_BANK,
+    MIRROR_FOUR_SCREEN,
+};
+
+#endif

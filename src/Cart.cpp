@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <Cart.h>
+#include <Mirroring.h>
 #include <Mapper.h>
 #include <Mapper0.h>
 

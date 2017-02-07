@@ -7,19 +7,12 @@
 #include <memory>
 
 #include <Mapper.h>
+#include <Mirroring.h>
 
 static const int PRG_BANK_SIZE = 16 * 1024;
 static const int CHR_BANK_SIZE = 8 * 1024;
 static const int RAM_BANK_SIZE = 8 * 1024;
 static const int TRAINER_SIZE = 512;
-
-enum Mirroring {
-    MIRROR_VERTICAL,
-    MIRROR_HORIZONTAL,
-    MIRROR_LOWER_BANK,
-    MIRROR_UPPER_BANK,
-    MIRROR_FOUR_SCREEN,
-};
 
 class Cart {
 public:

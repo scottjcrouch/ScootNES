@@ -3,6 +3,7 @@
 #include <PPU.h>
 #include <CPU.h>
 #include <Graphics.h>
+#include <Mirroring.h>
 
 void PPU::boot(Cart *cart, CPU *cpu) {
     this->cart = cart;
