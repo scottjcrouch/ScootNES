@@ -58,14 +58,15 @@ void Cart::loadINesHeaderData(char* iNesHeader) {
 
     isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
     
-    mirroring = MIRROR_HOR;
+    mirroring = MIRROR_HORIZONTAL;
+    if (iNesHeader[6] & 0x1) {
+        mirroring = MIRROR_VERTICAL;
+    }
     if (iNesHeader[6] & (0x1 << 3)) {
-        mirroring = MIRROR_NONE;
+        mirroring = MIRROR_FOUR_SCREEN;
+	printf("Warning: four screen mirroring not yet supported");
     }
-    else if (iNesHeader[6] & 0x1) {
-        mirroring = MIRROR_VERT;
-    }
-    
+
     isTrainer = !!(iNesHeader[6] & (0x1 << 2));
     
     mapperNum = (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
@@ -100,6 +101,10 @@ bool Cart::initializeMapper() {
     default:
         return false;
     }
+}
+
+Mirroring Cart::getMirroring() {
+    return mirroring;
 }
 
 uint8_t Cart::readPrg(uint16_t addr) {

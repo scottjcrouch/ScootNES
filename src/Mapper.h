@@ -5,8 +5,6 @@ class Mapper {
 public:
     virtual void doStuff() { };
     
-private:
-    
 };
 
 #endif

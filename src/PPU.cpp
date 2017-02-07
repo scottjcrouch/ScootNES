@@ -360,22 +360,18 @@ void PPU::writeNameTables(uint16_t index, uint8_t value) {
 }
 
 uint16_t PPU::getCiRamIndexFromNameTableIndex(uint16_t index) {
-    switch (cart->mirroring) {
-    case Cart::MIRROR_VERT:
+    switch (cart->getMirroring()) {
+    case MIRROR_VERTICAL:
 	return index % 0x800;
-    case Cart::MIRROR_HOR:
+    case MIRROR_HORIZONTAL:
 	if (index & 0x800) {
 	    index |= 0x400;
 	}
 	return index % 0x800;
-    case Cart::MIRROR_ALL:
-	// TODO: mapper manipulates bit 0x400
-	printf("Single screen nametable not yet supported\n");
-	return 0;
-    case Cart::MIRROR_NONE:
-	// TODO: access additional ram on the cart
-	printf("4-screen nametables not yet supported\n");
-	return 0;
+    case MIRROR_LOWER_BANK:
+	return index & 0xF3FF;
+    case MIRROR_UPPER_BANK:
+	return (index & 0xF3FF) + 0x400;
     }
 }
 
