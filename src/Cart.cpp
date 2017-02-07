@@ -93,23 +93,17 @@ Mirroring Cart::getMirroring() {
 }
 
 uint8_t Cart::readPrg(uint16_t addr) {
-    int index = addr % mapper->prg.size();
-    return mapper->prg[index];
+    return mapper->readPrg(addr);
 }
 
 void Cart::writePrg(uint16_t addr, uint8_t value) {
-    printf("Tried to write to PRG-ROM, mapper functionality incomplete\n");
+    mapper->writePrg(addr, value);
 }
 
 uint8_t Cart::readChr(uint16_t addr) {
-    return mapper->chr[addr];
+    return mapper->readChr(addr);
 }
 
 void Cart::writeChr(uint16_t addr, uint8_t value) {
-    if (mapper->chrIsSingleRamBank) {
-        mapper->chr[addr] = value;
-    }
-    else {
-        printf("ERROR: Tried to write 0x%X to CHR-ROM: 0x%X\n", value, addr);
-    }
+    mapper->writeChr(addr, value);
 }
