@@ -26,17 +26,11 @@ public:
 
 private:
     bool verifyINesHeaderSignature(char* header);
-    void loadINesHeaderData(char* header);
-    void loadCartMemory(std::ifstream& romFileStream);
     bool initializeMapper(int mapperNum);
 
     Mirroring mirroring;
-    int prgSize;
-    int chrSize;
     bool chrIsSingleRamBank;
-    int ramSize;
     bool isRamBattery;
-    bool isTrainer;
     std::vector<uint8_t> trainer;
     std::vector<uint8_t> prg;
     std::vector<uint8_t> chr;

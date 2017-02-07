@@ -27,10 +27,45 @@ bool Cart::loadFile(std::string romFileName) {
 	return false;
     }
 
-    loadINesHeaderData(iNesHeader);
-    
-    loadCartMemory(romFileStream);
+    int prgSize = iNesHeader[4] * PRG_BANK_SIZE;
+    for(int i  = 0; i < prgSize; ++i) {
+	prg.push_back(romFileStream.get());
+    }
 
+    int chrSize = iNesHeader[5] * CHR_BANK_SIZE;
+    chrIsSingleRamBank = (chrSize == 0);
+    if (chrIsSingleRamBank) {
+	chr.resize(CHR_BANK_SIZE);
+    }
+    else {
+	for(int i  = 0; i < chrSize; ++i) {
+	    chr.push_back(romFileStream.get());
+	}
+    }
+
+    int ramSize  = iNesHeader[8] * RAM_BANK_SIZE;
+    isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
+    ram.resize(ramSize);
+    if (isRamBattery) {
+        printf("ERROR: loading battery backed ram not yet supported\n");
+    }
+
+    bool isTrainer = !!(iNesHeader[6] & (0x1 << 2));
+    if (isTrainer) {
+	for(int i  = 0; i < TRAINER_SIZE; ++i) {
+	    trainer.push_back(romFileStream.get());
+	}
+    }
+
+    mirroring = MIRROR_HORIZONTAL;
+    if (iNesHeader[6] & 0x1) {
+        mirroring = MIRROR_VERTICAL;
+    }
+    if (iNesHeader[6] & (0x1 << 3)) {
+        mirroring = MIRROR_FOUR_SCREEN;
+	printf("Warning: four screen mirroring not yet supported");
+    }
+    
     romFileStream.close();
     
     return true;
@@ -41,54 +76,6 @@ bool Cart::verifyINesHeaderSignature(char* iNesHeader) {
 	    iNesHeader[1] == 'E' &&
 	    iNesHeader[2] == 'S' &&
 	    iNesHeader[3] == 0x1A);
-}
-
-void Cart::loadINesHeaderData(char* iNesHeader) {
-    prgSize = iNesHeader[4] * PRG_BANK_SIZE;
-
-    chrSize = iNesHeader[5] * CHR_BANK_SIZE;
-    chrIsSingleRamBank = (chrSize == 0);
-
-    ramSize  = iNesHeader[8] * RAM_BANK_SIZE;
-
-    isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
-    
-    mirroring = MIRROR_HORIZONTAL;
-    if (iNesHeader[6] & 0x1) {
-        mirroring = MIRROR_VERTICAL;
-    }
-    if (iNesHeader[6] & (0x1 << 3)) {
-        mirroring = MIRROR_FOUR_SCREEN;
-	printf("Warning: four screen mirroring not yet supported");
-    }
-
-    isTrainer = !!(iNesHeader[6] & (0x1 << 2));
-}
-
-void Cart::loadCartMemory(std::ifstream& romFileStream) {
-    for(int i  = 0; i < prgSize; ++i) {
-	prg.push_back(romFileStream.get());
-    }
-
-    if (chrIsSingleRamBank) {
-	chr.resize(CHR_BANK_SIZE);
-    }
-    else {
-	for(int i  = 0; i < chrSize; ++i) {
-	    chr.push_back(romFileStream.get());
-	}
-    }
-
-    ram.resize(ramSize);
-    if (isRamBattery) {
-        printf("ERROR: loading battery backed ram not yet supported\n");
-    }
-
-    if (isTrainer) {
-	for(int i  = 0; i < TRAINER_SIZE; ++i) {
-	    trainer.push_back(romFileStream.get());
-	}
-    }
 }
 
 bool Cart::initializeMapper(int mapperNum) {
@@ -106,7 +93,7 @@ Mirroring Cart::getMirroring() {
 }
 
 uint8_t Cart::readPrg(uint16_t addr) {
-    int index = addr % prgSize;
+    int index = addr % prg.size();
     return prg[index];
 }
 
