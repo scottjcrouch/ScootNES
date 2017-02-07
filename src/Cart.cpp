@@ -20,6 +20,11 @@ bool Cart::loadFile(std::string romFileName) {
 	return false;
     }
 
+    int mapperNum = (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
+    if (!initializeMapper(mapperNum)) {
+	printf("ERROR: Mapper %d not yet supported\n", mapperNum);
+    }
+
     loadINesHeaderData(iNesHeader);
     
     allocateCartMemory();
@@ -29,10 +34,6 @@ bool Cart::loadFile(std::string romFileName) {
     if (isRamBattery) {
         printf("ERROR: loading battery backed ram not yet supported\n");
         return false;
-    }
-
-    if (!initializeMapper()) {
-	printf("ERROR: Mapper %d not yet supported\n", mapperNum);
     }
 
     mapper->doStuff();
@@ -69,8 +70,6 @@ void Cart::loadINesHeaderData(char* iNesHeader) {
     }
 
     isTrainer = !!(iNesHeader[6] & (0x1 << 2));
-    
-    mapperNum = (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
 }
 
 void Cart::allocateCartMemory() {
@@ -94,7 +93,7 @@ void Cart::loadCartMemoryFromFile(std::ifstream& romFileStream) {
     }
 }
 
-bool Cart::initializeMapper() {
+bool Cart::initializeMapper(int mapperNum) {
     switch(mapperNum) {
     case 0:
 	mapper = std::unique_ptr<Mapper>(new Mapper0);

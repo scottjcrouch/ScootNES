@@ -28,7 +28,7 @@ private:
     void loadINesHeaderData(char* header);
     void allocateCartMemory();
     void loadCartMemoryFromFile(std::ifstream& romFileStream);
-    bool initializeMapper();
+    bool initializeMapper(int mapperNum);
 
     Mirroring mirroring;
     int prgSize;
@@ -37,7 +37,6 @@ private:
     int ramSize;
     bool isRamBattery;
     bool isTrainer;
-    int mapperNum;
     uint8_t trainer[512] = {0};
     std::unique_ptr<uint8_t[]> prg;
     std::unique_ptr<uint8_t[]> chr;
