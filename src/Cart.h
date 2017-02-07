@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include <Mapper.h>
 #include <Mirroring.h>
@@ -26,8 +27,7 @@ public:
 private:
     bool verifyINesHeaderSignature(char* header);
     void loadINesHeaderData(char* header);
-    void allocateCartMemory();
-    void loadCartMemoryFromFile(std::ifstream& romFileStream);
+    void loadCartMemory(std::ifstream& romFileStream);
     bool initializeMapper(int mapperNum);
 
     Mirroring mirroring;
@@ -37,10 +37,10 @@ private:
     int ramSize;
     bool isRamBattery;
     bool isTrainer;
-    uint8_t trainer[512] = {0};
-    std::unique_ptr<uint8_t[]> prg;
-    std::unique_ptr<uint8_t[]> chr;
-    std::unique_ptr<uint8_t[]> ram;
+    std::vector<uint8_t> trainer;
+    std::vector<uint8_t> prg;
+    std::vector<uint8_t> chr;
+    std::vector<uint8_t> ram;
 
     std::unique_ptr<Mapper> mapper;
 };

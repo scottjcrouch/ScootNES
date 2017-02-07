@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include <Cart.h>
 #include <Mirroring.h>
@@ -23,21 +24,13 @@ bool Cart::loadFile(std::string romFileName) {
     int mapperNum = (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
     if (!initializeMapper(mapperNum)) {
 	printf("ERROR: Mapper %d not yet supported\n", mapperNum);
+	return false;
     }
 
     loadINesHeaderData(iNesHeader);
     
-    allocateCartMemory();
+    loadCartMemory(romFileStream);
 
-    loadCartMemoryFromFile(romFileStream);
-
-    if (isRamBattery) {
-        printf("ERROR: loading battery backed ram not yet supported\n");
-        return false;
-    }
-
-    mapper->doStuff();
-    
     romFileStream.close();
     
     return true;
@@ -72,24 +65,29 @@ void Cart::loadINesHeaderData(char* iNesHeader) {
     isTrainer = !!(iNesHeader[6] & (0x1 << 2));
 }
 
-void Cart::allocateCartMemory() {
-    prg = std::unique_ptr<uint8_t[]>(new uint8_t[prgSize]);
+void Cart::loadCartMemory(std::ifstream& romFileStream) {
+    for(int i  = 0; i < prgSize; ++i) {
+	prg.push_back(romFileStream.get());
+    }
 
     if (chrIsSingleRamBank) {
-	chr = std::unique_ptr<uint8_t[]>(new uint8_t[CHR_BANK_SIZE]);
+	chr.resize(CHR_BANK_SIZE);
     }
     else {
-	chr = std::unique_ptr<uint8_t[]>(new uint8_t[chrSize]);
+	for(int i  = 0; i < chrSize; ++i) {
+	    chr.push_back(romFileStream.get());
+	}
     }
-    
-    ram = std::unique_ptr<uint8_t[]>(new uint8_t[ramSize]);     
-}
 
-void Cart::loadCartMemoryFromFile(std::ifstream& romFileStream) {
-    romFileStream.read((char*)prg.get(), prgSize);
-    romFileStream.read((char*)chr.get(), chrSize);
+    ram.resize(ramSize);
+    if (isRamBattery) {
+        printf("ERROR: loading battery backed ram not yet supported\n");
+    }
+
     if (isTrainer) {
-        romFileStream.read((char *)trainer, TRAINER_SIZE);
+	for(int i  = 0; i < TRAINER_SIZE; ++i) {
+	    trainer.push_back(romFileStream.get());
+	}
     }
 }
 
