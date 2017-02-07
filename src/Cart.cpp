@@ -29,23 +29,23 @@ bool Cart::loadFile(std::string romFileName) {
 
     int prgSize = iNesHeader[4] * PRG_BANK_SIZE;
     for(int i  = 0; i < prgSize; ++i) {
-	prg.push_back(romFileStream.get());
+	mapper->prg.push_back(romFileStream.get());
     }
 
     int chrSize = iNesHeader[5] * CHR_BANK_SIZE;
-    chrIsSingleRamBank = (chrSize == 0);
-    if (chrIsSingleRamBank) {
-	chr.resize(CHR_BANK_SIZE);
+    mapper->chrIsSingleRamBank = (chrSize == 0);
+    if (mapper->chrIsSingleRamBank) {
+	mapper->chr.resize(CHR_BANK_SIZE);
     }
     else {
 	for(int i  = 0; i < chrSize; ++i) {
-	    chr.push_back(romFileStream.get());
+	    mapper->chr.push_back(romFileStream.get());
 	}
     }
 
     int ramSize  = iNesHeader[8] * RAM_BANK_SIZE;
-    isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
-    ram.resize(ramSize);
+    bool isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
+    mapper->ram.resize(ramSize);
     if (isRamBattery) {
         printf("ERROR: loading battery backed ram not yet supported\n");
     }
@@ -53,16 +53,16 @@ bool Cart::loadFile(std::string romFileName) {
     bool isTrainer = !!(iNesHeader[6] & (0x1 << 2));
     if (isTrainer) {
 	for(int i  = 0; i < TRAINER_SIZE; ++i) {
-	    trainer.push_back(romFileStream.get());
+	    mapper->trainer.push_back(romFileStream.get());
 	}
     }
 
-    mirroring = MIRROR_HORIZONTAL;
+    mapper->mirroring = MIRROR_HORIZONTAL;
     if (iNesHeader[6] & 0x1) {
-        mirroring = MIRROR_VERTICAL;
+        mapper->mirroring = MIRROR_VERTICAL;
     }
     if (iNesHeader[6] & (0x1 << 3)) {
-        mirroring = MIRROR_FOUR_SCREEN;
+        mapper->mirroring = MIRROR_FOUR_SCREEN;
 	printf("Warning: four screen mirroring not yet supported");
     }
     
@@ -89,12 +89,12 @@ bool Cart::initializeMapper(int mapperNum) {
 }
 
 Mirroring Cart::getMirroring() {
-    return mirroring;
+    return mapper->mirroring;
 }
 
 uint8_t Cart::readPrg(uint16_t addr) {
-    int index = addr % prg.size();
-    return prg[index];
+    int index = addr % mapper->prg.size();
+    return mapper->prg[index];
 }
 
 void Cart::writePrg(uint16_t addr, uint8_t value) {
@@ -102,12 +102,12 @@ void Cart::writePrg(uint16_t addr, uint8_t value) {
 }
 
 uint8_t Cart::readChr(uint16_t addr) {
-    return chr[addr];
+    return mapper->chr[addr];
 }
 
 void Cart::writeChr(uint16_t addr, uint8_t value) {
-    if (chrIsSingleRamBank) {
-        chr[addr] = value;
+    if (mapper->chrIsSingleRamBank) {
+        mapper->chr[addr] = value;
     }
     else {
         printf("ERROR: Tried to write 0x%X to CHR-ROM: 0x%X\n", value, addr);

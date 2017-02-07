@@ -28,14 +28,6 @@ private:
     bool verifyINesHeaderSignature(char* header);
     bool initializeMapper(int mapperNum);
 
-    Mirroring mirroring;
-    bool chrIsSingleRamBank;
-    bool isRamBattery;
-    std::vector<uint8_t> trainer;
-    std::vector<uint8_t> prg;
-    std::vector<uint8_t> chr;
-    std::vector<uint8_t> ram;
-
     std::unique_ptr<Mapper> mapper;
 };
 
