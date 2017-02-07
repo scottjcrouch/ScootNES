@@ -14,7 +14,7 @@ public:
     virtual void writeChr(uint16_t addr, uint8_t value) { };
 
     Mirroring mirroring;
-    bool chrIsSingleRamBank;
+    bool chrIsRam;
     std::vector<uint8_t> trainer;
     std::vector<uint8_t> prg;
     std::vector<uint8_t> chr;

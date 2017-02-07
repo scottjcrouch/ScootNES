@@ -33,8 +33,8 @@ bool Cart::loadFile(std::string romFileName) {
     }
 
     int chrSize = iNesHeader[5] * CHR_BANK_SIZE;
-    mapper->chrIsSingleRamBank = (chrSize == 0);
-    if (mapper->chrIsSingleRamBank) {
+    mapper->chrIsRam = (chrSize == 0);
+    if (mapper->chrIsRam) {
 	mapper->chr.resize(CHR_BANK_SIZE);
     }
     else {

@@ -15,7 +15,7 @@ uint8_t Mapper0::readChr(uint16_t addr) {
 }
 
 void Mapper0::writeChr(uint16_t addr, uint8_t value) {
-    if (chrIsSingleRamBank) {
+    if (chrIsRam) {
 	int index = addr % chr.size();
         chr[index] = value;
     }
