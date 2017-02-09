@@ -9,6 +9,7 @@
 #include <Mirroring.h>
 #include <Mapper.h>
 #include <Mapper0.h>
+#include <Mapper1.h>
 
 bool Cart::loadFile(std::string romFileName) {
     std::ifstream romFileStream(romFileName.c_str(), std::ios::binary);
@@ -83,6 +84,9 @@ bool Cart::initializeMapper(int mapperNum) {
     case 0:
 	mapper = std::unique_ptr<Mapper>(new Mapper0);
 	return true;
+    case 1:
+    	mapper = std::unique_ptr<Mapper>(new Mapper1);
+    	return true;
     default:
         return false;
     }

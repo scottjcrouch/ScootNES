@@ -11,7 +11,8 @@ OBJECTS= \
 	build/main.o \
 	build/PPU.o \
 	build/Graphics.o \
-	build/Mapper0.o
+	build/Mapper0.o \
+	build/Mapper1.o
 
 DEPS= $(OBJECTS:.o=.d)
 -include $(DEPS)
