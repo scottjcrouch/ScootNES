@@ -87,7 +87,7 @@ void Mapper1::loadRegister(uint16_t addr, uint8_t value) {
 void Mapper1::updateBankAddresses() {
     switch (prgMode) {
     case PrgMode::PRG_32KB:
-	prg16kBankAddresses[0] = (prgRomBank % 2) * 0x4000;
+	prg16kBankAddresses[0] = (prgRomBank & 0xFFFE) * 0x4000;
 	prg16kBankAddresses[1] = (prgRomBank | 1) * 0x4000;
 	break;
     case PrgMode::FIX_FIRST_16KB:
@@ -102,7 +102,7 @@ void Mapper1::updateBankAddresses() {
 
     switch(chrMode) {
     case ChrMode::CHR_8KB:
-	chr4kBankAddresses[0] = (chrRomBank0 % 2) * 0x1000;
+	chr4kBankAddresses[0] = (chrRomBank0 & 0xFFFE) * 0x1000;
 	chr4kBankAddresses[1] = (chrRomBank0 | 1) * 0x1000;
 	break;
     case ChrMode::CHR_4KB:
