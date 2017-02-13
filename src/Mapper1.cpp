@@ -72,9 +72,9 @@ void Mapper1::loadRegister(uint16_t addr, uint8_t value) {
 	}
 	switch(value & 0b01100) {
 	case 0:
-	case 1: prgMode = PrgMode::PRG_32KB;       break;
-	case 2: prgMode = PrgMode::FIX_FIRST_16KB; break;
-	case 3: prgMode = PrgMode::FIX_LAST_16KB;  break;
+	case 1: prgMode = PrgMode::PRG_32KB;           break;
+	case 2: prgMode = PrgMode::PRG_FIX_FIRST_16KB; break;
+	case 3: prgMode = PrgMode::PRG_FIX_LAST_16KB;  break;
 	}
 	switch(value & 0b10000) {
 	case 0: chrMode = ChrMode::CHR_8KB; break;
@@ -90,11 +90,11 @@ void Mapper1::updateBankAddresses() {
 	prg16kBankAddresses[0] = (prgRomBank & 0xFFFE) * 0x4000;
 	prg16kBankAddresses[1] = (prgRomBank | 1) * 0x4000;
 	break;
-    case PrgMode::FIX_FIRST_16KB:
+    case PrgMode::PRG_FIX_FIRST_16KB:
 	prg16kBankAddresses[0] = 0;
 	prg16kBankAddresses[1] = prgRomBank * 0x4000;
 	break;
-    case PrgMode::FIX_LAST_16KB:
+    case PrgMode::PRG_FIX_LAST_16KB:
 	prg16kBankAddresses[0] = prgRomBank * 0x4000;
 	prg16kBankAddresses[1] = prg.size() - 0x4000;
 	break;

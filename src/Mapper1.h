@@ -5,8 +5,8 @@
 
 enum PrgMode {
     PRG_32KB,
-    FIX_FIRST_16KB,
-    FIX_LAST_16KB,
+    PRG_FIX_FIRST_16KB,
+    PRG_FIX_LAST_16KB,
 };
 
 enum ChrMode {
@@ -34,7 +34,7 @@ private:
     int chrRomBank0 = 0;
     int chrRomBank1 = 0;
 
-    PrgMode prgMode = PrgMode::FIX_LAST_16KB;
+    PrgMode prgMode = PrgMode::PRG_FIX_LAST_16KB;
     ChrMode chrMode = ChrMode::CHR_8KB;
 
     int prg16kBankAddresses[2];
