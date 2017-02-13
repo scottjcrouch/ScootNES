@@ -70,13 +70,13 @@ void Mapper1::loadRegister(uint16_t addr, uint8_t value) {
 	case 2: mirroring = Mirroring::MIRROR_VERTICAL;   break;
 	case 3: mirroring = Mirroring::MIRROR_HORIZONTAL; break;
 	}
-	switch(value & 0b01100) {
+	switch((value & 0b01100) >> 2) {
 	case 0:
 	case 1: prgMode = PrgMode::PRG_32KB;           break;
 	case 2: prgMode = PrgMode::PRG_FIX_FIRST_16KB; break;
 	case 3: prgMode = PrgMode::PRG_FIX_LAST_16KB;  break;
 	}
-	switch(value & 0b10000) {
+	switch((value & 0b10000) >> 4) {
 	case 0: chrMode = ChrMode::CHR_8KB; break;
 	case 1: chrMode = ChrMode::CHR_4KB; break;
 	}
