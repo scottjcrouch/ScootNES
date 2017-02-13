@@ -34,7 +34,7 @@ private:
     int chrRomBank0 = 0;
     int chrRomBank1 = 0;
 
-    PrgMode prgMode = PrgMode::PRG_32KB;
+    PrgMode prgMode = PrgMode::FIX_LAST_16KB;
     ChrMode chrMode = ChrMode::CHR_8KB;
 
     int prg16kBankAddresses[2];
