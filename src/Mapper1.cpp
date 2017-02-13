@@ -113,55 +113,9 @@ void Mapper1::updateBankAddresses() {
 }
 
 int Mapper1::decodePrgRomAddress(uint16_t addr) {
-    // int bankNum;
-    // int offset;
-    // if (prgMode == PrgMode::32KB_BANKS) {
-    // 	offset = addr % 0x8000;
-    // 	bankNum = prgRomBank & 0xFFFE;
-    // }
-    // else {
-    // 	offset = addr % 0x4000;
-    // 	if (addr >= 0xC000) {
-    // 	    if (prgMode == PrgMode::FIX_LAST_16KB) {
-    // 		bankNum = (prg.size() / 0x4000) - 1;
-    // 	    }
-    // 	    else {
-    // 		bankNum = prgRomBank;
-    // 	    }
-    // 	}
-    // 	else {
-    // 	    if (prgMode == PrgMode::FIX_FIRST_16KB) {
-    // 		bankNum = 0;
-    // 	    }
-    // 	    else {
-    // 		bankNum = prgRomBank;
-    // 	    }
-    // 	}
-    // }
-
-    // int prgRomIndex = (bankNum*0x4000) + offset;
-    // return prgRomIndex;
     return prg16kBankAddresses[addr & 0x4000] + (addr % 0x4000);
 }
 
 int Mapper1::decodeChrRomAddress(uint16_t addr) {
-    // int bankNum;
-    // int offset;
-    // if (chrMode == ChrMode::8KB_BANKS) {
-    // 	offset = addr % 0x2000;
-    // 	bankNum = chrRomBank0 & 0xFFFE;
-    // }
-    // else {
-    // 	offset = addr % 0x1000;
-    // 	if (addr >= 0x1000) {
-    // 	    bankNum = chrRomBank1;
-    // 	}
-    // 	else {
-    // 	    bankNum = chrRomBank0;
-    // 	}
-    // }
-
-    // int chrRomIndex = (bankNum*0x1000) + offset;
-    // return chrRomIndex;
     return chr4kBankAddresses[addr & 0x1000] + (addr % 0x1000);
 }
