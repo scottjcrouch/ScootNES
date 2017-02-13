@@ -113,9 +113,13 @@ void Mapper1::updateBankAddresses() {
 }
 
 int Mapper1::decodePrgRomAddress(uint16_t addr) {
-    return prg16kBankAddresses[(addr & 0x4000) >> 14] + (addr % 0x4000);
+    int bankNum = (addr & 0x4000) >> 14;
+    int offset = (addr % 0x4000);
+    return prg16kBankAddresses[bankNum] + offset;
 }
 
 int Mapper1::decodeChrRomAddress(uint16_t addr) {
-    return chr4kBankAddresses[(addr & 0x1000) >> 12] + (addr % 0x1000);
+    int bankNum = (addr & 0x1000) >> 12;
+    int offset = (addr % 0x1000);
+    return chr4kBankAddresses[bankNum] + offset;
 }
