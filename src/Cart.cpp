@@ -45,6 +45,9 @@ bool Cart::loadFile(std::string romFileName) {
     }
 
     int ramSize  = iNesHeader[8] * RAM_BANK_SIZE;
+    if (ramSize == 0) {
+	ramSize = RAM_BANK_SIZE;
+    }
     bool isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
     mapper->ram.resize(ramSize);
     if (isRamBattery) {
