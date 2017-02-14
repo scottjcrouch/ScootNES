@@ -42,7 +42,7 @@ endif
 all: $(TARGET)
 
 .PHONY: debug
-debug: CFLAGS = -g -Og
+debug: CFLAGS = -g -O0
 debug: all
 
 $(TARGET): $(OBJECTS)
