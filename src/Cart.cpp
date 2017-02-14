@@ -66,6 +66,8 @@ bool Cart::loadFile(std::string romFileName) {
         mapper->mirroring = MIRROR_FOUR_SCREEN;
 	printf("Warning: four screen mirroring not yet supported");
     }
+
+    mapper->init();
     
     romFileStream.close();
     

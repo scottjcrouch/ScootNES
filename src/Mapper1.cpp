@@ -2,6 +2,10 @@
 
 #include <Mapper1.h>
 
+void Mapper1::init() {
+    updateBankAddresses();
+}
+
 uint8_t Mapper1::readPrg(uint16_t addr) {
     if (addr > 0x8000) {
 	int index = decodePrgRomAddress(addr);
