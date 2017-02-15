@@ -9,11 +9,11 @@ void Mapper1::init() {
 uint8_t Mapper1::readPrg(uint16_t addr) {
     if (addr > 0x8000) {
 	int index = decodePrgRomAddress(addr);
-	return prg[index];
+	return cartMemory.prg[index];
     }
     else if (addr > 0x6000) {
 	int index = addr % 0x2000;
-	return ram[index];
+	return cartMemory.ram[index];
     }
     else {
 	return 0;
@@ -40,19 +40,19 @@ void Mapper1::writePrg(uint16_t addr, uint8_t value) {
     }
     else if (addr > 0x6000) {
 	int index = addr % 0x2000;
-	ram[index] = value;
+	cartMemory.ram[index] = value;
     }
 }
 
 uint8_t Mapper1::readChr(uint16_t addr) {
     int index = decodeChrRomAddress(addr);
-    return chr[index];
+    return cartMemory.chr[index];
 }
 
 void Mapper1::writeChr(uint16_t addr, uint8_t value) {
-    if (chrIsRam) {
-	int index = addr % chr.size();
-        chr[index] = value;
+    if (cartMemory.chrIsRam) {
+	int index = addr % cartMemory.chr.size();
+        cartMemory.chr[index] = value;
     }
 }
 
@@ -69,10 +69,10 @@ void Mapper1::loadRegister(uint16_t addr, uint8_t value) {
     }
     else if (addr >= 0x8000) {
 	switch(value & 0b00011) {
-	case 0: mirroring = Mirroring::MIRROR_LOWER_BANK; break;
-	case 1: mirroring = Mirroring::MIRROR_UPPER_BANK; break;
-	case 2: mirroring = Mirroring::MIRROR_VERTICAL;   break;
-	case 3: mirroring = Mirroring::MIRROR_HORIZONTAL; break;
+	case 0: cartMemory.mirroring = Mirroring::MIRROR_LOWER_BANK; break;
+	case 1: cartMemory.mirroring = Mirroring::MIRROR_UPPER_BANK; break;
+	case 2: cartMemory.mirroring = Mirroring::MIRROR_VERTICAL;   break;
+	case 3: cartMemory.mirroring = Mirroring::MIRROR_HORIZONTAL; break;
 	}
 	switch((value & 0b01100) >> 2) {
 	case 0:
@@ -100,7 +100,7 @@ void Mapper1::updateBankAddresses() {
 	break;
     case PrgMode::PRG_FIX_LAST_16KB:
 	prg16kBankAddresses[0] = prgRomBank * 0x4000;
-	prg16kBankAddresses[1] = prg.size() - 0x4000;
+	prg16kBankAddresses[1] = cartMemory.prg.size() - 0x4000;
 	break;
     }
 

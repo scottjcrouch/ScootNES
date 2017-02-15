@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <Cart.h>
+#include <CartMemory.h>
 #include <Mirroring.h>
 #include <Mapper.h>
 #include <Mapper0.h>
@@ -22,57 +23,15 @@ bool Cart::loadFile(std::string romFileName) {
 	return false;
     }
 
+    CartMemory mem = getCartMemoryFromFile(iNesHeader, romFileStream);
+
+    romFileStream.close();
+
     int mapperNum = (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
-    if (!initializeMapper(mapperNum)) {
+    if (!initializeMapper(mapperNum, mem)) {
 	printf("ERROR: Mapper %d not yet supported\n", mapperNum);
 	return false;
     }
-
-    int prgSize = iNesHeader[4] * PRG_BANK_SIZE;
-    for(int i  = 0; i < prgSize; ++i) {
-	mapper->prg.push_back(romFileStream.get());
-    }
-
-    int chrSize = iNesHeader[5] * CHR_BANK_SIZE;
-    mapper->chrIsRam = (chrSize == 0);
-    if (mapper->chrIsRam) {
-	mapper->chr.resize(CHR_BANK_SIZE);
-    }
-    else {
-	for(int i  = 0; i < chrSize; ++i) {
-	    mapper->chr.push_back(romFileStream.get());
-	}
-    }
-
-    int ramSize  = iNesHeader[8] * RAM_BANK_SIZE;
-    if (ramSize == 0) {
-	ramSize = RAM_BANK_SIZE;
-    }
-    bool isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
-    mapper->ram.resize(ramSize);
-    if (isRamBattery) {
-        printf("ERROR: loading battery backed ram not yet supported\n");
-    }
-
-    bool isTrainer = !!(iNesHeader[6] & (0x1 << 2));
-    if (isTrainer) {
-	for(int i  = 0; i < TRAINER_SIZE; ++i) {
-	    mapper->trainer.push_back(romFileStream.get());
-	}
-    }
-
-    mapper->mirroring = MIRROR_HORIZONTAL;
-    if (iNesHeader[6] & 0x1) {
-        mapper->mirroring = MIRROR_VERTICAL;
-    }
-    if (iNesHeader[6] & (0x1 << 3)) {
-        mapper->mirroring = MIRROR_FOUR_SCREEN;
-	printf("Warning: four screen mirroring not yet supported");
-    }
-
-    mapper->init();
-    
-    romFileStream.close();
     
     return true;
 }
@@ -84,13 +43,61 @@ bool Cart::verifyINesHeaderSignature(char* iNesHeader) {
 	    iNesHeader[3] == 0x1A);
 }
 
-bool Cart::initializeMapper(int mapperNum) {
+CartMemory Cart::getCartMemoryFromFile(char* iNesHeader, std::ifstream& romFileStream) {
+    CartMemory mem;
+    
+    int prgSize = iNesHeader[4] * PRG_BANK_SIZE;
+    for(int i  = 0; i < prgSize; ++i) {
+	mem.prg.push_back(romFileStream.get());
+    }
+
+    int chrSize = iNesHeader[5] * CHR_BANK_SIZE;
+    mem.chrIsRam = (chrSize == 0);
+    if (mem.chrIsRam) {
+	mem.chr.resize(CHR_BANK_SIZE);
+    }
+    else {
+	for(int i  = 0; i < chrSize; ++i) {
+	    mem.chr.push_back(romFileStream.get());
+	}
+    }
+
+    int ramSize  = iNesHeader[8] * RAM_BANK_SIZE;
+    if (ramSize == 0) {
+	ramSize = RAM_BANK_SIZE;
+    }
+    bool isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
+    mem.ram.resize(ramSize);
+    if (isRamBattery) {
+        printf("ERROR: loading battery backed ram not yet supported\n");
+    }
+
+    bool isTrainer = !!(iNesHeader[6] & (0x1 << 2));
+    if (isTrainer) {
+	for(int i  = 0; i < TRAINER_SIZE; ++i) {
+	    mem.trainer.push_back(romFileStream.get());
+	}
+    }
+
+    mem.mirroring = MIRROR_HORIZONTAL;
+    if (iNesHeader[6] & 0x1) {
+        mem.mirroring = MIRROR_VERTICAL;
+    }
+    if (iNesHeader[6] & (0x1 << 3)) {
+        mem.mirroring = MIRROR_FOUR_SCREEN;
+	printf("Warning: four screen mirroring not yet supported");
+    }
+
+    return mem;
+}
+
+bool Cart::initializeMapper(int mapperNum, CartMemory mem) {
     switch(mapperNum) {
     case 0:
-	mapper = std::unique_ptr<Mapper>(new Mapper0);
+	mapper = std::unique_ptr<Mapper>(new Mapper0(mem));
 	return true;
     case 1:
-    	mapper = std::unique_ptr<Mapper>(new Mapper1);
+    	mapper = std::unique_ptr<Mapper>(new Mapper1(mem));
     	return true;
     default:
         return false;
@@ -98,7 +105,7 @@ bool Cart::initializeMapper(int mapperNum) {
 }
 
 Mirroring Cart::getMirroring() {
-    return mapper->mirroring;
+    return mapper->getMirroring();
 }
 
 uint8_t Cart::readPrg(uint16_t addr) {

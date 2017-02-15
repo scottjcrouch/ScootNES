@@ -3,20 +3,20 @@
 #include <Mapper0.h>
 
 uint8_t Mapper0::readPrg(uint16_t addr) {
-    int index = addr % prg.size();
-    return prg[index];
+    int index = addr % cartMemory.prg.size();
+    return cartMemory.prg[index];
 }
 
 void Mapper0::writePrg(uint16_t addr, uint8_t value) { }
 
 uint8_t Mapper0::readChr(uint16_t addr) {
-    int index = addr % chr.size();
-    return chr[index];
+    int index = addr % cartMemory.chr.size();
+    return cartMemory.chr[index];
 }
 
 void Mapper0::writeChr(uint16_t addr, uint8_t value) {
-    if (chrIsRam) {
-	int index = addr % chr.size();
-        chr[index] = value;
+    if (cartMemory.chrIsRam) {
+	int index = addr % cartMemory.chr.size();
+        cartMemory.chr[index] = value;
     }
 }

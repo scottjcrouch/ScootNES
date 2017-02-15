@@ -5,8 +5,8 @@
 #include <fstream>
 #include <string>
 #include <memory>
-#include <vector>
 
+#include <CartMemory.h>
 #include <Mapper.h>
 #include <Mirroring.h>
 
@@ -25,8 +25,9 @@ public:
     Mirroring getMirroring();
 
 private:
-    bool verifyINesHeaderSignature(char* header);
-    bool initializeMapper(int mapperNum);
+    bool verifyINesHeaderSignature(char* iNesHeader);
+    CartMemory getCartMemoryFromFile(char* iNesHeader, std::ifstream& romFileStream);
+    bool initializeMapper(int mapperNum, CartMemory mem);
 
     std::unique_ptr<Mapper> mapper;
 };
