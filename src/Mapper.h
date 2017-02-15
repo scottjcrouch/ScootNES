@@ -9,7 +9,7 @@
 
 class Mapper {
 public:
-    Mapper(CartMemory mem) : cartMemory(mem) { init(); };
+    Mapper(CartMemory mem) : cartMemory(mem) { };
     Mirroring getMirroring() { return cartMemory.mirroring; };
     virtual uint8_t readPrg(uint16_t addr) { };
     virtual void writePrg(uint16_t addr, uint8_t value) { };
@@ -17,8 +17,6 @@ public:
     virtual void writeChr(uint16_t addr, uint8_t value) { };
 
 protected:
-    virtual void init() { };
-
     CartMemory cartMemory;
 };
 

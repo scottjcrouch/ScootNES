@@ -1,8 +1,9 @@
 #include <cstdint>
 
+#include <CartMemory.h>
 #include <Mapper1.h>
 
-void Mapper1::init() {
+Mapper1::Mapper1(CartMemory mem) : Mapper(mem) {
     updateBankAddresses();
 }
 
