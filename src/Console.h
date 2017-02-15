@@ -41,13 +41,13 @@ public:
     uint32_t *getFrameBuffer();
     void runForOneFrame();
 
-    Cart cart;
     Controller controller1;
-    APU apu;
 
 private:
     void tick();
 
+    Cart cart;
+    APU apu;
     PPU ppu;
     CPU cpu;
     Divider cpuDivider;
