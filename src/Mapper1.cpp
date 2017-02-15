@@ -7,11 +7,11 @@ void Mapper1::init() {
 }
 
 uint8_t Mapper1::readPrg(uint16_t addr) {
-    if (addr > 0x8000) {
+    if (addr >= 0x8000) {
 	int index = decodePrgRomAddress(addr);
 	return cartMemory.prg[index];
     }
-    else if (addr > 0x6000) {
+    else if (addr >= 0x6000) {
 	int index = addr % 0x2000;
 	return cartMemory.ram[index];
     }
@@ -21,7 +21,7 @@ uint8_t Mapper1::readPrg(uint16_t addr) {
 }
 
 void Mapper1::writePrg(uint16_t addr, uint8_t value) {
-    if (addr > 0x8000) {
+    if (addr >= 0x8000) {
 	if (value & 0x80) {
 	    shiftRegister = 0x10;
 	}
@@ -38,7 +38,7 @@ void Mapper1::writePrg(uint16_t addr, uint8_t value) {
 	    }
 	}
     }
-    else if (addr > 0x6000) {
+    else if (addr >= 0x6000) {
 	int index = addr % 0x2000;
 	cartMemory.ram[index] = value;
     }
