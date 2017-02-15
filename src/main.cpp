@@ -108,8 +108,8 @@ int main(int argc, char *args[]) {
 
     std::string romFileName(args[1]);
     
-    if (!console.cart.loadFile(romFileName)) {
-        printf("cart failed to read file\n");
+    if (!console.loadINesFile(romFileName)) {
+        printf("failed to read file\n");
         return 1;
     }
 

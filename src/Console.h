@@ -1,6 +1,8 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
+#include <string>
+
 #include <Cart.h>
 #include <Controller.h>
 #include <CPU.h>
@@ -35,6 +37,7 @@ class Console {
 public:
     Console() : cpuDivider(3) { }
     void boot();
+    bool loadINesFile(std::string fileName);
     uint32_t *getFrameBuffer();
     void runForOneFrame();
 

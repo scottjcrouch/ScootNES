@@ -1,3 +1,5 @@
+#include <string>
+
 #include <Console.h>
 #include <CPU.h>
 #include <APU.h>
@@ -8,6 +10,10 @@
 void Console::boot() {
     ppu.boot(&cart, &cpu);
     cpu.boot(&ppu, &cart, &apu, &controller1);
+}
+
+bool Console::loadINesFile(std::string fileName) {
+    return cart.loadFile(fileName);
 }
 
 uint32_t *Console::getFrameBuffer() {
