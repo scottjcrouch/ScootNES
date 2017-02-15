@@ -11,13 +11,14 @@ class Mapper {
 public:
     Mapper(CartMemory mem) : cartMemory(mem) { init(); };
     Mirroring getMirroring() { return cartMemory.mirroring; };
-    virtual void init() { };
     virtual uint8_t readPrg(uint16_t addr) { };
     virtual void writePrg(uint16_t addr, uint8_t value) { };
     virtual uint8_t readChr(uint16_t addr) { };
     virtual void writeChr(uint16_t addr, uint8_t value) { };
 
 protected:
+    virtual void init() { };
+
     CartMemory cartMemory;
 };
 
