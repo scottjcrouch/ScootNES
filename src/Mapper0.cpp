@@ -7,8 +7,6 @@ uint8_t Mapper0::readPrg(uint16_t addr) {
     return cartMemory.prg[index];
 }
 
-void Mapper0::writePrg(uint16_t addr, uint8_t value) { }
-
 uint8_t Mapper0::readChr(uint16_t addr) {
     int index = addr % cartMemory.chr.size();
     return cartMemory.chr[index];
