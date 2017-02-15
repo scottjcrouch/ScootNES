@@ -25,8 +25,10 @@ public:
     Mirroring getMirroring();
 
 private:
-    bool verifyINesHeaderSignature(char* iNesHeader);
-    CartMemory getCartMemoryFromFile(char* iNesHeader, std::ifstream& romFileStream);
+    std::vector<char> getINesHeaderFromFile(std::ifstream& romFileStream);
+    bool verifyINesHeaderSignature(std::vector<char> iNesHeader);
+    CartMemory getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstream& romFileStream);
+    int getMapperNumberFromHeader(std::vector<char> iNesHeader);
     bool initializeMapper(int mapperNum, CartMemory mem);
 
     std::unique_ptr<Mapper> mapper;

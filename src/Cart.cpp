@@ -15,10 +15,9 @@
 bool Cart::loadFile(std::string romFileName) {
     std::ifstream romFileStream(romFileName.c_str(), std::ios::binary);
     
-    char iNesHeader[16];
-    romFileStream.read(iNesHeader, 16);
-
-    if(!verifyINesHeaderSignature(iNesHeader)) {
+    std::vector<char> iNesHeader = getINesHeaderFromFile(romFileStream);
+    bool isValidHeader = verifyINesHeaderSignature(iNesHeader);
+    if(!isValidHeader) {
 	printf("ERROR: Invalid iNES header\n");
 	return false;
     }
@@ -27,7 +26,7 @@ bool Cart::loadFile(std::string romFileName) {
 
     romFileStream.close();
 
-    int mapperNum = (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
+    int mapperNum = getMapperNumberFromHeader(iNesHeader);
     if (!initializeMapper(mapperNum, mem)) {
 	printf("ERROR: Mapper %d not yet supported\n", mapperNum);
 	return false;
@@ -36,14 +35,23 @@ bool Cart::loadFile(std::string romFileName) {
     return true;
 }
 
-bool Cart::verifyINesHeaderSignature(char* iNesHeader) {
+std::vector<char> Cart::getINesHeaderFromFile(std::ifstream& romFileStream) {
+    std::vector<char> header;
+    for(int i  = 0; i < 16; ++i) {
+	header.push_back(romFileStream.get());
+    }
+    
+    return header;
+}
+
+bool Cart::verifyINesHeaderSignature(std::vector<char> iNesHeader) {
     return (iNesHeader[0] == 'N' &&
 	    iNesHeader[1] == 'E' &&
 	    iNesHeader[2] == 'S' &&
 	    iNesHeader[3] == 0x1A);
 }
 
-CartMemory Cart::getCartMemoryFromFile(char* iNesHeader, std::ifstream& romFileStream) {
+CartMemory Cart::getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstream& romFileStream) {
     CartMemory mem;
     
     int prgSize = iNesHeader[4] * PRG_BANK_SIZE;
@@ -89,6 +97,10 @@ CartMemory Cart::getCartMemoryFromFile(char* iNesHeader, std::ifstream& romFileS
     }
 
     return mem;
+}
+
+int Cart::getMapperNumberFromHeader(std::vector<char> iNesHeader) {
+    return (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
 }
 
 bool Cart::initializeMapper(int mapperNum, CartMemory mem) {
