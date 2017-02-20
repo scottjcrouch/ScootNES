@@ -30,7 +30,7 @@ void Mapper1::writePrg(uint16_t addr, uint8_t value) {
 	    if (shiftRegister & 1) {
 		shiftRegister >>= 1;
 		shiftRegister |= ((value << 4) & 0x10);
-		loadRegister(addr, value);
+		loadRegister(addr, shiftRegister);
 		shiftRegister = 0x10;
 	    }
 	    else {
