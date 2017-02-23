@@ -24,16 +24,16 @@ uint8_t Pixel::getValue() {
     return tile->getValue(x, y);
 }
 
-uint8_t Sprite::getValue(uint8_t x, uint8_t y) {
+uint8_t Sprite::getValue(uint8_t x, uint8_t y, bool isBig) {
     x -= xPos;
     y -= yPos;
-    if (y >= 8) {
-        y += 16;
+    uint8_t bitColumn = (flipHor ? x : 7 - x);
+    uint8_t bitRow = (flipVert ? (isBig ? 15 : 7) - y : y);
+    if (bitRow > 7) {
+	bitRow += 8;
     }
-    uint8_t bitX = (flipHor ? x : 7 - x);
-    uint8_t bitY = (flipVert ? 7 - y : y);
-    uint8_t bit0 = getBit(pattern[bitY], bitX);
-    uint8_t bit1 = getBit(pattern[bitY + 8], bitX);
+    uint8_t bit0 = getBit(pattern[bitRow], bitColumn);
+    uint8_t bit1 = getBit(pattern[bitRow + 8], bitColumn);
     uint8_t index = bit0 | (bit1 << 1);
     return paletteSelect | index;
 }

@@ -197,7 +197,7 @@ void PPU::renderPixel(int x, int y) {
     realY %= 480;
 
     if (sprites[0].occludes(x, y) &&
-	(sprites[0].getValue(x, y) % 4 != 0) &&
+	(sprites[0].getValue(x, y, bigSprites) % 4 != 0) &&
 	(bgPixels[realX][realY].getValue() % 4 != 0) &&
 	((x > 7) || (imageMask && sprMask)) &&
 	x != 255 &&
@@ -214,7 +214,7 @@ void PPU::renderPixel(int x, int y) {
     if (showSpr && (x > 7 || sprMask)) {
 	for (int i = 0; i < 64; ++i) {
 	    if (sprites[i].occludes(x, y)) {
-		uint8_t paletteIndex = sprites[i].getValue(x, y);
+		uint8_t paletteIndex = sprites[i].getValue(x, y, bigSprites);
 		if (paletteIndex % 4 != 0) {
 		    uint8_t paletteVal = readPalette(paletteIndex);
 		    uint32_t pixelColour = universalPalette[paletteVal];

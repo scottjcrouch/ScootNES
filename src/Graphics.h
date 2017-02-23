@@ -32,7 +32,7 @@ public:
 
 class Sprite {
 public:
-    uint8_t getValue(uint8_t x, uint8_t y);
+    uint8_t getValue(uint8_t x, uint8_t y, bool isBig);
     bool occludes(uint8_t x, uint8_t y);
 
     uint8_t oamIndex;
