@@ -37,7 +37,6 @@ void APU::pulse1RampCtrl(uint8_t val) {
     pulse1SweepPeriod = ((val >> 4) & 0x7) + 1;
     pulse1SweepNegate = !!(val & 0x8);
     pulse1SweepShift = val & 0x7;
-
     pulse1SweepReload = true;
 }
 
@@ -55,14 +54,14 @@ void APU::pulse1CoarseTune(uint8_t val) {
        timer high (T) */
 
     pulse1Timer &= 0x00FF;
-    pulse1Timer |= ((val & 0x07) << 8);
-    pulse1LenCountLoad = val & 0xF8;
-
-    // TODO: reload length counter (use lookup table)
-    // TODO: reload divider period (pulse1Timer + 1)
-    // TODO: reset pulse phase
-    // TODO: restart sequencer
+    pulse1Timer |= (((int)val & 0x07) << 8);
+    // TODO: set divider period without restarting it
+    pulse1LenCountLoad = val >> 3;
+    if (pulse1Enable) {
+	pulse1LenCount = lengthTable[pulse1LenCountLoad];
+    }
     pulse1EnvStart = true;
+    // TODO: restart duty cycle sequence
 }
 
 void APU::pulse2Ctrl(uint8_t val) {
