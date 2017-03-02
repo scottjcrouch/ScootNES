@@ -9,30 +9,30 @@ public:
     }
     void setInterval(int interval) {
 	if (interval < 1) {
-	    resetValue = 0;
+	    counterResetValue = 0;
 	}
 	else {
-	    resetValue = interval - 1;
+	    counterResetValue = interval - 1;
 	}
     }
     void reset() {
-	clockCounter = resetValue;
+	counter = counterResetValue;
     }
     void tick() {
-	if (clockCounter == 0) {
-	    clockCounter = resetValue;
+	if (counter < 1) {
+	    counter = counterResetValue;
 	}
 	else {
-	    --clockCounter;
+	    --counter;
 	}
     }
     bool hasClocked() {
-	return clockCounter == resetValue;
+	return counter == counterResetValue;
     }
 
 private:
-    int resetValue;
-    int clockCounter;
+    int counterResetValue;
+    int counter;
 };
 
 #endif
