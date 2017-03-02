@@ -47,6 +47,7 @@ void APU::pulse1FineTune(uint8_t val) {
 
     pulse1Timer &= 0x0700;
     pulse1Timer |= val & 0xFF;
+    pulse1Divider.setInterval(pulse1Timer + 1);
 }
 
 void APU::pulse1CoarseTune(uint8_t val) {
@@ -56,7 +57,7 @@ void APU::pulse1CoarseTune(uint8_t val) {
 
     pulse1Timer &= 0x00FF;
     pulse1Timer |= (((int)val & 0x07) << 8);
-    // TODO: set divider period without restarting it
+    pulse1Divider.setInterval(pulse1Timer + 1);
     pulse1LenCountLoad = val >> 3;
     if (pulse1Enable) {
 	pulse1LenCount = lengthTable[pulse1LenCountLoad];
