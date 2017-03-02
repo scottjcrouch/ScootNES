@@ -6,6 +6,7 @@
 #include <PPU.h>
 #include <Cart.h>
 #include <Controller.h>
+#include <Divider.h>
 
 void Console::boot() {
     ppu.boot(&cart, &cpu);
