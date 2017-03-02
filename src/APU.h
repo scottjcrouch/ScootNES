@@ -89,7 +89,7 @@ private:
     int pulse1LenCountLoad;
     bool pulse1EnvStart;
 
-    Divider pulse1Divider;
+    Divider pulse1TimerDivider;
 };
 
 #endif
