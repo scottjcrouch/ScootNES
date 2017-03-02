@@ -1,6 +1,7 @@
 #include <cstdint>
 
 #include <APU.h>
+#include <Divider.h>
 
 APU::APU() {
     frameCounter(0xFF);
