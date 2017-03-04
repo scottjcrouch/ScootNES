@@ -9,8 +9,8 @@
 #include <CartMemory.h>
 #include <Mirroring.h>
 #include <Mapper.h>
-#include <Mapper0.h>
-#include <Mapper1.h>
+#include <mappers/Mapper0.h>
+#include <mappers/Mapper1.h>
 
 bool Cart::loadFile(std::string romFileName) {
     std::ifstream romFileStream(romFileName.c_str(), std::ios::binary);

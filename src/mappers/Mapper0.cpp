@@ -1,7 +1,7 @@
 #include <cstdint>
 
 #include <CartMemory.h>
-#include <Mapper0.h>
+#include <mappers/Mapper0.h>
 
 uint8_t Mapper0::readPrg(uint16_t addr) {
     if (addr >= 0x8000) {

@@ -11,8 +11,8 @@ OBJECTS= \
 	build/main.o \
 	build/PPU.o \
 	build/Graphics.o \
-	build/Mapper0.o \
-	build/Mapper1.o
+	build/mappers/Mapper0.o \
+	build/mappers/Mapper1.o
 
 DEPS= $(OBJECTS:.o=.d)
 -include $(DEPS)
@@ -39,11 +39,15 @@ else
 endif
 
 .PHONY: all
-all: $(TARGET)
+all: subdirs $(TARGET)
 
 .PHONY: debug
 debug: CFLAGS = -g -O0
 debug: all
+
+subdirs:
+	mkdir -p "build"
+	mkdir -p "build/mappers"
 
 $(TARGET): $(OBJECTS)
 	$(CC) $^ -o $(TARGET) $(LIB) $(LFLAGS)
@@ -51,8 +55,7 @@ $(TARGET): $(OBJECTS)
 build/%.o: src/%.cpp
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
-
 .PHONY: clean
 clean:
-	rm -r build/*
+	rm -r build
 	rm $(TARGET)
