@@ -25,6 +25,7 @@ void Console::runForOneFrame() {
     do {
         tick();
     } while (!ppu.endOfFrame());
+    apu.endFrame();
 }
 
 void Console::tick() {
@@ -34,3 +35,4 @@ void Console::tick() {
     }
     ppu.tick();
 }
+
