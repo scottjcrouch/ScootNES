@@ -19,12 +19,12 @@ public:
     void runForOneFrame();
 
     Controller controller1;
+    APU apu;
 
 private:
     void tick();
 
     Cart cart;
-    APU apu;
     PPU ppu;
     CPU cpu;
     Divider cpuDivider;
