@@ -12,7 +12,16 @@ OBJECTS= \
 	build/PPU.o \
 	build/Graphics.o \
 	build/mappers/Mapper0.o \
-	build/mappers/Mapper1.o
+	build/mappers/Mapper1.o \
+	build/Sound_Queue.o \
+	build/nes_apu/apu_snapshot.o \
+	build/nes_apu/Blip_Buffer.o \
+	build/nes_apu/Multi_Buffer.o \
+	build/nes_apu/Nes_Apu.o \
+	build/nes_apu/Nes_Namco.o \
+	build/nes_apu/Nes_Oscs.o \
+	build/nes_apu/Nes_Vrc6.o \
+	build/nes_apu/Nonlinear_Buffer.o
 
 DEPS= $(OBJECTS:.o=.d)
 -include $(DEPS)
@@ -26,7 +35,7 @@ DEPS= $(OBJECTS:.o=.d)
 # -MMD -MP, generate dependency (.d) files with phony targets
 CFLAGS=	-O3 -DNDEBUG
 
-INC+= -Isrc -MMD -MP
+INC+= -Isrc -Isrc/boost -Isrc/nes_apu -MMD -MP
 
 ifeq ($(OS),Windows_NT)
 	TARGET=	bin/basicnes.exe
@@ -48,6 +57,8 @@ debug: all
 subdirs:
 	mkdir -p "build"
 	mkdir -p "build/mappers"
+	mkdir -p "build/nes_apu"
+	mkdir -p "build/boost"
 
 $(TARGET): $(OBJECTS)
 	$(CC) $^ -o $(TARGET) $(LIB) $(LFLAGS)
