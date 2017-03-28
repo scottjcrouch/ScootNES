@@ -66,13 +66,11 @@ uint8_t CPU::read(uint16_t addr) {
     }
     else if (addr < 0x4020) {
 	switch (addr) {
-	case 0x4013: // TODO: APU
-            return 0;
-        case 0x4015: // TODO: APU
-            return 0;
+        case 0x4015:
+	    return apu->getStatus();
 	case 0x4016:
             return controller1->poll();
-	case 0x4017: // TODO: controller 2 and APU
+	case 0x4017: // TODO: controller 2
             return 0;
 	default: // disabled/unused APU test registers
             return openBus;
@@ -117,26 +115,18 @@ void CPU::write(uint16_t addr, uint8_t value) {
         }
     }
     else if (addr < 0x4020) {
-	switch (addr) {
-	case 0x4013: // TODO: APU
-	    break;
-	case 0x4014: {
+	if (addr == 0x4014) {
 	    uint16_t startAddr = ((uint16_t)value) << 8;
 	    for (int i = 0; i < 256; ++i) {
 		ppu->setOAMDATA(read(startAddr + i));
 	    }
 	    addCycles(514);
-	    break;
 	}
-	case 0x4015: // TODO: APU
-	    break;
-	case 0x4016:
+	else if (addr == 0x4016) {
 	    controller1->setStrobe(!!(value & 0x1));
-	    break;
-	case 0x4017: // TODO: controller 2 and APU
-	    break;
-	default: // disabled/unused APU test registers
-	    break;
+	}
+	else if (addr < 0x4018) {
+	    apu->writeRegister(addr, value);
 	}
     }
     else {
