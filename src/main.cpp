@@ -8,6 +8,8 @@
 #include <Console.h>
 #include <Cart.h>
 #include <Controller.h>
+#include <APU.h>
+#include <Sound_Queue.h>
 
 const unsigned int WINDOW_WIDTH = 256*2;
 const unsigned int WINDOW_HEIGHT = 240*2;
@@ -17,6 +19,8 @@ const unsigned int TICKS_PER_FRAME = 1000 / GAME_FPS;
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 SDL_Texture *frameTexture = NULL;
+
+Sound_Queue *sound_queue = NULL;
 
 Console console;
 
@@ -75,6 +79,19 @@ bool initVideo() {
     return true;
 }
 
+bool initSound() {
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+	printf("SDL_Init() failed: %s\n", SDL_GetError());
+        return false;
+    }
+    
+    sound_queue = new Sound_Queue;
+    if (!sound_queue || sound_queue->init(44100)) {
+	printf("Sound queue init failed: %s\n", SDL_GetError());
+        return false;
+    }
+}
+
 void freeAndQuitSDL() {
     SDL_DestroyTexture(frameTexture);
     SDL_DestroyRenderer(renderer);
@@ -82,6 +99,7 @@ void freeAndQuitSDL() {
     window = NULL;
     renderer = NULL;
     frameTexture = NULL;
+    delete sound_queue;
     SDL_Quit();
 }
 
@@ -103,6 +121,10 @@ int main(int argc, char *args[]) {
     }
     if (!initVideo()) {
         printf("initVideo() failed\n");
+        return 1;
+    }
+    if (!initSound()) {
+        printf("initSound() failed\n");
         return 1;
     }
 
@@ -167,6 +189,13 @@ int main(int argc, char *args[]) {
 
         // finally present render target to the window
         SDL_RenderPresent(renderer);
+
+	// retrieve buffered sound samples
+	sample_t soundBuf[2048];
+	long soundBufLength = console.apu.readSamples(soundBuf, 2048);
+	
+	// play samples in the buffer
+	sound_queue->write(soundBuf, soundBufLength);
 
         // delay frame to enforce framerate
         frameTimer = SDL_GetTicks() - frameTimer;
