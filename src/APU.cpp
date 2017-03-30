@@ -2,7 +2,7 @@
 
 #include <APU.h>
 
-static int null_dmc_reader(void*, uint16_t)
+static int null_dmc_reader(void*, unsigned int)
 {
 	return 0x55; // causes dmc sample to be flat
 }
@@ -17,7 +17,7 @@ APU::APU()
 	buf.sample_rate(96000);
 }
 
-void APU::setDmcCallback(int (*f)(void* user_data, uint16_t), void* p)
+void APU::setDmcCallback(int (*f)(void* user_data, unsigned int), void* p)
 {
 	apu.dmc_reader(f, p);
 }

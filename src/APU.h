@@ -9,7 +9,7 @@
 class APU {
 public:
 	APU();
-	void setDmcCallback(int (*callback)(void* user_data, uint16_t), void* user_data = NULL);
+	void setDmcCallback(int (*callback)(void* user_data, unsigned int), void* user_data = NULL);
 	void writeRegister(uint16_t, uint8_t data);
 	int getStatus();
 	// End a 1/60 sound frame
