@@ -14,7 +14,7 @@ APU::APU()
 	apu.dmc_reader(null_dmc_reader, NULL);
 	apu.output(&buf);
 	buf.clock_rate(1789773);
-	buf.sample_rate(96000);
+	buf.sample_rate(44100);
 }
 
 void APU::setDmcCallback(int (*f)(void* user_data, unsigned int), void* p)
