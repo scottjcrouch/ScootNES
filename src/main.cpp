@@ -191,7 +191,7 @@ int main(int argc, char *args[]) {
         SDL_RenderPresent(renderer);
 
 	// retrieve buffered sound samples
-	sample_t soundBuf[2048];
+	APU::sample_t soundBuf[2048];
 	long soundBufLength = console.apu.readSamples(soundBuf, 2048);
 	
 	// play samples in the buffer
