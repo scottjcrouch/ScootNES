@@ -90,6 +90,7 @@ bool initSound() {
 	printf("Sound queue init failed: %s\n", SDL_GetError());
         return false;
     }
+    return true;
 }
 
 void freeAndQuitSDL() {
