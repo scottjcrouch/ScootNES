@@ -66,7 +66,7 @@ struct apu_snapshot_t
 		byte irq_flag;
 	} dmc;
 	
-	enum { tag = 'APUR' };
+	enum { tag = 0x41505552 }; // 'APUR'
 	void swap();
 };
 BOOST_STATIC_ASSERT( sizeof (apu_snapshot_t) == 72 );
