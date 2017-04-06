@@ -1,7 +1,7 @@
 
 // Nes_Snd_Emu 0.1.7. http://www.slack.net/~ant/
 
-#include "Sound_Queue.h"
+#include "SoundQueue.h"
 
 #include <assert.h>
 #include <string.h>
@@ -30,7 +30,7 @@ static const char* sdl_error( const char* str )
 	return str;
 }
 
-Sound_Queue::Sound_Queue()
+SoundQueue::SoundQueue()
 {
 	bufs = NULL;
 	free_sem = NULL;
@@ -40,7 +40,7 @@ Sound_Queue::Sound_Queue()
 	sound_open = false;
 }
 
-Sound_Queue::~Sound_Queue()
+SoundQueue::~SoundQueue()
 {
 	if ( sound_open )
 	{
@@ -54,13 +54,13 @@ Sound_Queue::~Sound_Queue()
 	delete [] bufs;
 }
 
-int Sound_Queue::sample_count() const
+int SoundQueue::sample_count() const
 {
 	int buf_free = SDL_SemValue( free_sem ) * buf_size + (buf_size - write_pos);
 	return buf_size * buf_count - buf_free;
 }
 
-const char* Sound_Queue::init( long sample_rate, int chan_count )
+const char* SoundQueue::init( long sample_rate, int chan_count )
 {
 	assert( !bufs ); // can only be initialized once
 	
@@ -89,13 +89,13 @@ const char* Sound_Queue::init( long sample_rate, int chan_count )
 	return NULL;
 }
 
-inline Sound_Queue::sample_t* Sound_Queue::buf( int index )
+inline SoundQueue::sample_t* SoundQueue::buf( int index )
 {
 	assert( (unsigned) index < buf_count );
 	return bufs + (long) index * buf_size;
 }
 
-void Sound_Queue::write( const sample_t* in, int count )
+void SoundQueue::write( const sample_t* in, int count )
 {
 	while ( count )
 	{
@@ -117,7 +117,7 @@ void Sound_Queue::write( const sample_t* in, int count )
 	}
 }
 
-void Sound_Queue::fill_buffer( Uint8* out, int count )
+void SoundQueue::fill_buffer( Uint8* out, int count )
 {
 	if ( SDL_SemValue( free_sem ) < buf_count - 1 )
 	{
@@ -131,8 +131,8 @@ void Sound_Queue::fill_buffer( Uint8* out, int count )
 	}
 }
 
-void Sound_Queue::fill_buffer_( void* user_data, Uint8* out, int count )
+void SoundQueue::fill_buffer_( void* user_data, Uint8* out, int count )
 {
-	((Sound_Queue*) user_data)->fill_buffer( out, count );
+	((SoundQueue*) user_data)->fill_buffer( out, count );
 }
 

@@ -13,7 +13,7 @@ OBJECTS= \
 	build/Graphics.o \
 	build/mappers/Mapper0.o \
 	build/mappers/Mapper1.o \
-	build/Sound_Queue.o \
+	build/SoundQueue.o \
 	build/nes_apu/apu_snapshot.o \
 	build/nes_apu/Blip_Buffer.o \
 	build/nes_apu/Multi_Buffer.o \

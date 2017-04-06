@@ -9,7 +9,7 @@
 #include <Cart.h>
 #include <Controller.h>
 #include <APU.h>
-#include <Sound_Queue.h>
+#include <SoundQueue.h>
 
 const unsigned int WINDOW_WIDTH = 256*2;
 const unsigned int WINDOW_HEIGHT = 240*2;
@@ -20,7 +20,7 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 SDL_Texture *frameTexture = NULL;
 
-Sound_Queue *sound_queue = NULL;
+SoundQueue *soundQueue = NULL;
 
 Console console;
 
@@ -85,8 +85,8 @@ bool initSound() {
         return false;
     }
     
-    sound_queue = new Sound_Queue;
-    if (!sound_queue || sound_queue->init(44100)) {
+    soundQueue = new SoundQueue;
+    if (!soundQueue || soundQueue->init(44100)) {
 	printf("Sound queue init failed: %s\n", SDL_GetError());
         return false;
     }
@@ -100,7 +100,7 @@ void freeAndQuitSDL() {
     window = NULL;
     renderer = NULL;
     frameTexture = NULL;
-    delete sound_queue;
+    delete soundQueue;
     SDL_Quit();
 }
 
@@ -196,7 +196,7 @@ int main(int argc, char *args[]) {
 	long soundBufLength = console.apu.readSamples(soundBuf, 2048);
 	
 	// play samples in the buffer
-	sound_queue->write(soundBuf, soundBufLength);
+	soundQueue->write(soundBuf, soundBufLength);
 
         // delay frame to enforce framerate
         frameTimer = SDL_GetTicks() - frameTimer;

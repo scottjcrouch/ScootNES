@@ -9,10 +9,10 @@
 #include "SDL.h"
 
 // Simple SDL sound wrapper that has a synchronous interface
-class Sound_Queue {
+class SoundQueue {
 public:
-	Sound_Queue();
-	~Sound_Queue();
+	SoundQueue();
+	~SoundQueue();
 	
 	// Initialize with specified sample rate and channel count.
 	// Returns NULL on success, otherwise error string.
