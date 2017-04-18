@@ -1,6 +1,6 @@
 CC= 	g++ -std=c++11
 
-TARGET=	bin/basicnes
+TARGET=	bin/ScootNES
 
 OBJECTS= \
 	build/APU.o \
@@ -38,7 +38,7 @@ CFLAGS=	-O3 -DNDEBUG
 INC+= -Isrc -Isrc/boost -Isrc/nes_apu -MMD -MP
 
 ifeq ($(OS),Windows_NT)
-	TARGET=	bin/basicnes.exe
+	TARGET=	bin/ScootNES.exe
 	LFLAGS+= -lmingw32 -lSDL2main -lSDL2
 	LIB+= -L lib/SDL2
 	INC+= -I include/SDL2

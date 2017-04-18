@@ -41,7 +41,7 @@ bool initVideo() {
 
     // create window
     window = SDL_CreateWindow(
-        "BasicNES",
+        "ScootNES",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         WINDOW_WIDTH,
