@@ -1,6 +1,7 @@
 # ScootNES
 
 ![Super Mario Bros. (1985)](https://i.imgur.com/F02uO7Y.png)
+![Excitebike (1984)](https://i.imgur.com/U0KrFyt.png)
 
 A basic NTSC NES emulator in C++.
 
