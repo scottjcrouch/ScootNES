@@ -1,4 +1,7 @@
 # ScootNES
+
+![Super Mario Bros. (1985)](https://i.imgur.com/F02uO7Y.png)
+
 A basic NTSC NES emulator in C++.
 
 Support is currently limited to mapper 0 (NROM) and 1 (MMC1) games. See [here](http://tuxnes.sourceforge.net/nesmapper.txt) for a list of mappers used by most ROMs.
