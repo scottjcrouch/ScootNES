@@ -212,14 +212,14 @@ void PPU::renderPixel(int x, int y) {
     // render first occluding sprite that isn't transparent
     bool isBgSpr = false;
     if (showSpr && (x > 7 || sprMask)) {
-	for (int i = 0; i < 64; ++i) {
-	    if (sprites[i].occludes(x, y)) {
-		uint8_t paletteIndex = sprites[i].getValue(x, y, bigSprites);
+	for (int i = 0; i < spriteBuffer.size(); ++i) {
+	    if (spriteBuffer[i].occludes(x, y)) {
+		uint8_t paletteIndex = spriteBuffer[i].getValue(x, y, bigSprites);
 		if (paletteIndex % 4 != 0) {
 		    uint8_t paletteVal = readPalette(paletteIndex);
 		    uint32_t pixelColour = universalPalette[paletteVal];
 		    frameBuffer[x + (y * FRAME_WIDTH)] = pixelColour;
-		    isBgSpr = sprites[i].priority;
+		    isBgSpr = spriteBuffer[i].priority;
 		    if (!isBgSpr) {
 			return;
 		    }
@@ -478,6 +478,7 @@ void PPU::buildSpriteData() {
 }
 
 void PPU::reloadSpriteData() {
+    spriteBuffer.clear();
     for (int i = 0; i < 64; ++i) {
 	sprites[i].xPos = oam[sprites[i].oamIndex + 3];
 	sprites[i].yPos = oam[sprites[i].oamIndex];
@@ -518,5 +519,7 @@ void PPU::reloadSpriteData() {
 	sprites[i].priority = !!(oam[sprites[i].oamIndex + 2] & 0b00100000);
 	sprites[i].flipHor  = !!(oam[sprites[i].oamIndex + 2] & 0b01000000);
 	sprites[i].flipVert = !!(oam[sprites[i].oamIndex + 2] & 0b10000000);
+
+	spriteBuffer.push_back(sprites[i]);
     }
 }

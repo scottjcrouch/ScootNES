@@ -2,6 +2,7 @@
 #define PPU_H
 
 #include <cstdint>
+#include <vector>
 
 #include <Cart.h>
 #include <Graphics.h>
@@ -128,6 +129,7 @@ private:
     Tile bgTiles[4][32][30];
     Metatile bgMetaTiles[4][8][8];
     Sprite sprites[64];
+    std::vector<Sprite> spriteBuffer;
 };
 
 #endif
