@@ -22,7 +22,7 @@ On debian derivatives:
     ./ScootNES path_to_rom.nes
 
 ## Building on Windows
-ScootNES can be built on Windows with Mingw-w64 and MSYS binaries added to %PATH%. SDL2 development library and header files for Mingw 64-bit ([found here](https://www.libsdl.org/download-2.0.php)) must be copied to lib/SDL2 and include/SDL2 in the project folder respectively.
+ScootNES can be built on Windows with Mingw-w64 and MSYS binaries added to %PATH%. SDL2 development library and header files for Mingw 64-bit ([found here](https://www.libsdl.org/download-2.0.php)) must be copied to lib/SDL2 and include/SDL2 in the project folder respectively, as well as placing the corresponding SDL2.dll in the executable's directory before running.
 
 ## Controls
 * D-pad: Arrow keys
