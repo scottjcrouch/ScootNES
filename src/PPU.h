@@ -4,10 +4,9 @@
 #include <cstdint>
 #include <vector>
 
+#include <CPU.h>
 #include <Cart.h>
 #include <Graphics.h>
-
-class CPU;
 
 static const unsigned int FRAME_WIDTH = 256;
 static const unsigned int FRAME_HEIGHT = 240;

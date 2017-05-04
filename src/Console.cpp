@@ -9,9 +9,9 @@
 #include <Divider.h>
 
 void Console::boot() {
-    ppu.boot(&cart, &cpu);
     cpu.boot([this] (uint16_t addr) {return cpuRead(addr);},
 	     [this] (uint16_t addr, uint8_t data) {cpuWrite(addr,data);});
+    ppu.boot(&cart, &cpu);
 }
 
 bool Console::loadINesFile(std::string fileName) {
