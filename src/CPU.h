@@ -18,6 +18,7 @@ public:
     void tick();
     void signalNMI();
     void signalIRQ();
+    void suspend(int cycles);
 
 private:
     Cart* cart;
@@ -64,7 +65,6 @@ private:
     uint8_t read(uint16_t addr);
     void write(uint16_t addr, uint8_t value);
 
-    void addCycles(int);
     int cyclesLeft;
 
     // instructions
