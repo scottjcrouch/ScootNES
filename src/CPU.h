@@ -2,29 +2,27 @@
 #define CPU_H
 
 #include <cstdint>
-
-#include <Cart.h>
-#include <PPU.h>
-#include <APU.h>
-#include <Controller.h>
+#include <functional>
 
 static const uint16_t NMI_VECTOR = 0xFFFA;
 static const uint16_t RESET_VECTOR = 0xFFFC;
 static const uint16_t IRQ_VECTOR = 0xFFFE;
 
+typedef std::function<uint8_t(uint16_t)> ReadBus;
+typedef std::function<void(uint16_t,uint8_t)> WriteBus;
+
 class CPU {
 public:
-    void boot(PPU* ppu, Cart* cart, APU* apu, Controller* controller1);
+    void boot(ReadBus read, WriteBus write);
     void tick();
     void signalNMI();
     void signalIRQ();
     void suspend(int cycles);
 
 private:
-    Cart* cart;
-    PPU* ppu;
-    APU* apu;
-    Controller* controller1;
+    // memory access callbacks
+    ReadBus read;
+    WriteBus write;
 
     // registers
     uint16_t pc;
@@ -48,9 +46,6 @@ private:
     // interrupt signals
     int nmiSignal;
     int irqSignal;
-    // memory
-    uint8_t cpuRam[0x800] = {0};
-    uint8_t openBus;
 
     void executeNextOp();
     void push8(uint8_t value);
@@ -62,8 +57,6 @@ private:
     void setStatus(uint8_t value);
     void handleInterrupts();
     void branch();
-    uint8_t read(uint16_t addr);
-    void write(uint16_t addr, uint8_t value);
 
     int cyclesLeft;
 
