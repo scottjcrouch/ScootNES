@@ -46,19 +46,19 @@ uint8_t Console::cpuRead(uint16_t addr) {
         int port = addr % 8;
         switch (port) {
         case 0: // 0x2000
-            return openBus;
+            return cpuBusMDR;
         case 1: // 0x2001
-            return openBus;
+            return cpuBusMDR;
         case 2: // 0x2002
             return ppu.getSTATUS();
         case 3: // 0x2003
-            return openBus;
+            return cpuBusMDR;
         case 4: // 0x2004
             return ppu.getOAMDATA();
         case 5: // 0x2005
-            return openBus;
+            return cpuBusMDR;
         case 6: // 0x2006
-            return openBus;
+            return cpuBusMDR;
         case 7: // 0x2007
             return ppu.getDATA();
         }
@@ -72,7 +72,7 @@ uint8_t Console::cpuRead(uint16_t addr) {
 	case 0x4017: // TODO: controller 2
             return 0;
 	default: // disabled/unused APU test registers
-            return openBus;
+            return cpuBusMDR;
         }
     }
     else {
@@ -81,7 +81,7 @@ uint8_t Console::cpuRead(uint16_t addr) {
 }
 
 void Console::cpuWrite(uint16_t addr, uint8_t value) {
-    openBus = value;
+    cpuBusMDR = value;
     if (addr < 0x2000) {
         cpuRam[addr % 0x800] = value;
     }
