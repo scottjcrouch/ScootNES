@@ -5,7 +5,7 @@
 #include <Graphics.h>
 #include <Mirroring.h>
 
-void PPU::boot(Cart *cart, NMICallback nmi) {
+void PPU::boot(Cart *cart, NMI nmi) {
     this->cart = cart;
     this->nmi = nmi;
 

@@ -19,7 +19,7 @@ static const int POST_REND        = CYC_PER_SCANL * 240;
 static const int VBLANK           = CYC_PER_SCANL * 241;
 static const int PRE_REND         = CYC_PER_SCANL * 261;
 
-typedef std::function<void()> NMICallback;
+typedef std::function<void()> NMI;
 
 static const uint32_t universalPalette[64] = {
     0x757575, 0x271B8F, 0x0000AB, 0x47009F, 0x8F0077, 0xAB0013,
@@ -36,7 +36,7 @@ static const uint32_t universalPalette[64] = {
 
 class PPU {
 public:
-    void boot(Cart *cart, NMICallback nmi);
+    void boot(Cart *cart, NMI nmi);
     void setCTRL(uint8_t value);
     void setMASK(uint8_t value);
     uint8_t getSTATUS();
@@ -74,7 +74,7 @@ private:
     void reloadSpriteData();
 
     Cart *cart;
-    NMICallback nmi;
+    NMI nmi;
 
     // memory
     uint8_t oam[0x100] = {0};
