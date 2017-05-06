@@ -33,7 +33,6 @@ private:
 
     uint8_t cpuRam[0x800] = {0};
     uint8_t cpuBusMDR;
-
 };
 
 #endif

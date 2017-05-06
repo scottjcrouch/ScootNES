@@ -12,7 +12,8 @@
 void Console::boot() {
     cpu.boot([this] (uint16_t addr) {return cpuRead(addr);},
 	     [this] (uint16_t addr, uint8_t data) {cpuWrite(addr,data);});
-    ppu.boot(&cart, [this] () {cpu.signalNMI();});
+    ppu.boot(&cart,
+	     [this] () {cpu.signalNMI();});
 }
 
 bool Console::loadINesFile(std::string fileName) {
