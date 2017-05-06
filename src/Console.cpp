@@ -10,10 +10,16 @@
 #include <Divider.h>
 
 void Console::boot() {
-    cpu.boot([this] (uint16_t addr) {return cpuRead(addr);},
-	     [this] (uint16_t addr, uint8_t data) {cpuWrite(addr,data);});
-    ppu.boot(&cart,
-	     [this] () {cpu.signalNMI();});
+    ReadBus cpuReadCallback = [this] (uint16_t addr) {
+	return cpuRead(addr);
+    };
+    WriteBus cpuWriteCallback = [this] (uint16_t addr, uint8_t data) {
+	cpuWrite(addr,data);
+    };
+    cpu.boot(cpuReadCallback, cpuWriteCallback);
+    
+    NMI nmiCallback = [this] () {cpu.signalNMI();};
+    ppu.boot(&cart, nmiCallback);
 }
 
 bool Console::loadINesFile(std::string fileName) {
