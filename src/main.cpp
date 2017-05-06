@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <memory>
 
 #include <SDL.h>
 
@@ -20,7 +21,7 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 SDL_Texture *frameTexture = NULL;
 
-SoundQueue *soundQueue = NULL;
+std::unique_ptr<SoundQueue> soundQueue;
 
 Console console;
 
@@ -85,7 +86,7 @@ bool initSound() {
         return false;
     }
     
-    soundQueue = new SoundQueue;
+    soundQueue = std::unique_ptr<SoundQueue>(new SoundQueue);
     if (!soundQueue || soundQueue->init(44100)) {
 	printf("Sound queue init failed: %s\n", SDL_GetError());
         return false;
@@ -100,7 +101,6 @@ void freeAndQuitSDL() {
     window = NULL;
     renderer = NULL;
     frameTexture = NULL;
-    delete soundQueue;
     SDL_Quit();
 }
 
