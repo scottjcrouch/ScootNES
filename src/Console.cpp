@@ -1,4 +1,5 @@
 #include <string>
+#include <functional>
 
 #include <Console.h>
 #include <CPU.h>
@@ -11,7 +12,7 @@
 void Console::boot() {
     cpu.boot([this] (uint16_t addr) {return cpuRead(addr);},
 	     [this] (uint16_t addr, uint8_t data) {cpuWrite(addr,data);});
-    ppu.boot(&cart, &cpu);
+    ppu.boot(&cart, [this] () {cpu.signalNMI();});
 }
 
 bool Console::loadINesFile(std::string fileName) {

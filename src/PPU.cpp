@@ -5,9 +5,9 @@
 #include <Graphics.h>
 #include <Mirroring.h>
 
-void PPU::boot(Cart *cart, CPU *cpu) {
+void PPU::boot(Cart *cart, NMICallback nmi) {
     this->cart = cart;
-    this->cpu = cpu;
+    this->nmi = nmi;
 
     // 0x2000: CTRL
     nameTableAddr = 0;              // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
@@ -289,7 +289,7 @@ void PPU::tick() {
 	case VBLANK:
 	    isVBlank = true;
 	    if (nmiOnVBlank) {
-		cpu->signalNMI();
+		nmi();
 	    }
 	    ++frameCounter;
 	    oddFrame ^= 1;
