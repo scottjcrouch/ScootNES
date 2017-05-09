@@ -16,9 +16,9 @@ void Console::boot() {
     WriteBus cpuWriteCallback = [this] (uint16_t addr, uint8_t data) {
 	cpuWrite(addr,data);
     };
-    cpu.boot(cpuReadCallback, cpuWriteCallback);
-    
     NMI nmiCallback = [this] () {cpu.signalNMI();};
+
+    cpu.boot(cpuReadCallback, cpuWriteCallback);
     ppu.boot(&cart, nmiCallback);
 }
 
