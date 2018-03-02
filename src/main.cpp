@@ -3,6 +3,8 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <exception>
+#include <stdexcept>
 
 #include <SDL.h>
 
@@ -27,20 +29,20 @@ Console console;
 
 std::map<SDL_Keycode,Controller::Button> controllerKeyBinds;
 
-bool initVideo() {
-    // init SDL
+void initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL_Init() failed: %s\n", SDL_GetError());
-        return false;
+	throw std::runtime_error(std::string("SDL_Init() failed: ") + SDL_GetError());
     }
+}
 
-    // set texture scaling to nearest pixel sampling (sharp pixels)
+void setTextureScaling() {
+    // nearest pixel sampling (i.e. sharp pixels, no aliasing)
     if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0")) {
-        printf("SDL_SetHint() failed\n");
-        return false;
+	throw std::runtime_error(std::string("SDL_SetHint() failed: ") + SDL_GetError());
     }
+}
 
-    // create window
+void createWindow() {
     window = SDL_CreateWindow(
         "ScootNES",
         SDL_WINDOWPOS_UNDEFINED,
@@ -49,23 +51,26 @@ bool initVideo() {
         WINDOW_HEIGHT,
         SDL_WINDOW_SHOWN);
     if (window == NULL) {
-        printf("SDL_CreateWindow() failed: %s\n", SDL_GetError());
-        return false;
+	throw std::runtime_error(std::string("SDL_CreateWindow() failed: ") + SDL_GetError());
     }
+}
 
-    // create renderer for window
+void createRendererForWindow() {
     renderer = SDL_CreateRenderer(
         window,
         -1,
         SDL_RENDERER_ACCELERATED); // | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == NULL) {
-        printf("SDL_CreateRederer() failed: %s\n", SDL_GetError());
-        return false;
+	throw std::runtime_error(std::string("SDL_CreateRenderer() failed: ") + SDL_GetError());
     }
+}
 
+void setRendererDrawColor() {
     // set colour used for drawing operations e.g. SDL_RenderClear
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+}
 
+void createTextureForRenderer() {
     // create texture that we'll display and update each frame
     frameTexture = SDL_CreateTexture(
         renderer,
@@ -74,24 +79,35 @@ bool initVideo() {
         256,
         240);
     if (frameTexture == NULL) {
-        printf("SDL_CreateTexture() failed: %s\n", SDL_GetError());
-        return false;
+	throw std::runtime_error(std::string("SDL_CreateTexture() failed: ") + SDL_GetError());
     }
-    return true;
+}
+
+void initVideo() {
+    initSDL();
+    createWindow();
+    createRendererForWindow();
+    setRendererDrawColor();
+    createTextureForRenderer();
+    setTextureScaling();
+}
+
+void initSDLAudio() {
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+	throw std::runtime_error(std::string("SDL_Init() failed: ") + SDL_GetError());
+    }
+}
+
+void initSoundQueue() {
+    soundQueue = std::unique_ptr<SoundQueue>(new SoundQueue);
+    if (!soundQueue || soundQueue->init(44100)) {
+	throw std::runtime_error(std::string("Sound queue init failed: ") + SDL_GetError());
+    }
 }
 
 bool initSound() {
-    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-	printf("SDL_Init() failed: %s\n", SDL_GetError());
-        return false;
-    }
-    
-    soundQueue = std::unique_ptr<SoundQueue>(new SoundQueue);
-    if (!soundQueue || soundQueue->init(44100)) {
-	printf("Sound queue init failed: %s\n", SDL_GetError());
-        return false;
-    }
-    return true;
+    initSDLAudio();
+    initSoundQueue();
 }
 
 void freeAndQuitSDL() {
@@ -120,17 +136,18 @@ int main(int argc, char *args[]) {
 	printf("Rom path not provided\n");
 	return 1;
     }
-    if (!initVideo()) {
-        printf("initVideo() failed\n");
-        return 1;
-    }
-    if (!initSound()) {
-        printf("initSound() failed\n");
-        return 1;
+
+    try {
+	initVideo();
+	initSound();
+    } catch (std::exception const& e) {
+	printf(e.what());
+	SDL_Quit();
+	return 1;
     }
 
     std::string romFileName(args[1]);
-    
+
     if (!console.loadINesFile(romFileName)) {
         printf("failed to read file\n");
         return 1;
