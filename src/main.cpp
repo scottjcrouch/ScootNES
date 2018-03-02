@@ -29,6 +29,8 @@ Console console;
 
 std::map<SDL_Keycode,Controller::Button> controllerKeyBinds;
 
+bool isQuitting, isPaused;
+
 void initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 	throw std::runtime_error(std::string("SDL_Init() failed: ") + SDL_GetError());
@@ -131,6 +133,82 @@ void addControllerKeyBinds() {
     controllerKeyBinds[SDLK_RETURN]  = Controller::BUTTON_START;
 }
 
+void clearScreen() {
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(renderer);
+}
+
+void updateScreen() {
+    // apply frame buffer data to texture
+    SDL_UpdateTexture(frameTexture, NULL, console.getFrameBuffer(), 256 * sizeof(uint32_t));
+    // render the texture
+    SDL_RenderCopy(renderer, frameTexture, NULL, NULL);
+    // finally present render target to the window
+    SDL_RenderPresent(renderer);
+}
+
+void playSound() {
+    // retrieve buffered sound samples
+    APU::sample_t soundBuf[2048];
+    long soundBufLength = console.apu.readSamples(soundBuf, 2048);
+    // play samples in the buffer
+    soundQueue->write(soundBuf, soundBufLength);
+}
+
+void handleEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event) != 0) {
+	if (event.type == SDL_QUIT) {
+	    isQuitting = true;
+	}
+	else if (event.type == SDL_KEYDOWN) {
+	    SDL_Keycode sym = event.key.keysym.sym;
+	    if (controllerKeyBinds.count(sym) > 0) {
+		console.controller1.press(controllerKeyBinds[sym]);
+	    }
+	    else if (sym == SDLK_ESCAPE) {
+		isQuitting = true;
+	    }
+	    else if (sym == SDLK_p) {
+		isPaused ^= 1;
+	    }
+	}
+	else if (event.type == SDL_KEYUP) {
+	    SDL_Keycode sym = event.key.keysym.sym;
+	    if (controllerKeyBinds.count(sym) > 0) {
+		console.controller1.release(controllerKeyBinds[sym]);
+	    }
+	}
+    }
+}
+
+void runEmulation() {
+    isQuitting = false;
+    isPaused = false;
+    while (!isQuitting) {
+        // track time elapsed during frame/loop
+        unsigned int frameTimer = SDL_GetTicks();
+
+	handleEvents();
+
+	clearScreen();
+
+        if (!isPaused) {
+            console.runForOneFrame();
+        }
+
+	updateScreen();
+
+	playSound();
+
+        // delay frame to enforce framerate
+        frameTimer = SDL_GetTicks() - frameTimer;
+        if (frameTimer < TICKS_PER_FRAME) {
+            SDL_Delay(TICKS_PER_FRAME - frameTimer);
+        }
+    }
+}
+
 int main(int argc, char *args[]) {
     if (argc < 2) {
 	printf("Rom path not provided\n");
@@ -157,72 +235,8 @@ int main(int argc, char *args[]) {
 
     addControllerKeyBinds();
 
-    // main loop
-    bool isQuitting = false;
-    bool isPaused = false;
-    SDL_Event event;
-    while (!isQuitting) {
-        // track time elapsed during frame/loop
-        unsigned int frameTimer = SDL_GetTicks();
+    runEmulation();
 
-        // handle events
-        while (SDL_PollEvent(&event) != 0) {
-            if (event.type == SDL_QUIT) {
-                isQuitting = true;
-            }
-            else if (event.type == SDL_KEYDOWN) {
-		SDL_Keycode sym = event.key.keysym.sym;
-		if (controllerKeyBinds.count(sym) > 0) {
-		    console.controller1.press(controllerKeyBinds[sym]);
-		}
-                else if (sym == SDLK_ESCAPE) {
-                    isQuitting = true;
-                }
-                else if (sym == SDLK_p) {
-                    isPaused ^= 1;
-                }
-            }
-            else if (event.type == SDL_KEYUP) {
-                SDL_Keycode sym = event.key.keysym.sym;
-                if (controllerKeyBinds.count(sym) > 0) {
-		    console.controller1.release(controllerKeyBinds[sym]);
-		}
-            }
-        }
-
-        // clear screen to black
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderClear(renderer);
-
-        // spin cpu for 1 frame
-        if (!isPaused) {
-            console.runForOneFrame();
-        }
-        
-        // apply frame buffer data to texture
-        SDL_UpdateTexture(frameTexture, NULL, console.getFrameBuffer(), 256 * sizeof(uint32_t));
-
-        // render the texture
-        SDL_RenderCopy(renderer, frameTexture, NULL, NULL);
-
-        // finally present render target to the window
-        SDL_RenderPresent(renderer);
-
-	// retrieve buffered sound samples
-	APU::sample_t soundBuf[2048];
-	long soundBufLength = console.apu.readSamples(soundBuf, 2048);
-	
-	// play samples in the buffer
-	soundQueue->write(soundBuf, soundBufLength);
-
-        // delay frame to enforce framerate
-        frameTimer = SDL_GetTicks() - frameTimer;
-        if (frameTimer < TICKS_PER_FRAME) {
-            SDL_Delay(TICKS_PER_FRAME - frameTimer);
-        }
-    }
-
-    // cleanup
     freeAndQuitSDL();
 
     return 0;
