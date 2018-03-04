@@ -31,6 +31,6 @@ void Sound::quitSDLAudio() {
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
-void Sound::playSound(short *soundBuf, long soundBufLength) {
-    soundQueue.write(soundBuf, soundBufLength);
+void Sound::playSound(std::vector<short> soundBuffer) {
+    soundQueue.write(soundBuffer.data(), soundBuffer.size());
 }

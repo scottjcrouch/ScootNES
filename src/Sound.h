@@ -2,13 +2,14 @@
 #define SOUND_H
 
 #include <SoundQueue.h>
+#include <vector>
 
 class Sound {
 public:
 	Sound();
 	~Sound();
 
-	void playSound(short *soundBuf, long SoundBufLength);
+	void playSound(std::vector<short> buffer);
 	
 private:
 	SoundQueue soundQueue;

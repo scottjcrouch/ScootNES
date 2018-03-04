@@ -10,6 +10,7 @@
 #include <Cart.h>
 #include <Controller.h>
 #include <APU.h>
+
 #include <GUI.h>
 #include <Sound.h>
 
@@ -37,9 +38,7 @@ void addControllerKeyBinds() {
 }
 
 void playSound() {
-    short soundBuf[2048];
-    long soundBufLength = console.apu.readSamples(soundBuf, 2048);
-    sound.playSound(soundBuf, soundBufLength);
+    sound.playSound(console.apu.getAvailableSamples());
 }
 
 void clearNextFrame() {
