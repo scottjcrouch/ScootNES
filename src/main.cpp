@@ -9,7 +9,6 @@
 #include <Console.h>
 #include <Cart.h>
 #include <Controller.h>
-#include <APU.h>
 
 #include <GUI.h>
 #include <Sound.h>
@@ -38,7 +37,7 @@ void addControllerKeyBinds() {
 }
 
 void playSound() {
-    sound.playSound(console.apu.getAvailableSamples());
+    sound.playSound(console.getAvailableSamples());
 }
 
 void clearNextFrame() {

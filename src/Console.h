@@ -2,6 +2,7 @@
 #define CONSOLE_H
 
 #include <string>
+#include <vector>
 
 #include <Cart.h>
 #include <Controller.h>
@@ -16,6 +17,7 @@ public:
     void boot();
     bool loadINesFile(std::string fileName);
     uint32_t *getFrameBuffer();
+    std::vector<short> getAvailableSamples();
     void runForOneFrame();
 
     Controller controller1;

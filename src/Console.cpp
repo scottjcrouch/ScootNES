@@ -1,5 +1,6 @@
 #include <string>
 #include <functional>
+#include <vector>
 
 #include <Console.h>
 #include <CPU.h>
@@ -28,6 +29,10 @@ bool Console::loadINesFile(std::string fileName) {
 
 uint32_t *Console::getFrameBuffer() {
     return ppu.getFrameBuffer();
+}
+
+std::vector<short> Console::getAvailableSamples() {
+    return apu.getAvailableSamples();
 }
 
 void Console::runForOneFrame() {
