@@ -11,8 +11,10 @@ OBJECTS= \
 	build/main.o \
 	build/PPU.o \
 	build/Graphics.o \
+	build/GUI.o \
 	build/mappers/Mapper0.o \
 	build/mappers/Mapper1.o \
+	build/Sound.o \
 	build/SoundQueue.o \
 	build/nes_apu/apu_snapshot.o \
 	build/nes_apu/Blip_Buffer.o \
