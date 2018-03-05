@@ -8,6 +8,7 @@ OBJECTS= \
 	build/Console.o \
 	build/Controller.o \
 	build/CPU.o \
+	build/FrameDelayTimer.o \
 	build/main.o \
 	build/PPU.o \
 	build/Graphics.o \

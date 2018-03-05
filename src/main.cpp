@@ -8,6 +8,7 @@
 
 #include <GUI.h>
 #include <Sound.h>
+#include <FrameDelayTimer.h>
 
 const unsigned int GAME_FPS = 60;
 const unsigned int TICKS_PER_FRAME = 1000 / GAME_FPS;
@@ -73,27 +74,16 @@ void handleEvents() {
 }
 
 void runEmulation() {
+    FrameDelayTimer timer(TICKS_PER_FRAME);
     while (!isQuitting) {
-        // track time elapsed during frame/loop
-        unsigned int frameTimer = SDL_GetTicks();
-
 	handleEvents();
-
 	clearNextFrame();
-
         if (!isPaused) {
             console.runForOneFrame();
         }
-
 	updateScreen();
-
 	playSound();
-
-        // delay frame to enforce framerate
-        frameTimer = SDL_GetTicks() - frameTimer;
-        if (frameTimer < TICKS_PER_FRAME) {
-            SDL_Delay(TICKS_PER_FRAME - frameTimer);
-        }
+	timer.delay();
     }
 }
 
@@ -102,19 +92,13 @@ int main(int argc, char *args[]) {
 	printf("Rom path not provided\n");
 	return 1;
     }
-
     std::string romFileName(args[1]);
-
     if (!console.loadINesFile(romFileName)) {
         printf("failed to read file\n");
         return 1;
     }
-
     console.boot();
-
     addControllerKeyBinds();
-
     runEmulation();
-
     return 0;
 }
