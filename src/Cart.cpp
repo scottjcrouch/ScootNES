@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <stdexcept>
 
 #include <Cart.h>
 #include <CartMemory.h>
@@ -12,14 +13,13 @@
 #include <mappers/Mapper0.h>
 #include <mappers/Mapper1.h>
 
-bool Cart::loadFile(std::string romFileName) {
+void Cart::loadFile(std::string romFileName) {
     std::ifstream romFileStream(romFileName.c_str(), std::ios::binary);
     
     std::vector<char> iNesHeader = getINesHeaderFromFile(romFileStream);
     bool isValidHeader = verifyINesHeaderSignature(iNesHeader);
     if(!isValidHeader) {
-	printf("ERROR: Invalid iNES header\n");
-	return false;
+        throw std::runtime_error("Invalid iNES header");
     }
 
     CartMemory mem = getCartMemoryFromFile(iNesHeader, romFileStream);
@@ -28,11 +28,8 @@ bool Cart::loadFile(std::string romFileName) {
 
     int mapperNum = getMapperNumberFromHeader(iNesHeader);
     if (!initializeMapper(mapperNum, mem)) {
-	printf("ERROR: Mapper %d not yet supported\n", mapperNum);
-	return false;
+	throw std::runtime_error(std::string("Mapper %d not yet supported", mapperNum));
     }
-    
-    return true;
 }
 
 std::vector<char> Cart::getINesHeaderFromFile(std::ifstream& romFileStream) {
@@ -77,7 +74,7 @@ CartMemory Cart::getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstre
     bool isRamBattery = !!(iNesHeader[6] & (0x1 << 1));
     mem.ram.resize(ramSize);
     if (isRamBattery) {
-        printf("ERROR: loading battery backed ram not yet supported\n");
+        throw std::runtime_error("Loading battery backed ram not yet supported");
     }
 
     bool isTrainer = !!(iNesHeader[6] & (0x1 << 2));
@@ -93,7 +90,7 @@ CartMemory Cart::getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstre
     }
     if (iNesHeader[6] & (0x1 << 3)) {
         mem.mirroring = MIRROR_FOUR_SCREEN;
-	printf("Warning: four screen mirroring not yet supported");
+        throw std::runtime_error("Four screen mirroring not yet supported");
     }
 
     return mem;

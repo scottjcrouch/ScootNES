@@ -17,7 +17,7 @@ static const int TRAINER_SIZE = 512;
 
 class Cart {
 public:
-    bool loadFile(std::string romFileName);
+    void loadFile(std::string romFileName);
     uint8_t readPrg(uint16_t addr);
     void writePrg(uint16_t addr, uint8_t value);
     uint8_t readChr(uint16_t addr);

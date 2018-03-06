@@ -1,5 +1,6 @@
 #include <string>
 #include <map>
+#include <exception>
 
 #include <SDL.h>
 
@@ -93,8 +94,11 @@ int main(int argc, char *args[]) {
 	return 1;
     }
     std::string romFileName(args[1]);
-    if (!console.loadINesFile(romFileName)) {
-        printf("failed to read file\n");
+    try {
+        console.loadINesFile(romFileName);
+    } catch (const std::exception& e) {
+        printf("Loading rom file failed: ");
+        printf(e.what());
         return 1;
     }
     console.boot();

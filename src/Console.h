@@ -15,7 +15,7 @@ class Console {
 public:
     Console() : cpuDivider(3) { }
     void boot();
-    bool loadINesFile(std::string fileName);
+    void loadINesFile(std::string fileName);
     uint32_t *getFrameBuffer();
     std::vector<short> getAvailableSamples();
     void runForOneFrame();

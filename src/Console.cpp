@@ -23,7 +23,7 @@ void Console::boot() {
     ppu.boot(&cart, nmiCallback);
 }
 
-bool Console::loadINesFile(std::string fileName) {
+void Console::loadINesFile(std::string fileName) {
     return cart.loadFile(fileName);
 }
 
