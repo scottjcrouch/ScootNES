@@ -19,20 +19,17 @@ Sound sound;
 
 Console console;
 
-std::map<SDL_Keycode,Controller::Button> controllerKeyBinds;
-
 bool isQuitting = false, isPaused = false;
 
-void addControllerKeyBinds() {
-    controllerKeyBinds[SDLK_UP]      = Controller::BUTTON_UP;
-    controllerKeyBinds[SDLK_DOWN]    = Controller::BUTTON_DOWN;
-    controllerKeyBinds[SDLK_LEFT]    = Controller::BUTTON_LEFT;
-    controllerKeyBinds[SDLK_RIGHT]   = Controller::BUTTON_RIGHT;
-    controllerKeyBinds[SDLK_z]       = Controller::BUTTON_A;
-    controllerKeyBinds[SDLK_x]       = Controller::BUTTON_B;
-    controllerKeyBinds[SDLK_SPACE]   = Controller::BUTTON_SELECT;
-    controllerKeyBinds[SDLK_RETURN]  = Controller::BUTTON_START;
-}
+std::map<SDL_Keycode,Controller::Button> controllerKeyBinds = {
+    {SDLK_UP,     Controller::BUTTON_UP},
+    {SDLK_DOWN,   Controller::BUTTON_DOWN},
+    {SDLK_LEFT,   Controller::BUTTON_LEFT},
+    {SDLK_RIGHT,  Controller::BUTTON_RIGHT},
+    {SDLK_z,      Controller::BUTTON_A},
+    {SDLK_x,      Controller::BUTTON_B},
+    {SDLK_SPACE,  Controller::BUTTON_SELECT},
+    {SDLK_RETURN, Controller::BUTTON_START}};
 
 void playSound() {
     sound.playSound(console.getAvailableSamples());
@@ -101,8 +98,10 @@ int main(int argc, char *args[]) {
         printf(e.what());
         return 1;
     }
+    
     console.boot();
-    addControllerKeyBinds();
+    
     runEmulation();
+    
     return 0;
 }
