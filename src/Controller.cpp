@@ -16,8 +16,7 @@ uint8_t Controller::poll() {
     shiftReg++;
     if(shiftReg >= 8) {
         return 1;
-    }
-    else {
+    } else {
         return buttons[shiftReg];
     }
 }

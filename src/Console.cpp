@@ -53,8 +53,7 @@ void Console::tick() {
 uint8_t Console::cpuRead(uint16_t addr) {
     if (addr < 0x2000) {
         return cpuRam[addr % 0x800];
-    }
-    else if (addr < 0x4000) {
+    } else if (addr < 0x4000) {
         int registerAddr = addr & 0x2007;
         switch (registerAddr) {
         case 0x2000: return cpuBusMDR;
@@ -66,18 +65,15 @@ uint8_t Console::cpuRead(uint16_t addr) {
         case 0x2006: return cpuBusMDR;
         case 0x2007: return ppu.getDATA();
         }
-    }
-    else if (addr < 0x4018) {
+    } else if (addr < 0x4018) {
 	switch (addr) {
         case 0x4015: return apu.getStatus();
 	case 0x4016: return controller1.poll();
 	case 0x4017: return 0; // TODO: controller 2
         }
-    }
-    else if (addr < 0x4020) {
+    } else if (addr < 0x4020) {
 	return cpuBusMDR; // disabled/unused APU test registers
-    }
-    else {
+    } else {
         return cart.readPrg(addr);
     }
 }
@@ -86,8 +82,7 @@ void Console::cpuWrite(uint16_t addr, uint8_t value) {
     cpuBusMDR = value;
     if (addr < 0x2000) {
         cpuRam[addr % 0x800] = value;
-    }
-    else if (addr < 0x4000) {
+    } else if (addr < 0x4000) {
         int registerAddr = addr & 0x2007;
         switch (registerAddr) {
         case 0x2000: ppu.setCTRL(value); break;
@@ -99,8 +94,7 @@ void Console::cpuWrite(uint16_t addr, uint8_t value) {
         case 0x2006: ppu.setADDR(value); break;
         case 0x2007: ppu.setDATA(value); break;
         }
-    }
-    else if (addr < 0x4018) {
+    } else if (addr < 0x4018) {
 	switch (addr) {
 	case 0x4014: {
 	    uint16_t startAddr = ((uint16_t)value) << 8;
@@ -112,11 +106,9 @@ void Console::cpuWrite(uint16_t addr, uint8_t value) {
 	case 0x4016: controller1.setStrobe(!!(value & 0x1)); break;
 	default: apu.writeRegister(addr, value); break;
 	}
-    }
-    else if (addr < 0x4020) {
+    } else if (addr < 0x4020) {
 	return; // disabled/unused APU test registers
-    }
-    else {
+    } else {
         cart.writePrg(addr, value);
     }
 }

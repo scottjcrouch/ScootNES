@@ -11,12 +11,10 @@ uint8_t Mapper1::readPrg(uint16_t addr) {
     if (addr >= 0x8000) {
 	int index = decodePrgRomAddress(addr);
 	return cartMemory.prg[index];
-    }
-    else if (addr >= 0x6000) {
+    } else if (addr >= 0x6000) {
 	int index = addr % 0x2000;
 	return cartMemory.ram[index];
-    }
-    else {
+    } else {
 	return 0;
     }
 }
@@ -25,21 +23,18 @@ void Mapper1::writePrg(uint16_t addr, uint8_t value) {
     if (addr >= 0x8000) {
 	if (value & 0x80) {
 	    shiftRegister = 0x10;
-	}
-	else {
+	} else {
 	    if (shiftRegister & 1) {
 		shiftRegister >>= 1;
 		shiftRegister |= ((value << 4) & 0x10);
 		loadRegister(addr, shiftRegister);
 		shiftRegister = 0x10;
-	    }
-	    else {
+	    } else {
 		shiftRegister >>= 1;
 		shiftRegister |= ((value << 4) & 0x10);
 	    }
 	}
-    }
-    else if (addr >= 0x6000) {
+    } else if (addr >= 0x6000) {
 	int index = addr % 0x2000;
 	cartMemory.ram[index] = value;
     }
@@ -61,14 +56,11 @@ void Mapper1::loadRegister(uint16_t addr, uint8_t value) {
     if (addr >= 0xE000) {
 	prgRomBank = value & 0b01111;
 	prgRamDisable = !!(value & 0b10000);
-    }
-    else if (addr >= 0xC000) {
+    } else if (addr >= 0xC000) {
 	chrRomBank1 = value & 0x1F;
-    }
-    else if (addr >= 0xA000) {
+    } else if (addr >= 0xA000) {
 	chrRomBank0 = value & 0x1F;
-    }
-    else if (addr >= 0x8000) {
+    } else if (addr >= 0x8000) {
 	switch(value & 0b00011) {
 	case 0: cartMemory.mirroring = Mirroring::MIRROR_LOWER_BANK; break;
 	case 1: cartMemory.mirroring = Mirroring::MIRROR_UPPER_BANK; break;

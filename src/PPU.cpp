@@ -120,8 +120,7 @@ uint8_t PPU::getOAMDATA() {
 void PPU::setSCROLL(uint8_t value) {
     if (!latch) {
         scrollX = value;
-    }
-    else {
+    } else {
         scrollY = value;
     }
     latch = !latch;
@@ -132,8 +131,7 @@ void PPU::setADDR(uint8_t value) {
         // set high byte
         addrBuffer &= 0x00FF;
         addrBuffer |= ((uint16_t)value << 8);
-    }
-    else {
+    } else {
         // set low byte
         addrBuffer &= 0xFF00;
         addrBuffer |= value;
@@ -161,8 +159,7 @@ uint8_t PPU::getDATA() {
         // (before incrementing the address) into the read buffer
         returnVal = readBuffer;
         readBuffer = read(addrBuffer);
-    }
-    else {
+    } else {
         // when the address buffer points to the palette address range,
         // instead of reading from the read buffer, it returns the 
         // data at the immediate address, and stores the name table
@@ -222,8 +219,7 @@ void PPU::renderPixel(int x, int y) {
 		    isBgSpr = spriteBuffer[i].priority;
 		    if (!isBgSpr) {
 			return;
-		    }
-		    else {
+		    } else {
 			break;
 		    }
 		}
@@ -295,8 +291,7 @@ void PPU::tick() {
 	    oddFrame ^= 1;
 	    break;
 	}
-    }
-    else if (!(clockCounter % CYC_PER_SCANL)) {
+    } else if (!(clockCounter % CYC_PER_SCANL)) {
 	if (spr0Reload) {
 	    reloadGraphicsData();
 	    spr0Reload = false;
@@ -314,11 +309,9 @@ uint8_t PPU::read(uint16_t addr) {
     addr %= 0x4000;
     if (addr >= 0x3F00) {
         return readPalette(addr % 0x20);
-    }
-    else if (addr >= 0x2000) {
+    } else if (addr >= 0x2000) {
 	return readNameTables(addr % 0x1000);
-    }
-    else {
+    } else {
         return readPatternTables(addr);
     }
 }
@@ -327,11 +320,9 @@ void PPU::write(uint16_t addr, uint8_t value) {
     addr %= 0x4000;
     if (addr >= 0x3F00) {
 	writePalette(addr % 0x20, value);
-    }
-    else if (addr >= 0x2000) {
+    } else if (addr >= 0x2000) {
 	writeNameTables(addr % 0x1000, value);
-    }
-    else {
+    } else {
         writePatternTables(addr, value);
     }
 }
@@ -500,8 +491,7 @@ void PPU::reloadSpriteData() {
 	    if (oam[sprites[i].oamIndex + 1] & 0b00000001) {
 		patternTableIndex += 0x1000;
 	    }
-	}
-	else {
+	} else {
 	    // 8x8 sprite
 	    patternTableIndex = oam[sprites[i].oamIndex + 1] * 16;
 	    if (sprPatternTableSelector) {

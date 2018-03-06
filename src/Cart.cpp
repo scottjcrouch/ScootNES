@@ -60,8 +60,7 @@ CartMemory Cart::getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstre
     mem.chrIsRam = (chrSize == 0);
     if (mem.chrIsRam) {
 	mem.chr.resize(CHR_BANK_SIZE);
-    }
-    else {
+    } else {
 	for(int i  = 0; i < chrSize; ++i) {
 	    mem.chr.push_back(romFileStream.get());
 	}

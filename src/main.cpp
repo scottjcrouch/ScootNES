@@ -49,20 +49,16 @@ void handleEvents() {
     while (SDL_PollEvent(&event) != 0) {
 	if (event.type == SDL_QUIT) {
 	    isQuitting = true;
-	}
-	else if (event.type == SDL_KEYDOWN) {
+	} else if (event.type == SDL_KEYDOWN) {
 	    SDL_Keycode sym = event.key.keysym.sym;
 	    if (controllerKeyBinds.count(sym) > 0) {
 		console.controller1.press(controllerKeyBinds[sym]);
-	    }
-	    else if (sym == SDLK_ESCAPE) {
+	    } else if (sym == SDLK_ESCAPE) {
 		isQuitting = true;
-	    }
-	    else if (sym == SDLK_p) {
+	    } else if (sym == SDLK_p) {
 		isPaused ^= 1;
 	    }
-	}
-	else if (event.type == SDL_KEYUP) {
+	} else if (event.type == SDL_KEYUP) {
 	    SDL_Keycode sym = event.key.keysym.sym;
 	    if (controllerKeyBinds.count(sym) > 0) {
 		console.controller1.release(controllerKeyBinds[sym]);

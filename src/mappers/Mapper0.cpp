@@ -7,12 +7,10 @@ uint8_t Mapper0::readPrg(uint16_t addr) {
     if (addr >= 0x8000) {
 	int index = addr % cartMemory.prg.size();
 	return cartMemory.prg[index];
-    }
-    else if (addr >= 0x6000) {
+    } else if (addr >= 0x6000) {
 	int index = addr % 0x2000;
 	return cartMemory.ram[index];
-    }
-    else {
+    } else {
 	return 0;
     }
 }

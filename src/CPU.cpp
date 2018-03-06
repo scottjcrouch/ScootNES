@@ -91,8 +91,7 @@ void CPU::handleInterrupts() {
         pc = loadAddr(NMI_VECTOR);
         suspend(7);
         nmiSignal = 0;
-    }
-    else if(irqSignal && !intdisable) {
+    } else if(irqSignal && !intdisable) {
         push16(pc);
         push8(getStatus() & ~(0x20));
         intdisable = 1;
@@ -109,8 +108,7 @@ void CPU::branch() {
     if((branchAddr & 0xFF00) != (pc & 0xFF00)) {
         // page boundary crossed
         suspend(2);
-    }
-    else {
+    } else {
         suspend(1);
     }
     pc = branchAddr;
@@ -165,8 +163,7 @@ void CPU::OpASL() {
         result = acc << 1;
         acc = result;
         useAcc = 0;
-    }
-    else {
+    } else {
         uint8_t target = read(targetAddr);
         carry = !!(target & 0x80);
         result = target << 1;
@@ -357,8 +354,7 @@ void CPU::OpLSR() {
         result = acc >> 1;
         acc = result;
         useAcc = 0;
-    }
-    else {
+    } else {
         uint8_t target = read(targetAddr);
         carry = !!(target & 0x01);
         result = target >> 1;
@@ -401,8 +397,7 @@ void CPU::OpROL() {
         carry = !!(acc & 0x80);
         acc = result;
         useAcc = 0;
-    }
-    else {
+    } else {
         uint8_t target = read(targetAddr);
         result = (target << 1) | (carry ? 1 : 0);
         carry = !!(target & 0x80);
@@ -419,8 +414,7 @@ void CPU::OpROR() {
         carry = !!(acc & 0x01);
         acc = result;
         useAcc = 0;
-    }
-    else {
+    } else {
         uint8_t target = read(targetAddr);
         result = (target >> 1) | (carry ? 0x80 : 0);
         carry = !!(target & 0x01);
@@ -594,8 +588,7 @@ void CPU::AmIND() {
         uint8_t low = read(addrOperand);
         uint8_t high = read(addrOperand - 0xFF);
         targetAddr = (uint16_t)low | ((uint16_t)high << 8);
-    }
-    else {
+    } else {
         targetAddr = loadAddr(addrOperand);
     }
     pc += 1; // no effect since only used for OpJMP()
