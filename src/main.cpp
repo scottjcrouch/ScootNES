@@ -36,12 +36,12 @@ void playSound() {
 }
 
 void clearNextFrame() {
-    gui.clearNextFrame();
+    gui.clearRenderTarget();
 }
 
-void updateScreen() {
+void displayFrameBuffer() {
     uint32_t *frameBuffer = console.getFrameBuffer();
-    gui.updateScreen(frameBuffer);
+    gui.renderAndDisplayFrame(frameBuffer);
 }
 
 void handleEvents() {
@@ -79,7 +79,7 @@ void runEmulation() {
         if (!isPaused) {
             console.runForOneFrame();
         }
-	updateScreen();
+	displayFrameBuffer();
 	playSound();
 	timer.delay();
     }

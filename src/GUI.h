@@ -15,8 +15,8 @@ public:
     GUI();
     ~GUI();
 
-    void clearNextFrame();
-    void updateScreen(uint32_t *frameBuffer);
+    void clearRenderTarget();
+    void renderAndDisplayFrame(uint32_t *frameBuffer);
 
 private:
     SDL_Window *window;

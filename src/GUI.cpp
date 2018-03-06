@@ -20,12 +20,11 @@ GUI::~GUI() {
     quitSDLVideo();
 }
 
-void GUI::clearNextFrame() {
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+void GUI::clearRenderTarget() {
     SDL_RenderClear(renderer);
 }
 
-void GUI::updateScreen(uint32_t *frameBuffer) {
+void GUI::renderAndDisplayFrame(uint32_t *frameBuffer) {
     // apply frame buffer data to texture
     SDL_UpdateTexture(frameTexture, NULL, frameBuffer, GUI_TEXTURE_WIDTH * sizeof(uint32_t));
     // render the texture
@@ -75,7 +74,7 @@ void GUI::createRendererForWindow() {
 }
 
 void GUI::setRendererDrawColor() {
-    // set colour used for drawing operations e.g. SDL_RenderClear
+    // set colour used for drawing operations
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
