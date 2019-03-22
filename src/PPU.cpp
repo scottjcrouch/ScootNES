@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <cassert>
 
 #include <PPU.h>
 #include <CPU.h>
@@ -161,9 +162,9 @@ uint8_t PPU::getDATA() {
         readBuffer = read(addrBuffer);
     } else {
         // when the address buffer points to the palette address range,
-        // instead of reading from the read buffer, it returns the 
+        // instead of reading from the read buffer, it returns the
         // data at the immediate address, and stores the name table
-        // data that would otherwise be mirrored "underneath" the 
+        // data that would otherwise be mirrored "underneath" the
         // palette address space in the read buffer
         returnVal = read(addrBuffer);
         readBuffer = read(addrBuffer - 0x1000);
@@ -205,7 +206,7 @@ void PPU::renderPixel(int x, int y) {
 	spr0Latch = true;
 	spr0Reload = true;
     }
-    
+
     // render first occluding sprite that isn't transparent
     bool isBgSpr = false;
     if (showSpr && (x > 7 || sprMask)) {
@@ -365,6 +366,8 @@ uint16_t PPU::getCiRamIndexFromNameTableIndex(uint16_t index) {
     case MIRROR_UPPER_BANK:
 	return (index & 0xF3FF) + 0x400;
     }
+    assert(!"Invalid code path");
+    return 0;
 }
 
 uint8_t PPU::readPatternTables(uint16_t index) {
@@ -483,7 +486,7 @@ void PPU::reloadSpriteData() {
 	if (!sprites[i].visible) {
 	    continue;
 	}
-        
+
 	int patternTableIndex = 0;
 	if (bigSprites) {
 	    // 8x16 sprite
@@ -503,7 +506,7 @@ void PPU::reloadSpriteData() {
 	    sprites[i].pattern[patternOffset] =
 		readPatternTables(patternTableIndex + patternOffset);
 	}
-	
+
 	sprites[i].paletteSelect =
 	    ((oam[sprites[i].oamIndex + 2] & 0b00000011) << 2) | 0x10;
 	sprites[i].priority = !!(oam[sprites[i].oamIndex + 2] & 0b00100000);

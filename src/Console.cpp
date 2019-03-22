@@ -1,6 +1,7 @@
 #include <string>
 #include <functional>
 #include <vector>
+#include <cassert>
 
 #include <Console.h>
 #include <CPU.h>
@@ -76,6 +77,8 @@ uint8_t Console::cpuRead(uint16_t addr) {
     } else {
         return cart.readPrg(addr);
     }
+    assert(!"Invalid code path");
+    return 0;
 }
 
 void Console::cpuWrite(uint16_t addr, uint8_t value) {
