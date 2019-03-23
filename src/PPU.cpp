@@ -210,7 +210,8 @@ void PPU::renderPixel(int x, int y) {
     // render first occluding sprite that isn't transparent
     bool isBgSpr = false;
     if (showSpr && (x > 7 || sprMask)) {
-	for (int i = 0; i < spriteBuffer.size(); ++i) {
+        int spriteBufferSize = spriteBuffer.size();
+	for (int i = 0; i < spriteBufferSize; ++i) {
 	    if (spriteBuffer[i].occludes(x, y)) {
 		uint8_t paletteIndex = spriteBuffer[i].getValue(x, y, bigSprites);
 		if (paletteIndex % 4 != 0) {
