@@ -36,6 +36,9 @@ DEPS= $(OBJECTS:.o=.d)
 # -mwindows or -mconsole do similar
 # -O2, optimize
 # -MMD -MP, generate dependency (.d) files with phony targets
+# -fno-omit-frame-pointer retains the frame pointer register, which tracks the
+# current top of the call stack, and which perf samples in order to generate
+# call graphs
 CFLAGS=	-O3 -DNDEBUG
 
 INC+= -Isrc -Isrc/boost -Isrc/nes_apu -MMD -MP
@@ -54,7 +57,7 @@ endif
 all: subdirs $(TARGET)
 
 .PHONY: debug
-debug: CFLAGS = -g -O0
+debug: CFLAGS = -g -O0 -fno-omit-frame-pointer
 debug: all
 
 subdirs:
