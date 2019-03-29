@@ -72,6 +72,7 @@ private:
     void buildPixelData();
     void buildSpriteData();
     void reloadSpriteData();
+    void reloadSpriteBuffer();
 
     Cart *cart;
     NMI nmi;

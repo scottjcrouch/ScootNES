@@ -299,7 +299,20 @@ void PPU::tick() {
 	    spr0Reload = false;
 	}
 	oamAddrBuffer = 0;
-	renderScanline(clockCounter / CYC_PER_SCANL);
+        reloadSpriteBuffer();
+        renderScanline(clockCounter / CYC_PER_SCANL);
+    }
+}
+
+void PPU::reloadSpriteBuffer() {
+    int currentScanl = clockCounter / CYC_PER_SCANL;
+    spriteBuffer.clear();
+    for (int i = 0; i < 64; ++i) {
+        if (sprites[i].visible &&
+            sprites[i].yPos <= currentScanl &&
+            sprites[i].yBound > currentScanl) {
+            spriteBuffer.push_back(sprites[i]);
+        }
     }
 }
 
@@ -473,7 +486,6 @@ void PPU::buildSpriteData() {
 }
 
 void PPU::reloadSpriteData() {
-    spriteBuffer.clear();
     for (int i = 0; i < 64; ++i) {
 	sprites[i].xPos = oam[sprites[i].oamIndex + 3];
 	sprites[i].yPos = oam[sprites[i].oamIndex];
@@ -513,7 +525,5 @@ void PPU::reloadSpriteData() {
 	sprites[i].priority = !!(oam[sprites[i].oamIndex + 2] & 0b00100000);
 	sprites[i].flipHor  = !!(oam[sprites[i].oamIndex + 2] & 0b01000000);
 	sprites[i].flipVert = !!(oam[sprites[i].oamIndex + 2] & 0b10000000);
-
-	spriteBuffer.push_back(sprites[i]);
     }
 }
