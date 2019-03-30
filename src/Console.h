@@ -33,7 +33,7 @@ private:
     CPU cpu;
     Divider cpuDivider;
 
-    uint8_t cpuRam[0x800] = {0};
+    std::array<uint8_t, 0x800> cpuRam{0};
     uint8_t cpuBusMDR;
 };
 
