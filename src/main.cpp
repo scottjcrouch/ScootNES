@@ -94,10 +94,8 @@ int main(int argc, char *args[]) {
         printf(e.what());
         return 1;
     }
-    
-    console.boot();
-    
+
     runEmulation();
-    
+
     return 0;
 }

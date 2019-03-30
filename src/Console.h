@@ -13,8 +13,8 @@
 
 class Console {
 public:
-    Console() : cpuDivider(3) { }
-    void boot();
+    Console();
+    void reset();
     void loadINesFile(std::string fileName);
     uint32_t *getFrameBuffer();
     std::vector<short> getAvailableSamples();
@@ -28,13 +28,13 @@ private:
     uint8_t cpuRead(uint16_t addr);
     void cpuWrite(uint16_t addr, uint8_t data);
 
-    Cart cart;
-    PPU ppu;
-    CPU cpu;
-    Divider cpuDivider;
-
     std::array<uint8_t, 0x800> cpuRam{0};
     uint8_t cpuBusMDR;
+
+    Divider cpuDivider;
+    Cart cart;
+    CPU cpu;
+    PPU ppu;
 };
 
 #endif

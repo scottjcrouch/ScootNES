@@ -11,21 +11,20 @@
 #include <Controller.h>
 #include <Divider.h>
 
-void Console::boot() {
-    ReadBus cpuReadCallback = [this] (uint16_t addr) {
-	return cpuRead(addr);
-    };
-    WriteBus cpuWriteCallback = [this] (uint16_t addr, uint8_t data) {
-	cpuWrite(addr,data);
-    };
-    NMI nmiCallback = [this] () {cpu.signalNMI();};
+Console::Console() :
+    cpuDivider(3),
+    cpu([this] (uint16_t addr) { return cpuRead(addr); },
+        [this] (uint16_t addr, uint8_t data) { cpuWrite(addr,data); }),
+    ppu(&cart, [this] () { cpu.signalNMI(); }) { }
 
-    cpu.boot(cpuReadCallback, cpuWriteCallback);
-    ppu.boot(&cart, nmiCallback);
+void Console::reset() {
+    cpu.reset();
+    ppu.reset();
 }
 
 void Console::loadINesFile(std::string fileName) {
-    return cart.loadFile(fileName);
+    cart.loadFile(fileName);
+    reset();
 }
 
 uint32_t *Console::getFrameBuffer() {

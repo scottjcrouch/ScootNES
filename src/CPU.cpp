@@ -2,10 +2,7 @@
 
 #include <CPU.h>
 
-void CPU::boot(ReadBus read, WriteBus write) {
-    this->read = read;
-    this->write = write;
-    
+void CPU::reset() {
     pc = 0x0000;
     sp = 0xFD;
     acc = 0x00;
@@ -221,7 +218,7 @@ void CPU::OpBRK() {
     push16(pc+1);
     push8(getStatus() | 0x10);
     intdisable = 1;
-    pc = loadAddr(IRQ_VECTOR); 
+    pc = loadAddr(IRQ_VECTOR);
 }
 
 void CPU::OpBVC() {

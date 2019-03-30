@@ -6,10 +6,11 @@
 #include <Graphics.h>
 #include <Mirroring.h>
 
-void PPU::boot(Cart *cart, NMI nmi) {
-    this->cart = cart;
-    this->nmi = nmi;
+PPU::PPU(Cart *cart, NMI nmi) :
+    cart(cart),
+    nmi(nmi) { }
 
+void PPU::reset() {
     // 0x2000: CTRL
     nameTableAddr = 0;              // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
     vRamAddrIncr = false;           // 0=1 (across name table), 1=32 (down name table)

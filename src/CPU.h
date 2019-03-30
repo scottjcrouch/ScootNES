@@ -8,12 +8,13 @@ static const uint16_t NMI_VECTOR = 0xFFFA;
 static const uint16_t RESET_VECTOR = 0xFFFC;
 static const uint16_t IRQ_VECTOR = 0xFFFE;
 
-typedef std::function<uint8_t(uint16_t)> ReadBus;
-typedef std::function<void(uint16_t,uint8_t)> WriteBus;
+using BusRead = std::function<uint8_t(uint16_t)>;
+using BusWrite = std::function<void(uint16_t, uint8_t)>;
 
 class CPU {
 public:
-    void boot(ReadBus read, WriteBus write);
+    CPU(BusRead read, BusWrite write) : read(read), write(write) { }
+    void reset();
     void tick();
     void signalNMI();
     void signalIRQ();
@@ -21,8 +22,8 @@ public:
 
 private:
     // memory access callbacks
-    ReadBus read;
-    WriteBus write;
+    BusRead read;
+    BusWrite write;
 
     // registers
     uint16_t pc;
