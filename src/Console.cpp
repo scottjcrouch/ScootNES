@@ -53,7 +53,7 @@ void Console::tick() {
 
 uint8_t Console::cpuRead(uint16_t addr) {
     if (addr < 0x2000) {
-        return cpuRam[addr % 0x800];
+        return cpuRam[addr & 0x07FF];
     } else if (addr < 0x4000) {
         int registerAddr = addr & 0x2007;
         switch (registerAddr) {
@@ -84,7 +84,7 @@ uint8_t Console::cpuRead(uint16_t addr) {
 void Console::cpuWrite(uint16_t addr, uint8_t value) {
     cpuBusMDR = value;
     if (addr < 0x2000) {
-        cpuRam[addr % 0x800] = value;
+        cpuRam[addr & 0x07FF] = value;
     } else if (addr < 0x4000) {
         int registerAddr = addr & 0x2007;
         switch (registerAddr) {
