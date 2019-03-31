@@ -31,20 +31,24 @@ std::map<SDL_Keycode,Controller::Button> controllerKeyBinds = {
     {SDLK_SPACE,  Controller::BUTTON_SELECT},
     {SDLK_RETURN, Controller::BUTTON_START}};
 
-void playSound() {
+void playSound()
+{
     sound.playSound(console.getAvailableSamples());
 }
 
-void clearNextFrame() {
+void clearNextFrame()
+{
     gui.clearRenderTarget();
 }
 
-void displayFrameBuffer() {
+void displayFrameBuffer()
+{
     uint32_t *frameBuffer = console.getFrameBuffer();
     gui.renderAndDisplayFrame(frameBuffer);
 }
 
-void handleEvents() {
+void handleEvents()
+{
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
 	if (event.type == SDL_QUIT) {
@@ -67,7 +71,8 @@ void handleEvents() {
     }
 }
 
-void runEmulation() {
+void runEmulation()
+{
     FrameDelayTimer timer(TICKS_PER_FRAME);
     while (!isQuitting) {
 	handleEvents();
@@ -81,7 +86,8 @@ void runEmulation() {
     }
 }
 
-int main(int argc, char *args[]) {
+int main(int argc, char *args[])
+{
     if (argc < 2) {
 	printf("Rom path not provided\n");
 	return 1;

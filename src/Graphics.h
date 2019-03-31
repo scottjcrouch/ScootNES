@@ -3,7 +3,8 @@
 
 #include <cstdint>
 
-class Metatile {
+class Metatile
+{
 public:
     uint8_t getValue(uint8_t quadrant);
 
@@ -11,7 +12,8 @@ public:
     uint8_t attributeByte;
 };
 
-class Tile {
+class Tile
+{
 public:
     uint8_t getValue(uint8_t x, uint8_t y);
 
@@ -21,7 +23,8 @@ public:
     uint8_t pattern[16];
 };
 
-class Pixel {
+class Pixel
+{
 public:
     uint8_t getValue();
 
@@ -30,7 +33,8 @@ public:
     uint8_t y;
 };
 
-class Sprite {
+class Sprite
+{
 public:
     uint8_t getValue(uint8_t x, uint8_t y, bool isBig);
     bool occludes(uint8_t x, uint8_t y);

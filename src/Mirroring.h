@@ -1,7 +1,8 @@
 #ifndef MIRRORING_H
 #define MIRRORING_H
 
-enum Mirroring {
+enum Mirroring
+{
     MIRROR_VERTICAL,
     MIRROR_HORIZONTAL,
     MIRROR_LOWER_BANK,

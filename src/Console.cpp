@@ -11,38 +11,43 @@
 #include <Controller.h>
 #include <Divider.h>
 
-Console::Console() :
-    cpuDivider(3),
-    cpu([this] (uint16_t addr) { return cpuRead(addr); },
-        [this] (uint16_t addr, uint8_t data) { cpuWrite(addr,data); }),
-    ppu(&cart, [this] () { cpu.signalNMI(); }) { }
+Console::Console() : cpuDivider(3),
+                     cpu([this] (uint16_t addr) { return cpuRead(addr); },
+                         [this] (uint16_t addr, uint8_t data) { cpuWrite(addr,data); }),
+                     ppu(&cart, [this] () { cpu.signalNMI(); }) { }
 
-void Console::reset() {
+void Console::reset()
+{
     cpu.reset();
     ppu.reset();
 }
 
-void Console::loadINesFile(std::string fileName) {
+void Console::loadINesFile(std::string fileName)
+{
     cart.loadFile(fileName);
     reset();
 }
 
-uint32_t *Console::getFrameBuffer() {
+uint32_t *Console::getFrameBuffer()
+{
     return ppu.getFrameBuffer();
 }
 
-std::vector<short> Console::getAvailableSamples() {
+std::vector<short> Console::getAvailableSamples()
+{
     return apu.getAvailableSamples();
 }
 
-void Console::runForOneFrame() {
+void Console::runForOneFrame()
+{
     do {
         tick();
     } while (!ppu.endOfFrame());
     apu.endFrame();
 }
 
-void Console::tick() {
+void Console::tick()
+{
     cpuDivider.tick();
     if (cpuDivider.hasClocked()) {
 	cpu.tick();
@@ -50,7 +55,8 @@ void Console::tick() {
     ppu.tick();
 }
 
-uint8_t Console::cpuRead(uint16_t addr) {
+uint8_t Console::cpuRead(uint16_t addr)
+{
     if (addr < 0x2000) {
         return cpuRam[addr & 0x07FF];
     } else if (addr < 0x4000) {
@@ -80,7 +86,8 @@ uint8_t Console::cpuRead(uint16_t addr) {
     return 0;
 }
 
-void Console::cpuWrite(uint16_t addr, uint8_t value) {
+void Console::cpuWrite(uint16_t addr, uint8_t value)
+{
     cpuBusMDR = value;
     if (addr < 0x2000) {
         cpuRam[addr & 0x07FF] = value;

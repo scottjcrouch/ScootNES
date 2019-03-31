@@ -2,7 +2,8 @@
 
 #include <CPU.h>
 
-void CPU::reset() {
+void CPU::reset()
+{
     pc = 0x0000;
     sp = 0xFD;
     acc = 0x00;
@@ -29,34 +30,40 @@ void CPU::reset() {
     cyclesLeft = 0;
 }
 
-void CPU::push8(uint8_t value) {
+void CPU::push8(uint8_t value)
+{
     write(sp | 0x0100, value);
     sp -= 1;
 }
 
-void CPU::push16(uint16_t value) {
+void CPU::push16(uint16_t value)
+{
     push8((value >> 8) & 0xFF);
     push8(value & 0xFF);
 }
 
-uint8_t CPU::pop8() {
+uint8_t CPU::pop8()
+{
     sp += 1;
     return read(sp | 0x0100);
 }
 
-uint16_t CPU::pop16() {
+uint16_t CPU::pop16()
+{
     uint8_t low = pop8();
     uint8_t high = pop8();
     return low | (high << 8);
 }
 
-uint16_t CPU::loadAddr(uint16_t addr) {
+uint16_t CPU::loadAddr(uint16_t addr)
+{
     uint8_t low = read(addr);
     uint8_t high = read(addr+1);
     return low | (high << 8);
 }
 
-uint8_t CPU::getStatus() {
+uint8_t CPU::getStatus()
+{
     uint8_t flags =
         (carry      << 0) |
         (zero       << 1) |
@@ -69,7 +76,8 @@ uint8_t CPU::getStatus() {
     return flags;
 }
 
-void CPU::setStatus(uint8_t value) {
+void CPU::setStatus(uint8_t value)
+{
     carry       = !!(value & 0x01);
     zero        = !!(value & 0x02);
     intdisable  = !!(value & 0x04);
@@ -80,7 +88,8 @@ void CPU::setStatus(uint8_t value) {
     negative    = !!(value & 0x80);
 }
 
-void CPU::handleInterrupts() {
+void CPU::handleInterrupts()
+{
     if(nmiSignal) {
         push16(pc);
         push8(getStatus() & ~(0x20));
@@ -98,7 +107,8 @@ void CPU::handleInterrupts() {
     }
 }
 
-void CPU::branch() {
+void CPU::branch()
+{
     // the offset is stored as a signed byte
     int8_t offset = (int8_t)read(targetAddr);
     uint16_t branchAddr = pc + offset;
@@ -111,33 +121,39 @@ void CPU::branch() {
     pc = branchAddr;
 }
 
-void CPU::suspend(int cycles) {
+void CPU::suspend(int cycles)
+{
     cyclesLeft += cycles;
 }
 
-void CPU::tick() {
+void CPU::tick()
+{
     if (cyclesLeft == 0) {
 	executeNextOp();
     }
     cyclesLeft -= 1;
 }
 
-void CPU::signalNMI() {
+void CPU::signalNMI()
+{
     nmiSignal = 1;
 }
 
-void CPU::signalIRQ() {
+void CPU::signalIRQ()
+{
     irqSignal = 1;
 }
 
-void CPU::executeNextOp() {
+void CPU::executeNextOp()
+{
     runInstr(read(pc));
     handleInterrupts();
 }
 
 /* Instructions */
 
-void CPU::OpADC() {
+void CPU::OpADC()
+{
     int memAdd = read(targetAddr);
     int tempAcc = acc + memAdd + (carry ? 1 : 0);
     zero = (tempAcc & 0xFF) == 0;
@@ -147,13 +163,15 @@ void CPU::OpADC() {
     acc = tempAcc & 0xFF;
 }
 
-void CPU::OpAND() {
+void CPU::OpAND()
+{
     acc &= read(targetAddr);
     zero = (acc == 0);
     negative = !!(acc & 0x80);
 }
 
-void CPU::OpASL() {
+void CPU::OpASL()
+{
     uint8_t result = 0;
     if(useAcc) {
         carry = !!(acc & 0x80);
@@ -170,25 +188,29 @@ void CPU::OpASL() {
     negative = !!(result & 0x80);
 }
 
-void CPU::OpBCC() {
+void CPU::OpBCC()
+{
     if(!carry) {
         branch();
     }
 }
 
-void CPU::OpBCS() {
+void CPU::OpBCS()
+{
     if(carry) {
         branch();
     }
 }
 
-void CPU::OpBEQ() {
+void CPU::OpBEQ()
+{
     if(zero) {
         branch();
     }
 }
 
-void CPU::OpBIT() {
+void CPU::OpBIT()
+{
     uint8_t fetched = read(targetAddr);
     uint8_t result = acc & fetched;
     zero = (result == 0);
@@ -196,60 +218,71 @@ void CPU::OpBIT() {
     negative = !!(fetched & 0x80);
 }
 
-void CPU::OpBMI() {
+void CPU::OpBMI()
+{
     if(negative) {
         branch();
     }
 }
 
-void CPU::OpBNE() {
+void CPU::OpBNE()
+{
     if(!zero) {
         branch();
     }
 }
 
-void CPU::OpBPL() {
+void CPU::OpBPL()
+{
     if(!negative) {
         branch();
     }
 }
 
-void CPU::OpBRK() {
+void CPU::OpBRK()
+{
     push16(pc+1);
     push8(getStatus() | 0x10);
     intdisable = 1;
     pc = loadAddr(IRQ_VECTOR);
 }
 
-void CPU::OpBVC() {
+void CPU::OpBVC()
+{
     if(!overflow) {
         branch();
     }
 }
 
-void CPU::OpBVS() {
+void CPU::OpBVS()
+{
     if(overflow) {
         branch();
     }
 }
 
-void CPU::OpCLC() {
+void CPU::OpCLC()
+{
     carry = 0;
 }
 
-void CPU::OpCLD() {
+void CPU::OpCLD()
+{
     decmode = 0;
 }
 
-void CPU::OpCLI() {
+void CPU::OpCLI()
+{
     intdisable = 0;
 }
 
-void CPU::OpCLV() {
+void CPU::OpCLV()
+{
     overflow = 0;
 }
 
-void CPU::OpCMP() {
+void CPU::OpCMP()
+{
     uint8_t fetched = read(targetAddr);
     uint8_t result = acc - fetched;
     carry = acc >= fetched;
@@ -257,7 +290,8 @@ void CPU::OpCMP() {
     negative = !!(result & 0x80);
 }
 
-void CPU::OpCPX() {
+void CPU::OpCPX()
+{
     uint8_t fetched = read(targetAddr);
     uint8_t result = x - fetched;
     carry = x >= fetched;
@@ -265,7 +299,8 @@ void CPU::OpCPX() {
     negative = !!(result & 0x80);
 }
 
-void CPU::OpCPY() {
+void CPU::OpCPY()
+{
     uint8_t fetched = read(targetAddr);
     uint8_t result = y - fetched;
     carry = y >= fetched;
@@ -273,78 +308,91 @@ void CPU::OpCPY() {
     negative = !!(result & 0x80);
 }
 
-void CPU::OpDEC() {
+void CPU::OpDEC()
+{
     uint8_t result = read(targetAddr) - 1;
     write(targetAddr, result);
     zero = result == 0;
     negative = !!(result & 0x80);
 }
 
-void CPU::OpDEX() {
+void CPU::OpDEX()
+{
     x = x - 1;
     zero = x == 0;
     negative = !!(x & 0x80);
 }
 
-void CPU::OpDEY() {
+void CPU::OpDEY()
+{
     y = y - 1;
     zero = y == 0;
     negative = !!(y & 0x80);
 }
 
-void CPU::OpEOR() {
+void CPU::OpEOR()
+{
     acc = acc ^ read(targetAddr);
     zero = acc == 0;
     negative = !!(acc & 0x80);
 }
 
-void CPU::OpINC() {
+void CPU::OpINC()
+{
     uint8_t result = read(targetAddr) + 1;
     write(targetAddr, result);
     zero = result == 0;
     negative = !!(result & 0x80);
 }
 
-void CPU::OpINX() {
+void CPU::OpINX()
+{
     x = x + 1;
     zero = x == 0;
     negative = !!(x & 0x80);
 }
 
-void CPU::OpINY() {
+void CPU::OpINY()
+{
     y = y + 1;
     zero = y == 0;
     negative = !!(y & 0x80);
 }
 
-void CPU::OpJMP() {
+void CPU::OpJMP()
+{
     pc = targetAddr;
 }
 
-void CPU::OpJSR() {
+void CPU::OpJSR()
+{
     push16(pc - 1);
     pc = targetAddr;
 }
 
-void CPU::OpLDA() {
+void CPU::OpLDA()
+{
     acc = read(targetAddr);
     zero = acc == 0;
     negative = !!(acc & 0x80);
 }
 
-void CPU::OpLDX() {
+void CPU::OpLDX()
+{
     x = read(targetAddr);
     zero = x == 0;
     negative = !!(x & 0x80);
 }
 
-void CPU::OpLDY() {
+void CPU::OpLDY()
+{
     y = read(targetAddr);
     zero = y == 0;
     negative = !!(y & 0x80);
 }
 
-void CPU::OpLSR() {
+void CPU::OpLSR()
+{
     uint8_t result = 0;
     if(useAcc) {
         carry = !!(acc & 0x01);
@@ -363,31 +411,37 @@ void CPU::OpLSR() {
 
 void CPU::OpNOP() { }
 
-void CPU::OpORA() {
+void CPU::OpORA()
+{
     acc = acc | read(targetAddr);
     zero = acc == 0;
     negative = !!(acc & 0x80);
 }
 
-void CPU::OpPHA() {
+void CPU::OpPHA()
+{
     push8(acc);
 }
 
-void CPU::OpPHP() {
+void CPU::OpPHP()
+{
     push8(getStatus() | 0x10);
 }
 
-void CPU::OpPLA() {
+void CPU::OpPLA()
+{
     acc = pop8();
     zero = acc == 0;
     negative = !!(acc & 0x80);
 }
 
-void CPU::OpPLP() {
+void CPU::OpPLP()
+{
     setStatus(pop8() & 0xEF);
 }
 
-void CPU::OpROL() {
+void CPU::OpROL()
+{
     uint8_t result = 0;
     if(useAcc) {
         result = (acc << 1) | (carry ? 1 : 0);
@@ -404,7 +458,8 @@ void CPU::OpROL() {
     negative = !!(result & 0x80);
 }
 
-void CPU::OpROR() {
+void CPU::OpROR()
+{
     uint8_t result = 0;
     if(useAcc) {
         result = (acc >> 1) | (carry ? 0x80 : 0);
@@ -421,16 +476,19 @@ void CPU::OpROR() {
     negative = !!(result & 0x80);
 }
 
-void CPU::OpRTI() {
+void CPU::OpRTI()
+{
     setStatus(pop8() & 0xEF);
     pc = pop16();
 }
 
-void CPU::OpRTS() {
+void CPU::OpRTS()
+{
     pc = pop16() + 1;
 }
 
-void CPU::OpSBC() {
+void CPU::OpSBC()
+{
     uint8_t memAdd = read(targetAddr) ^ 0xFF;
     uint16_t tempAcc = acc + memAdd + (carry ? 1 : 0);
     zero = (tempAcc & 0xFF) == 0;
@@ -440,59 +498,71 @@ void CPU::OpSBC() {
     acc = (uint8_t)(tempAcc & 0xFF);
 }
 
-void CPU::OpSEC() {
+void CPU::OpSEC()
+{
     carry = 1;
 }
 
-void CPU::OpSED() {
+void CPU::OpSED()
+{
     decmode = 1;
 }
 
-void CPU::OpSEI() {
+void CPU::OpSEI()
+{
     intdisable = 1;
 }
 
-void CPU::OpSTA() {
+void CPU::OpSTA()
+{
     write(targetAddr, acc);
 }
 
-void CPU::OpSTX() {
+void CPU::OpSTX()
+{
     write(targetAddr, x);
 }
 
-void CPU::OpSTY() {
+void CPU::OpSTY()
+{
     write(targetAddr, y);
 }
 
-void CPU::OpTAX() {
+void CPU::OpTAX()
+{
     x = acc;
     zero = x == 0;
     negative = !!(x & 0x80);
 }
 
-void CPU::OpTAY() {
+void CPU::OpTAY()
+{
     y = acc;
     zero = y == 0;
     negative = !!(y & 0x80);
 }
 
-void CPU::OpTSX() {
+void CPU::OpTSX()
+{
     x = sp;
     zero = sp == 0;
     negative = !!(sp & 0x80);
 }
 
-void CPU::OpTXA() {
+void CPU::OpTXA()
+{
     acc = x;
     zero = acc == 0;
     negative = !!(acc & 0x80);
 }
 
-void CPU::OpTXS() {
+void CPU::OpTXS()
+{
     sp = x;
 }
 
-void CPU::OpTYA() {
+void CPU::OpTYA()
+{
     acc = y;
     zero = acc == 0;
     negative = !!(acc & 0x80);
@@ -524,17 +594,20 @@ void CPU::OpISC() { }
 
 /* Address Modes */
 
-void CPU::AmABS() {
+void CPU::AmABS()
+{
     targetAddr = loadAddr(pc + 1);
     pc += 3;
 }
 
-void CPU::AmABX() {
+void CPU::AmABX()
+{
     targetAddr = loadAddr(pc + 1) + x;
     pc += 3;
 }
 
-void CPU::AmABX_C() {
+void CPU::AmABX_C()
+{
     uint8_t low = read(pc + 1) + x;
     uint8_t high = read(pc + 2);
     targetAddr = (uint16_t)low | ((uint16_t)high << 8);
@@ -547,12 +620,14 @@ void CPU::AmABX_C() {
     pc += 3;
 }
 
-void CPU::AmABY() {
+void CPU::AmABY()
+{
     targetAddr = loadAddr(pc + 1) + y;
     pc += 3;
 }
 
-void CPU::AmABY_C() {
+void CPU::AmABY_C()
+{
     uint8_t low = read(pc + 1) + y;
     uint8_t high = read(pc + 2);
     targetAddr = (uint16_t)low | ((uint16_t)high << 8);
@@ -565,21 +640,25 @@ void CPU::AmABY_C() {
     pc += 3;
 }
 
-void CPU::AmACC() {
+void CPU::AmACC()
+{
     useAcc = 1;
     pc += 1;
 }
 
-void CPU::AmIMM() {
+void CPU::AmIMM()
+{
     targetAddr = pc + 1;
     pc += 2;
 }
 
-void CPU::AmIMP() {
+void CPU::AmIMP()
+{
     pc += 1;
 }
 
-void CPU::AmIND() {
+void CPU::AmIND()
+{
     uint16_t addrOperand = loadAddr(pc + 1);
     if((addrOperand & 0xFF) == 0xFF) { // force low byte to wrap
         uint8_t low = read(addrOperand);
@@ -591,7 +670,8 @@ void CPU::AmIND() {
     pc += 1; // no effect since only used for OpJMP()
 }
 
-void CPU::AmINX() {
+void CPU::AmINX()
+{
     uint8_t addrOperand = x + read(pc + 1);
     // below is a modified loadAddr() such that
     // addrOperand wraps to the zero page
@@ -602,7 +682,8 @@ void CPU::AmINX() {
     pc += 2;
 }
 
-void CPU::AmINY() {
+void CPU::AmINY()
+{
     uint8_t addrOperand = read(pc + 1);
     uint8_t low = read(addrOperand) + y;
     addrOperand += 1;
@@ -615,7 +696,8 @@ void CPU::AmINY() {
     pc += 2;
 }
 
-void CPU::AmINY_C() {
+void CPU::AmINY_C()
+{
     uint8_t addrOperand = read(pc + 1);
     uint8_t low = read(addrOperand) + y;
     addrOperand += 1;
@@ -630,24 +712,28 @@ void CPU::AmINY_C() {
     pc += 2;
 }
 
-void CPU::AmZPG() {
+void CPU::AmZPG()
+{
     targetAddr = read(pc + 1);
     pc += 2;
 }
 
-void CPU::AmZPX() {
+void CPU::AmZPX()
+{
     uint8_t addr = read(pc + 1) + x;
     targetAddr = addr;
     pc += 2;
 }
 
-void CPU::AmZPY() {
+void CPU::AmZPY()
+{
     uint8_t addr = read(pc + 1) + y;
     targetAddr = addr;
     pc += 2;
 }
 
-void CPU::runInstr(uint8_t opCode) {
+void CPU::runInstr(uint8_t opCode)
+{
     switch(opCode) {
         case (0x00): AmIMP();   OpBRK(); suspend(7); break;
         case (0x01): AmINX();   OpORA(); suspend(6); break;

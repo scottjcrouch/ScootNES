@@ -4,7 +4,8 @@
 #include <CartMemory.h>
 #include <Mapper.h>
 
-class Mapper0: public Mapper {
+class Mapper0: public Mapper
+{
 public:
     Mapper0(CartMemory mem) : Mapper(mem) { };
     uint8_t readPrg(uint16_t addr);

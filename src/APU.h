@@ -7,7 +7,8 @@
 #include "nes_apu/Nes_Apu.h"
 #include "nes_apu/Blip_Buffer.h"
 
-class APU {
+class APU
+{
 public:
     APU();
     void setDmcCallback(int (*callback)(void* user_data, unsigned int), void* user_data = NULL);
@@ -20,7 +21,7 @@ public:
     // Read at most 'count' samples and return number of samples actually read
     typedef blip_sample_t sample_t;
     std::vector<short> getAvailableSamples();
-	
+
 private:
     Nes_Apu apu;
     Blip_Buffer buf;

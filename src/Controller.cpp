@@ -2,14 +2,16 @@
 
 #include <Controller.h>
 
-void Controller::setStrobe(bool b) {
+void Controller::setStrobe(bool b)
+{
     strobe = b;
     if(strobe) {
         shiftReg = -1;
     }
 }
 
-uint8_t Controller::poll() {
+uint8_t Controller::poll()
+{
     if(strobe) {
         shiftReg = -1;
     }
@@ -21,10 +23,12 @@ uint8_t Controller::poll() {
     }
 }
 
-void Controller::press(Button b) {
+void Controller::press(Button b)
+{
     buttons[b] = 1;
 }
 
-void Controller::release(Button b) {
+void Controller::release(Button b)
+{
     buttons[b] = 0;
 }

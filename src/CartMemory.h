@@ -6,7 +6,8 @@
 
 #include <Mirroring.h>
 
-struct CartMemory {
+struct CartMemory
+{
     Mirroring mirroring;
     bool chrIsRam;
     std::vector<uint8_t> trainer;

@@ -3,9 +3,11 @@
 
 #include <cstdint>
 
-class Controller {
+class Controller
+{
 public:
-    enum Button {
+    enum Button
+    {
 	BUTTON_A,
 	BUTTON_B,
 	BUTTON_SELECT,

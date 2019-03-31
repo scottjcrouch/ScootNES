@@ -15,7 +15,8 @@ static const int CHR_BANK_SIZE = 8 * 1024;
 static const int RAM_BANK_SIZE = 8 * 1024;
 static const int TRAINER_SIZE = 512;
 
-class Cart {
+class Cart
+{
 public:
     void loadFile(std::string romFileName);
     uint8_t readPrg(uint16_t addr);

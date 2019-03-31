@@ -7,7 +7,8 @@
 #include <CartMemory.h>
 #include <Mirroring.h>
 
-class Mapper {
+class Mapper
+{
 public:
     Mapper(CartMemory mem) : cartMemory(mem) { };
     Mirroring getMirroring() { return cartMemory.mirroring; };

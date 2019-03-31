@@ -10,7 +10,8 @@ const unsigned int GUI_TEXTURE_HEIGHT = 240;
 const unsigned int GUI_WINDOW_WIDTH = 256*2;
 const unsigned int GUI_WINDOW_HEIGHT = 240*2;
 
-class GUI {
+class GUI
+{
 public:
     GUI();
     ~GUI();

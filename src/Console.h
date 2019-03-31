@@ -11,7 +11,8 @@
 #include <APU.h>
 #include <Divider.h>
 
-class Console {
+class Console
+{
 public:
     Console();
     void reset();

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-/* 
+/*
  * Notes:
  *
  * - SDL_Timer wraps if running for more than ~49 days.
@@ -13,7 +13,8 @@
  * call will not shorten its delay to play catch up.
  */
 
-class FrameDelayTimer {
+class FrameDelayTimer
+{
 public:
     FrameDelayTimer(uint32_t intervalSize = 1000);
     void delay();

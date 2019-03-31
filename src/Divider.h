@@ -1,7 +1,8 @@
 #ifndef DIVIDER_H
 #define DIVIDER_H
 
-class Divider {
+class Divider
+{
 public:
     Divider(int interval = 1) {
 	setInterval(interval);
@@ -10,8 +11,7 @@ public:
     void setInterval(int interval) {
 	if (interval < 1) {
 	    counterResetValue = 0;
-	}
-	else {
+	} else {
 	    counterResetValue = interval - 1;
 	}
     }
@@ -21,8 +21,7 @@ public:
     void tick() {
 	if (counter < 1) {
 	    counter = counterResetValue;
-	}
-	else {
+	} else {
 	    --counter;
 	}
     }

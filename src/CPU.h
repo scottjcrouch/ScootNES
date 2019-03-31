@@ -11,7 +11,8 @@ static const uint16_t IRQ_VECTOR = 0xFFFE;
 using BusRead = std::function<uint8_t(uint16_t)>;
 using BusWrite = std::function<void(uint16_t, uint8_t)>;
 
-class CPU {
+class CPU
+{
 public:
     CPU(BusRead read, BusWrite write) : read(read), write(write) { }
     void reset();

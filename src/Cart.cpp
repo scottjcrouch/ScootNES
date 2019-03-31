@@ -13,9 +13,10 @@
 #include <mappers/Mapper0.h>
 #include <mappers/Mapper1.h>
 
-void Cart::loadFile(std::string romFileName) {
+void Cart::loadFile(std::string romFileName)
+{
     std::ifstream romFileStream(romFileName.c_str(), std::ios::binary);
-    
+
     std::vector<char> iNesHeader = getINesHeaderFromFile(romFileStream);
     bool isValidHeader = verifyINesHeaderSignature(iNesHeader);
     if(!isValidHeader) {
@@ -32,25 +33,28 @@ void Cart::loadFile(std::string romFileName) {
     }
 }
 
-std::vector<char> Cart::getINesHeaderFromFile(std::ifstream& romFileStream) {
+std::vector<char> Cart::getINesHeaderFromFile(std::ifstream& romFileStream)
+{
     std::vector<char> header;
     for(int i  = 0; i < 16; ++i) {
 	header.push_back(romFileStream.get());
     }
-    
+
     return header;
 }
 
-bool Cart::verifyINesHeaderSignature(std::vector<char> iNesHeader) {
+bool Cart::verifyINesHeaderSignature(std::vector<char> iNesHeader)
+{
     return (iNesHeader[0] == 'N' &&
 	    iNesHeader[1] == 'E' &&
 	    iNesHeader[2] == 'S' &&
 	    iNesHeader[3] == 0x1A);
 }
 
-CartMemory Cart::getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstream& romFileStream) {
+CartMemory Cart::getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstream& romFileStream)
+{
     CartMemory mem;
-    
+
     int prgSize = iNesHeader[4] * PRG_BANK_SIZE;
     for(int i  = 0; i < prgSize; ++i) {
 	mem.prg.push_back(romFileStream.get());
@@ -95,11 +99,13 @@ CartMemory Cart::getCartMemoryFromFile(std::vector<char> iNesHeader, std::ifstre
     return mem;
 }
 
-int Cart::getMapperNumberFromHeader(std::vector<char> iNesHeader) {
+int Cart::getMapperNumberFromHeader(std::vector<char> iNesHeader)
+{
     return (iNesHeader[6] >> 4) + (iNesHeader[7] & 0xF0);
 }
 
-bool Cart::initializeMapper(int mapperNum, CartMemory mem) {
+bool Cart::initializeMapper(int mapperNum, CartMemory mem)
+{
     switch(mapperNum) {
     case 0:
 	mapper = std::unique_ptr<Mapper>(new Mapper0(mem));
@@ -112,22 +118,27 @@ bool Cart::initializeMapper(int mapperNum, CartMemory mem) {
     }
 }
 
-Mirroring Cart::getMirroring() {
+Mirroring Cart::getMirroring()
+{
     return mapper->getMirroring();
 }
 
-uint8_t Cart::readPrg(uint16_t addr) {
+uint8_t Cart::readPrg(uint16_t addr)
+{
     return mapper->readPrg(addr);
 }
 
-void Cart::writePrg(uint16_t addr, uint8_t value) {
+void Cart::writePrg(uint16_t addr, uint8_t value)
+{
     mapper->writePrg(addr, value);
 }
 
-uint8_t Cart::readChr(uint16_t addr) {
+uint8_t Cart::readChr(uint16_t addr)
+{
     return mapper->readChr(addr);
 }
 
-void Cart::writeChr(uint16_t addr, uint8_t value) {
+void Cart::writeChr(uint16_t addr, uint8_t value)
+{
     mapper->writeChr(addr, value);
 }

@@ -6,11 +6,11 @@
 #include <Graphics.h>
 #include <Mirroring.h>
 
-PPU::PPU(Cart *cart, NMI nmi) :
-    cart(cart),
-    nmi(nmi) { }
+PPU::PPU(Cart *cart, NMI nmi) : cart(cart),
+                                nmi(nmi) { }
 
-void PPU::reset() {
+void PPU::reset()
+{
     // 0x2000: CTRL
     nameTableAddr = 0;              // 0=0x2000, 1=0x2400, 2=0x2800, 3=0x2C00
     vRamAddrIncr = false;           // 0=1 (across name table), 1=32 (down name table)
@@ -64,7 +64,8 @@ void PPU::reset() {
     spr0Reload = false;
 }
 
-void PPU::setCTRL(uint8_t value) {
+void PPU::setCTRL(uint8_t value)
+{
     nameTableAddr = value & 0x03;
     vRamAddrIncr = !!(value & 0x04);
     sprPatternTableSelector = !!(value & 0x08);
@@ -73,7 +74,8 @@ void PPU::setCTRL(uint8_t value) {
     nmiOnVBlank = !!(value & 0x80);
 }
 
-void PPU::setMASK(uint8_t value) {
+void PPU::setMASK(uint8_t value)
+{
     grayscale = !!(value & 0x01);
     imageMask = !!(value & 0x02);
     sprMask = !!(value & 0x04);
@@ -84,7 +86,8 @@ void PPU::setMASK(uint8_t value) {
     buffBlue = !!(value & 0x80);
 }
 
-uint8_t PPU::getSTATUS() {
+uint8_t PPU::getSTATUS()
+{
     uint8_t result = 0x00;
     if (sprOverflow) {
         result |= 0x20;
@@ -100,11 +103,13 @@ uint8_t PPU::getSTATUS() {
     return result;
 }
 
-void PPU::setOAMADDR(uint8_t value) {
+void PPU::setOAMADDR(uint8_t value)
+{
     oamAddrBuffer = value;
 }
 
-void PPU::setOAMDATA(uint8_t value) {
+void PPU::setOAMDATA(uint8_t value)
+{
     // the third byte of every sprite entry is missing bits
     // in hardware, so zero them here before writing
     if (oamAddrBuffer % 4 == 2) {
@@ -114,12 +119,14 @@ void PPU::setOAMDATA(uint8_t value) {
     oamAddrBuffer++;
 }
 
-uint8_t PPU::getOAMDATA() {
+uint8_t PPU::getOAMDATA()
+{
     // apparently unreliable in NES hardware, but some games use it
     return oam[oamAddrBuffer];
 }
 
-void PPU::setSCROLL(uint8_t value) {
+void PPU::setSCROLL(uint8_t value)
+{
     if (!latch) {
         scrollX = value;
     } else {
@@ -128,7 +135,8 @@ void PPU::setSCROLL(uint8_t value) {
     latch = !latch;
 }
 
-void PPU::setADDR(uint8_t value) {
+void PPU::setADDR(uint8_t value)
+{
     if (!latch) {
         // set high byte
         addrBuffer &= 0x00FF;
@@ -148,12 +156,14 @@ void PPU::setADDR(uint8_t value) {
     latch = !latch;
 }
 
-void PPU::setDATA(uint8_t value) {
+void PPU::setDATA(uint8_t value)
+{
     write(addrBuffer, value);
     addrBuffer += ((vRamAddrIncr) ? 32 : 1);
 }
 
-uint8_t PPU::getDATA() {
+uint8_t PPU::getDATA()
+{
     uint8_t returnVal;
     if (addrBuffer < 0x3F00) {
         // return what's in the read buffer from the previous
@@ -174,13 +184,15 @@ uint8_t PPU::getDATA() {
     return returnVal;
 }
 
-void PPU::reloadGraphicsData() {
+void PPU::reloadGraphicsData()
+{
     reloadTileData();
     reloadMetatileData();
     reloadSpriteData();
 }
 
-void PPU::renderPixel(int x, int y) {
+void PPU::renderPixel(int x, int y)
+{
     int realX = x;
     if (nameTableAddr & 0b01) {
         realX += 256;
@@ -247,7 +259,8 @@ void PPU::renderPixel(int x, int y) {
     }
 }
 
-void PPU::renderFrame() {
+void PPU::renderFrame()
+{
     for (int y = 0; y < FRAME_HEIGHT; y++) {
         for (int x = 0; x < FRAME_WIDTH; x++) {
             renderPixel(x, y);
@@ -255,17 +268,20 @@ void PPU::renderFrame() {
     }
 }
 
-void PPU::renderScanline(int scanlNum) {
+void PPU::renderScanline(int scanlNum)
+{
     for (int x = 0; x < FRAME_WIDTH; x++) {
 	renderPixel(x, scanlNum);
     }
 }
 
-uint32_t *PPU::getFrameBuffer() {
+uint32_t *PPU::getFrameBuffer()
+{
     return frameBuffer;
 }
 
-void PPU::tick() {
+void PPU::tick()
+{
     ++clockCounter;
     if (clockCounter >= POST_REND) {
 	switch (clockCounter) {
@@ -305,7 +321,8 @@ void PPU::tick() {
     }
 }
 
-void PPU::reloadSpriteBuffer() {
+void PPU::reloadSpriteBuffer()
+{
     int currentScanl = clockCounter / CYC_PER_SCANL;
     spriteBuffer.clear();
     for (int i = 0; i < 64; ++i) {
@@ -317,11 +334,13 @@ void PPU::reloadSpriteBuffer() {
     }
 }
 
-bool PPU::endOfFrame() {
+bool PPU::endOfFrame()
+{
     return clockCounter == VBLANK;
 }
 
-uint8_t PPU::read(uint16_t addr) {
+uint8_t PPU::read(uint16_t addr)
+{
     addr %= 0x4000;
     if (addr >= 0x3F00) {
         return readPalette(addr % 0x20);
@@ -332,7 +351,8 @@ uint8_t PPU::read(uint16_t addr) {
     }
 }
 
-void PPU::write(uint16_t addr, uint8_t value) {
+void PPU::write(uint16_t addr, uint8_t value)
+{
     addr %= 0x4000;
     if (addr >= 0x3F00) {
 	writePalette(addr % 0x20, value);
@@ -343,31 +363,36 @@ void PPU::write(uint16_t addr, uint8_t value) {
     }
 }
 
-uint8_t PPU::readPalette(uint16_t index) {
+uint8_t PPU::readPalette(uint16_t index)
+{
     if (index % 4 == 0) {
 	return paletteRam[0];
     }
     return paletteRam[index];
 }
 
-void PPU::writePalette(uint16_t index, uint8_t value) {
+void PPU::writePalette(uint16_t index, uint8_t value)
+{
     paletteRam[index] = value;
     if (index % 4 == 0) {
 	paletteRam[index ^ 0x10] = value;
     }
 }
 
-uint8_t PPU::readNameTables(uint16_t index) {
+uint8_t PPU::readNameTables(uint16_t index)
+{
     uint16_t mirroredIndex = getCiRamIndexFromNameTableIndex(index);
     return ciRam[mirroredIndex];
 }
 
-void PPU::writeNameTables(uint16_t index, uint8_t value) {
+void PPU::writeNameTables(uint16_t index, uint8_t value)
+{
     uint16_t mirroredIndex = getCiRamIndexFromNameTableIndex(index);
     ciRam[mirroredIndex] = value;
 }
 
-uint16_t PPU::getCiRamIndexFromNameTableIndex(uint16_t index) {
+uint16_t PPU::getCiRamIndexFromNameTableIndex(uint16_t index)
+{
     switch (cart->getMirroring()) {
     case MIRROR_VERTICAL:
 	return index % 0x800;
@@ -385,15 +410,18 @@ uint16_t PPU::getCiRamIndexFromNameTableIndex(uint16_t index) {
     return 0;
 }
 
-uint8_t PPU::readPatternTables(uint16_t index) {
+uint8_t PPU::readPatternTables(uint16_t index)
+{
     return cart->readChr(index);
 }
 
-void PPU::writePatternTables(uint16_t index, uint8_t value) {
+void PPU::writePatternTables(uint16_t index, uint8_t value)
+{
     cart->writeChr(index, value);
 }
 
-void PPU::buildMetatileData() {
+void PPU::buildMetatileData()
+{
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 8; ++x) {
             for (int y = 0; y < 8; ++y) {
@@ -405,7 +433,8 @@ void PPU::buildMetatileData() {
     }
 }
 
-void PPU::reloadMetatileData() {
+void PPU::reloadMetatileData()
+{
     for (int nt = 0; nt < 4; ++nt) {
 	for (int x = 0; x < 8; ++x) {
             for (int y = 0; y < 8; ++y) {
@@ -416,7 +445,8 @@ void PPU::reloadMetatileData() {
     }
 }
 
-void PPU::buildTileData() {
+void PPU::buildTileData()
+{
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 32; ++x) {
             for (int y = 0; y < 30; ++y) {
@@ -441,7 +471,8 @@ void PPU::buildTileData() {
     }
 }
 
-void PPU::reloadTileData() {
+void PPU::reloadTileData()
+{
     for (int nt = 0; nt < 4; ++nt) {
         for (int x = 0; x < 32; ++x) {
             for (int y = 0; y < 30; ++y) {
@@ -459,7 +490,8 @@ void PPU::reloadTileData() {
     }
 }
 
-void PPU::buildPixelData() {
+void PPU::buildPixelData()
+{
     for (int x = 0; x < 512; ++x) {
         for (int y = 0; y < 480; ++y) {
             // find tile to which pixel belongs
@@ -480,13 +512,15 @@ void PPU::buildPixelData() {
     }
 }
 
-void PPU::buildSpriteData() {
+void PPU::buildSpriteData()
+{
     for (int i = 0; i < 64; i++) {
 	sprites[i].oamIndex = i * 4;
     }
 }
 
-void PPU::reloadSpriteData() {
+void PPU::reloadSpriteData()
+{
     for (int i = 0; i < 64; ++i) {
 	sprites[i].xPos = oam[sprites[i].oamIndex + 3];
 	sprites[i].yPos = oam[sprites[i].oamIndex];

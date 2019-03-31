@@ -4,16 +4,17 @@
 #include <SoundQueue.h>
 #include <vector>
 
-class Sound {
+class Sound
+{
 public:
 	Sound();
 	~Sound();
 
 	void playSound(std::vector<short> buffer);
-	
+
 private:
 	SoundQueue soundQueue;
-	
+
 	void initSDLAudio();
 	void initSoundQueue();
 	void quitSDLAudio();
