@@ -12,7 +12,7 @@ uint8_t Mapper1::readPrg(uint16_t addr) {
 	int index = decodePrgRomAddress(addr);
 	return cartMemory.prg[index];
     } else if (addr >= 0x6000) {
-	int index = addr % 0x2000;
+	int index = (addr & 0x1FFF);
 	return cartMemory.ram[index];
     } else {
 	return 0;
@@ -35,7 +35,7 @@ void Mapper1::writePrg(uint16_t addr, uint8_t value) {
 	    }
 	}
     } else if (addr >= 0x6000) {
-	int index = addr % 0x2000;
+	int index = (addr & 0x1FFF);
 	cartMemory.ram[index] = value;
     }
 }
@@ -111,12 +111,12 @@ void Mapper1::updateBankAddresses() {
 
 int Mapper1::decodePrgRomAddress(uint16_t addr) {
     int bankNum = (addr & 0x4000) >> 14;
-    int offset = (addr % 0x4000);
+    int offset = (addr & 0x3FFF);
     return prg16kBankAddresses[bankNum] + offset;
 }
 
 int Mapper1::decodeChrRomAddress(uint16_t addr) {
     int bankNum = (addr & 0x1000) >> 12;
-    int offset = (addr % 0x1000);
+    int offset = (addr & 0x0FFF);
     return chr4kBankAddresses[bankNum] + offset;
 }

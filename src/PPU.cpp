@@ -112,7 +112,7 @@ void PPU::setOAMDATA(uint8_t value)
 {
     // the third byte of every sprite entry is missing bits
     // in hardware, so zero them here before writing
-    if (oamAddrBuffer % 4 == 2) {
+    if ((oamAddrBuffer & 0x3) == 2) {
         value &= 0xE3;
     }
     oam[oamAddrBuffer] = value;
@@ -198,7 +198,7 @@ void PPU::renderPixel(int x, int y)
         realX += 256;
     }
     realX += scrollX;
-    realX %= 512;
+    realX &= (512 - 1);
 
     int realY = y;
     if (nameTableAddr & 0b10) {
@@ -208,8 +208,8 @@ void PPU::renderPixel(int x, int y)
     realY %= 480;
 
     if (sprites[0].occludes(x, y) &&
-	(sprites[0].getValue(x, y, bigSprites) % 4 != 0) &&
-	(bgPixels[realX][realY].getValue() % 4 != 0) &&
+	((sprites[0].getValue(x, y, bigSprites) & 0x3) != 0) &&
+	((bgPixels[realX][realY].getValue() & 0x3) != 0) &&
 	((x > 7) || (imageMask && sprMask)) &&
 	x != 255 &&
 	!spr0Latch &&
@@ -227,7 +227,7 @@ void PPU::renderPixel(int x, int y)
 	for (int i = 0; i < spriteBufferSize; ++i) {
 	    if (spriteBuffer[i].occludes(x, y)) {
 		uint8_t paletteIndex = spriteBuffer[i].getValue(x, y, bigSprites);
-		if (paletteIndex % 4 != 0) {
+		if ((paletteIndex & 0x3) != 0) {
 		    uint8_t paletteVal = readPalette(paletteIndex);
 		    uint32_t pixelColour = universalPalette[paletteVal];
 		    frameBuffer[x + (y * FRAME_WIDTH)] = pixelColour;
@@ -245,7 +245,7 @@ void PPU::renderPixel(int x, int y)
     // otherwise render background if not transparent
     if (showBg && (x > 7 || imageMask)) {
 	uint8_t paletteIndex = bgPixels[realX][realY].getValue();
-	if (paletteIndex % 4 != 0) {
+	if ((paletteIndex & 0x3) != 0) {
 	    uint8_t paletteVal = readPalette(paletteIndex);
 	    uint32_t pixelColour = universalPalette[paletteVal];
 	    frameBuffer[x + (y * FRAME_WIDTH)] = pixelColour;
@@ -341,11 +341,11 @@ bool PPU::endOfFrame()
 
 uint8_t PPU::read(uint16_t addr)
 {
-    addr %= 0x4000;
+    addr &= 0x3FFF;
     if (addr >= 0x3F00) {
-        return readPalette(addr % 0x20);
+        return readPalette(addr & 0x1F);
     } else if (addr >= 0x2000) {
-	return readNameTables(addr % 0x1000);
+	return readNameTables(addr & 0x0FFF);
     } else {
         return readPatternTables(addr);
     }
@@ -353,11 +353,11 @@ uint8_t PPU::read(uint16_t addr)
 
 void PPU::write(uint16_t addr, uint8_t value)
 {
-    addr %= 0x4000;
+    addr &= 0x3FFF;
     if (addr >= 0x3F00) {
-	writePalette(addr % 0x20, value);
+	writePalette(addr & 0x1F, value);
     } else if (addr >= 0x2000) {
-	writeNameTables(addr % 0x1000, value);
+	writeNameTables(addr & 0x0FFF, value);
     } else {
         writePatternTables(addr, value);
     }
@@ -365,7 +365,7 @@ void PPU::write(uint16_t addr, uint8_t value)
 
 uint8_t PPU::readPalette(uint16_t index)
 {
-    if (index % 4 == 0) {
+    if ((index & 0x3) == 0) {
 	return paletteRam[0];
     }
     return paletteRam[index];
@@ -374,7 +374,7 @@ uint8_t PPU::readPalette(uint16_t index)
 void PPU::writePalette(uint16_t index, uint8_t value)
 {
     paletteRam[index] = value;
-    if (index % 4 == 0) {
+    if ((index & 0x3) == 0) {
 	paletteRam[index ^ 0x10] = value;
     }
 }
@@ -395,12 +395,12 @@ uint16_t PPU::getCiRamIndexFromNameTableIndex(uint16_t index)
 {
     switch (cart->getMirroring()) {
     case MIRROR_VERTICAL:
-	return index % 0x800;
+	return index & 0x07FF;
     case MIRROR_HORIZONTAL:
 	if (index & 0x800) {
 	    index |= 0x400;
 	}
-	return index % 0x800;
+	return index & 0x07FF;
     case MIRROR_LOWER_BANK:
 	return index & 0xF3FF;
     case MIRROR_UPPER_BANK:
@@ -454,10 +454,10 @@ void PPU::buildTileData()
                 uint16_t nameTableIndex = (0x400 * nt) + x + (y * 32);
                 // position within enclosing metatile
                 uint8_t quadrant = 0;
-                if ((x % 4) >= 2) {
+                if ((x & 0x3) >= 2) {
                     quadrant |= 0b01;
                 }
-                if ((y % 4) >= 2) {
+                if ((y & 0x3) >= 2) {
                     quadrant |= 0b10;
                 }
                 // coordinates of parent metatile
@@ -502,12 +502,12 @@ void PPU::buildPixelData()
             if (y >= 240) {
                 nt += 0b10;
             }
-            int tileX = (x % 256) / 8;
+            int tileX = (x & (256 - 1)) / 8;
             int tileY = (y % 240) / 8;
             // init
 	    bgPixels[x][y].tile = &bgTiles[nt][tileX][tileY];
-	    bgPixels[x][y].x = x % 8;
-	    bgPixels[x][y].y = y % 8;
+	    bgPixels[x][y].x = (x & 0x7);
+	    bgPixels[x][y].y = (y & 0x7);
         }
     }
 }
